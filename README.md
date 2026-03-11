@@ -50,13 +50,13 @@ Tools never touch the nsec. They get a signer interface. The user approves from 
 
 ### Domain
 
-`.dev` TLD positions it as a developer tool — the platform that other tools build on.
+`nse.dev` — short, memorable, developer-facing. The platform that other Nostr tools build on.
 
 ## Setup
 
 - **Repo:** [HumanjavaEnterprises/nse-locker.web.landingpage.src](https://github.com/HumanjavaEnterprises/nse-locker.web.landingpage.src)
 - **Pages source:** `main` branch, `/docs` folder
-- **Custom domain:** TBD (nseclocker.dev placeholder)
+- **Custom domain:** `nse.dev`
 
 ## DNS Configuration
 
