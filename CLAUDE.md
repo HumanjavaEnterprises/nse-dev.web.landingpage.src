@@ -7,12 +7,19 @@ Public landing page for **NSE (Nostr Secure Enclave)** at [nse.dev](https://nse.
 ## Repo Structure
 
 ```
-docs/           ← GitHub Pages source (served from main branch)
-  index.html    ← Single-page site (HTML + inline CSS, no build step)
-  og-image.png  ← 1200x630 OG/Twitter social card
-  CNAME         ← Custom domain: nse.dev
-generate-og.py  ← Pillow script to regenerate the social card
-README.md       ← Full project overview + DNS setup
+docs/                  ← GitHub Pages source (served from main branch)
+  index.html           ← Single-page site (HTML + inline CSS, no build step)
+  og-image.png         ← 1200x630 OG/Twitter social card
+  CNAME                ← Custom domain: nse.dev
+platforms/             ← Working code for each target platform
+  core/                ← @nse-dev/core — shared TypeScript types + NSEProvider interface
+  ios/                 ← @nse-dev/ios — Swift Package (Secure Enclave)
+  android/             ← @nse-dev/android — Kotlin (StrongBox / TEE)
+  server/              ← @nse-dev/server — TypeScript (CF Workers + Node.js)
+  browser/             ← @nse-dev/browser — TypeScript (WebAuthn + SubtleCrypto)
+  python/              ← nse-dev — Python (PyPI)
+generate-og.py         ← Pillow script to regenerate the social card
+README.md              ← Full project overview + DNS setup
 ```
 
 ## How to Work With This Repo
