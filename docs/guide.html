@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bunker 101 — How NSE Connects | NSE</title>
+  <meta name="description" content="From key protection to login flow. The complete guide to wiring NSE into the NIP-46 architecture.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bunker 101 — How NSE Connects">
+  <meta property="og:description" content="From key protection to login flow. The complete guide to wiring NSE into NIP-46.">
+  <meta property="og:image" content="https://nse.dev/og-image.png">
+  <meta property="og:url" content="https://nse.dev/guide.html">
+  <meta property="og:type" content="article">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bunker 101 — How NSE Connects">
+  <meta name="twitter:description" content="From key protection to login flow. The complete guide to wiring NSE into NIP-46.">
+  <meta name="twitter:image" content="https://nse.dev/og-image.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --text: #f0f0f5;
+      --text-dim: #8888a0;
+      --cyan: #22d3ee;
+      --cyan-dim: #0891b2;
+      --border: #1e1e2e;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    .nav {
+      padding: 20px 0;
+      font-size: 0.85rem;
+    }
+
+    .nav a {
+      color: var(--text-dim);
+    }
+
+    .nav a:hover {
+      color: var(--cyan);
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 60px 0 60px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 1px solid var(--cyan-dim);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 span { color: var(--cyan); }
+
+    .hero-tagline {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      margin-bottom: 32px;
+    }
+
+    .hero-one-liner {
+      font-size: 1.05rem;
+      color: var(--text);
+      max-width: 560px;
+      margin: 0 auto 0;
+    }
+
+    /* Code block */
+    .code-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 28px;
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--text-dim);
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    .code-block .fn { color: var(--cyan); }
+    .code-block .comment { color: #555568; }
+    .code-block .str { color: #a78bfa; }
+    .code-block .kw { color: #f472b6; }
+
+    /* Sections */
+    .section {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .section h3 {
+      font-size: 1.1rem;
+      color: var(--cyan);
+      margin: 28px 0 12px;
+    }
+
+    .section p {
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+
+    .section p strong { color: var(--text); }
+    .section p code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: var(--bg-card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--cyan);
+    }
+
+    .section ul {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      margin: 12px 0;
+      padding-left: 24px;
+    }
+
+    .section ul li {
+      margin-bottom: 8px;
+    }
+
+    .section ul li strong { color: var(--text); }
+    .section ul li code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: var(--bg-card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--cyan);
+    }
+
+    /* Flow diagram */
+    .flow {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+      margin: 20px 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .flow .hl { color: var(--cyan); }
+
+    /* Platform table */
+    .platform-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.85rem;
+    }
+
+    .platform-table th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--text-dim);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .platform-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(30,30,46,0.5);
+      color: var(--text-dim);
+    }
+
+    .platform-table td:first-child { color: var(--text); font-weight: 500; }
+
+    .badge-hw {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: rgba(34,211,238,0.12);
+      color: var(--cyan);
+    }
+
+    /* Pattern label */
+    .pattern-label {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(34,211,238,0.12);
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+
+    /* CTA */
+    .cta {
+      text-align: center;
+      padding: 60px 0 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .cta h2 {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+
+    .cta p {
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: var(--cyan);
+      color: #0a0a0f;
+      font-weight: 600;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: opacity 0.15s;
+      margin: 0 8px;
+    }
+    .cta-btn:hover { opacity: 0.9; text-decoration: none; }
+
+    .cta-btn-outline {
+      display: inline-block;
+      padding: 12px 28px;
+      background: transparent;
+      color: var(--cyan);
+      font-weight: 600;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      border: 1px solid var(--cyan-dim);
+      transition: opacity 0.15s;
+      margin: 0 8px;
+    }
+    .cta-btn-outline:hover { opacity: 0.9; text-decoration: none; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 32px 0;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: var(--text-dim); }
+    footer a:hover { color: var(--cyan); }
+
+    @media (max-width: 480px) {
+      .hero { padding: 40px 0 40px; }
+      .hero h1 { font-size: 1.8rem; }
+      .code-block { font-size: 0.75rem; padding: 16px; }
+      .flow { font-size: 0.7rem; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="/">&larr; Back to nse.dev</a>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-badge">Integration Guide</div>
+      <h1><span>Bunker 101</span> &mdash; How NSE Connects</h1>
+      <p class="hero-tagline">From key protection to login flow. The complete picture.</p>
+      <p class="hero-one-liner">
+        NSE protects keys. But keys need to be used &mdash; for signing events, proving identity,
+        authorizing actions. This guide shows how NSE fits into the three ways Nostr signing
+        actually works in practice.
+      </p>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- WHAT IS A BUNKER?                            -->
+    <!-- ============================================ -->
+    <section class="section">
+      <h2>What is a Bunker?</h2>
+      <p>
+        If you've never heard the term "bunker" in Nostr context, here's the short version:
+        a <strong>bunker</strong> is a signer that holds your private key and signs on your behalf.
+        The app that needs a signature never sees the key. It sends a signing request, gets back a signature.
+      </p>
+      <p>
+        The communication happens over Nostr relays using <strong>kind 24133</strong> ephemeral events,
+        encrypted end-to-end. The relay is just a message bus &mdash; it can't read the requests or responses.
+      </p>
+      <p>
+        Think of it like <strong>SSH agent forwarding</strong>. Your SSH key stays on one machine.
+        When another machine needs to authenticate, the agent signs on its behalf. The key never moves.
+        Same idea, different protocol.
+      </p>
+      <p>
+        <strong>NIP-46</strong> defines this protocol. The methods are straightforward:
+        <code>sign_event</code>, <code>get_public_key</code>, <code>connect</code>,
+        <code>nip04_encrypt</code>, <code>nip04_decrypt</code>, and a few more.
+        The signer implements them. The client calls them. The relay carries the messages.
+      </p>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- WHERE NSE FITS                               -->
+    <!-- ============================================ -->
+    <section class="section">
+      <h2>Where NSE Fits</h2>
+      <p>
+        This is the important distinction: <strong>NSE is not the bunker.</strong>
+        NSE is what the bunker uses internally to protect the key at rest.
+      </p>
+
+      <div class="flow"><span class="hl">Without NSE:</span>  Bunker stores nsec in plaintext
+             &rarr; device compromised &rarr; key gone
+
+<span class="hl">With NSE:</span>     Bunker stores encrypted blob
+             &rarr; device compromised &rarr; attacker gets ciphertext, not key</div>
+
+      <p>
+        <strong>NSE is the lock on the vault door. The bunker is the vault.</strong>
+        The relay is the hallway between rooms. Three different things, each with its own job.
+      </p>
+      <p>
+        Your application &mdash; whether it's a browser extension, a phone app, or a server process &mdash;
+        is the bunker. It uses NSE to decrypt the key only when it needs to sign, then zeros the plaintext
+        immediately after. The rest of the time, the key is AES-256-GCM ciphertext protected by hardware.
+      </p>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- THREE PATTERNS                               -->
+    <!-- ============================================ -->
+    <section class="section">
+      <h2>Three Patterns</h2>
+      <p>
+        There are three ways signing works in practice. Which one you use depends on where the
+        signer lives relative to the app that needs signatures.
+      </p>
+    </section>
+
+    <!-- PATTERN A -->
+    <section class="section">
+      <span class="pattern-label">Pattern A</span>
+      <h2>Local Signing (NIP-07)</h2>
+      <p>
+        <strong>When:</strong> Browser extension, same device, no network needed.
+      </p>
+      <p>
+        The simplest pattern. Your browser extension IS the signer. A web app calls
+        <code>window.nostr.signEvent(event)</code> &mdash; that's the NIP-07 standard.
+        The extension receives the request, uses NSE to decrypt the key, signs the event
+        with Schnorr, zeros the plaintext, and returns the signature. Done.
+      </p>
+      <p>
+        The Nostr network is not involved in the signing. Relays carry the signed event
+        after &mdash; but the act of signing is entirely local. No relay, no network, no discovery.
+        Just local IPC.
+      </p>
+
+      <div class="flow"><span class="hl">Web App</span>                    <span class="hl">Browser Extension</span>
+  &boxv;                              &boxv;
+  &boxvr;&boxh;&boxh; window.nostr.signEvent() &boxh;&boxh;&rarr;&boxv;
+  &boxv;                              &boxvr;&boxh;&boxh; NSEBrowser.sign(event)
+  &boxv;                              &boxv;    &boxvr;&boxh;&boxh; Decrypt secp256k1 key
+  &boxv;                              &boxv;    &boxvr;&boxh;&boxh; Schnorr sign
+  &boxv;                              &boxv;    &boxur;&boxh;&boxh; Zero plaintext
+  &boxv;&larr;&boxh;&boxh; signed event &boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&dashv;
+  &boxv;                              &boxv;
+  &boxvr;&boxh;&boxh; Publish to relay &boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&rarr; Nostr Network</div>
+
+      <h3>Extension side (the signer)</h3>
+      <div class="code-block">
+        <span class="comment">// In your browser extension's background script</span><br>
+        <span class="kw">import</span> { NSEBrowser, NSEIndexedDBStorage } <span class="kw">from</span> <span class="str">'nostr-secure-enclave-browser'</span>;<br><br>
+        <span class="kw">const</span> nse = <span class="kw">new</span> <span class="fn">NSEBrowser</span>({ storage: <span class="kw">new</span> <span class="fn">NSEIndexedDBStorage</span>() });<br><br>
+        <span class="comment">// Handle NIP-07 signing requests</span><br>
+        chrome.runtime.<span class="fn">onMessage</span>.addListener((msg, sender, sendResponse) =&gt; {<br>
+        &nbsp;&nbsp;<span class="kw">if</span> (msg.type === <span class="str">'signEvent'</span>) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;nse.<span class="fn">sign</span>(msg.event).then(signed =&gt; <span class="fn">sendResponse</span>(signed));<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="str">true</span>; <span class="comment">// async response</span><br>
+        &nbsp;&nbsp;}<br>
+        });
+      </div>
+
+      <h3>Web app side (the requester)</h3>
+      <div class="code-block">
+        <span class="comment">// In your web app &mdash; the requesting side</span><br>
+        <span class="kw">const</span> signed = <span class="kw">await</span> window.nostr.<span class="fn">signEvent</span>({<br>
+        &nbsp;&nbsp;kind: <span class="str">1</span>,<br>
+        &nbsp;&nbsp;content: <span class="str">'Hello Nostr!'</span>,<br>
+        &nbsp;&nbsp;tags: [],<br>
+        &nbsp;&nbsp;created_at: Math.<span class="fn">floor</span>(Date.<span class="fn">now</span>() / <span class="str">1000</span>),<br>
+        });<br><br>
+        <span class="comment">// signed.id, signed.sig, signed.pubkey are populated</span>
+      </div>
+
+      <p>
+        <strong>Key point:</strong> No relay. No network. No discovery. Just local IPC.
+        This is how <a href="https://nostrkey.com">NostrKey</a> works.
+      </p>
+    </section>
+
+    <!-- PATTERN B -->
+    <section class="section">
+      <span class="pattern-label">Pattern B</span>
+      <h2>Remote Signing &mdash; Your Relay</h2>
+      <p>
+        <strong>When:</strong> Phone signs for desktop. You control both ends and the relay.
+      </p>
+      <p>
+        The phone has the key (protected by NSE + Secure Enclave or StrongBox).
+        The desktop app needs a signature. Both connect to <strong>your</strong> relay &mdash;
+        say <code>relay.nostrkeep.com</code>. The desktop sends a NIP-46 signing request through the relay.
+        The phone receives it, decrypts the key with NSE, signs, and sends the signature back through the relay.
+      </p>
+      <p>
+        No <code>bunker://</code> URI parsing. No public relay discovery. No hoping some random relay is online.
+        You built both apps, you know where to connect.
+      </p>
+
+      <div class="flow"><span class="hl">Desktop App</span>                <span class="hl">Your Relay</span>              <span class="hl">Phone (NSE + SE)</span>
+  &boxv;                          &boxv;                          &boxv;
+  &boxvr;&boxh;&boxh; NIP-46 request &boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&rarr;&boxv;                          &boxv;
+  &boxv;   (kind 24133)           &boxvr;&boxh;&boxh; forward &boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&rarr;&boxv;
+  &boxv;                          &boxv;                          &boxvr;&boxh;&boxh; Biometric unlock
+  &boxv;                          &boxv;                          &boxvr;&boxh;&boxh; NSE.sign(event)
+  &boxv;                          &boxv;                          &boxv;    &boxvr;&boxh;&boxh; Decrypt key
+  &boxv;                          &boxv;                          &boxv;    &boxvr;&boxh;&boxh; Schnorr sign
+  &boxv;                          &boxv;                          &boxv;    &boxur;&boxh;&boxh; Zero plaintext
+  &boxv;                          &boxv;&larr;&boxh;&boxh; NIP-46 response &boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&dashv;
+  &boxv;&larr;&boxh;&boxh; signature &boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&dashv;   (kind 24133)           &boxv;
+  &boxv;                          &boxv;                          &boxv;</div>
+
+      <h3>Signer side (phone or server)</h3>
+      <div class="code-block">
+        <span class="comment">// NIP-46 signer &mdash; the side that holds the key</span><br>
+        <span class="kw">import</span> { NSEServer } <span class="kw">from</span> <span class="str">'nostr-secure-enclave-server'</span>;<br>
+        <span class="comment">// On mobile: import NSE from 'nostr-secure-enclave-ios'</span><br>
+        <span class="comment">// or: import NSE from 'nostr-secure-enclave-android'</span><br><br>
+        <span class="kw">const</span> nse = <span class="kw">new</span> <span class="fn">NSEServer</span>({ masterKey: process.env.NSE_MASTER_KEY, storage });<br><br>
+        <span class="comment">// Connect to relay, listen for NIP-46 requests</span><br>
+        <span class="kw">const</span> ws = <span class="kw">new</span> <span class="fn">WebSocket</span>(<span class="str">'wss://relay.nostrkeep.com'</span>);<br><br>
+        ws.<span class="fn">on</span>(<span class="str">'message'</span>, <span class="kw">async</span> (data) =&gt; {<br>
+        &nbsp;&nbsp;<span class="kw">const</span> msg = JSON.<span class="fn">parse</span>(data);<br>
+        &nbsp;&nbsp;<span class="comment">// Decrypt NIP-46 request (NIP-04 or NIP-44 encrypted)</span><br>
+        &nbsp;&nbsp;<span class="kw">const</span> request = <span class="fn">decryptNip46Request</span>(msg);<br><br>
+        &nbsp;&nbsp;<span class="kw">if</span> (request.method === <span class="str">'sign_event'</span>) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> signed = <span class="kw">await</span> nse.<span class="fn">sign</span>(request.params[<span class="str">0</span>]);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> response = <span class="fn">encryptNip46Response</span>(signed);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;ws.<span class="fn">send</span>(JSON.<span class="fn">stringify</span>([<span class="str">'EVENT'</span>, response]));<br>
+        &nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;<span class="kw">if</span> (request.method === <span class="str">'get_public_key'</span>) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> pubkey = <span class="kw">await</span> nse.<span class="fn">getPublicKey</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> response = <span class="fn">encryptNip46Response</span>(pubkey);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;ws.<span class="fn">send</span>(JSON.<span class="fn">stringify</span>([<span class="str">'EVENT'</span>, response]));<br>
+        &nbsp;&nbsp;}<br>
+        });
+      </div>
+
+      <h3>Client side (desktop app)</h3>
+      <div class="code-block">
+        <span class="comment">// NIP-46 client &mdash; the side that needs signatures</span><br>
+        <span class="kw">const</span> ws = <span class="kw">new</span> <span class="fn">WebSocket</span>(<span class="str">'wss://relay.nostrkeep.com'</span>);<br><br>
+        <span class="kw">async function</span> <span class="fn">requestSignature</span>(event) {<br>
+        &nbsp;&nbsp;<span class="comment">// Send NIP-46 signing request through relay</span><br>
+        &nbsp;&nbsp;<span class="kw">const</span> request = <span class="fn">createNip46Request</span>(<span class="str">'sign_event'</span>, [event]);<br>
+        &nbsp;&nbsp;ws.<span class="fn">send</span>(JSON.<span class="fn">stringify</span>([<span class="str">'EVENT'</span>, request]));<br><br>
+        &nbsp;&nbsp;<span class="comment">// Wait for response</span><br>
+        &nbsp;&nbsp;<span class="kw">return new</span> <span class="fn">Promise</span>(resolve =&gt; {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;ws.<span class="fn">on</span>(<span class="str">'message'</span>, (data) =&gt; {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> response = <span class="fn">parseNip46Response</span>(data);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (response) <span class="fn">resolve</span>(response);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+        &nbsp;&nbsp;});<br>
+        }<br><br>
+        <span class="kw">const</span> signed = <span class="kw">await</span> <span class="fn">requestSignature</span>({<br>
+        &nbsp;&nbsp;kind: <span class="str">1</span>,<br>
+        &nbsp;&nbsp;content: <span class="str">'Signed from desktop, key on phone!'</span>,<br>
+        &nbsp;&nbsp;tags: [],<br>
+        &nbsp;&nbsp;created_at: Math.<span class="fn">floor</span>(Date.<span class="fn">now</span>() / <span class="str">1000</span>),<br>
+        });
+      </div>
+
+      <p>
+        <strong>Key point:</strong> You own the relay. Both sides know where to connect.
+        No discovery protocol needed. This is how
+        <a href="https://nostrkeep.com">NostrKeep Signer</a> works with the browser extension.
+      </p>
+    </section>
+
+    <!-- PATTERN C -->
+    <section class="section">
+      <span class="pattern-label">Pattern C</span>
+      <h2>Any Relay &mdash; Open NIP-46</h2>
+      <p>
+        <strong>When:</strong> Third-party apps, general-purpose bunker signing, interoperability.
+      </p>
+      <p>
+        This is standard NIP-46 as the protocol designers intended. The signer advertises
+        which relay to use via a <code>bunker://</code> URI:
+      </p>
+      <div class="code-block">
+        bunker://<span class="fn">&lt;signer-pubkey&gt;</span>?relay=<span class="str">wss://relay.example.com</span>&amp;secret=<span class="str">&lt;optional-secret&gt;</span>
+      </div>
+      <p>
+        Any NIP-01 relay that supports ephemeral events works. The client parses the URI,
+        connects to the specified relay, and follows the NIP-46 handshake. NSE still protects
+        the key on the signer side &mdash; the relay just carries encrypted messages.
+      </p>
+
+      <div class="flow"><span class="hl">Any Nostr App</span>              <span class="hl">Any Relay</span>              <span class="hl">NSE-powered Signer</span>
+  &boxv;                          &boxv;                          &boxv;
+  &boxvr;&boxh;&boxh; bunker:// connect &boxh;&boxh;&boxh;&boxh;&rarr;&boxv;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&rarr;&boxv;
+  &boxv;&larr;&boxh;&boxh; ack &boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&dashv;&larr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&dashv;
+  &boxvr;&boxh;&boxh; sign_event request &boxh;&boxh;&rarr;&boxv;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&rarr;&boxv;
+  &boxv;                          &boxv;                    NSE.<span class="hl">sign</span>()
+  &boxv;&larr;&boxh;&boxh; signed event &boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&dashv;&larr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&dashv;</div>
+
+      <p>
+        <strong>Key point:</strong> This is the fully decentralized version. Any app can request
+        signatures from any NSE-powered signer through any relay. Maximum interoperability,
+        but requires relay discovery via <code>bunker://</code> URIs.
+      </p>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CHOOSING YOUR PATTERN                        -->
+    <!-- ============================================ -->
+    <section class="section">
+      <h2>Choosing Your Pattern</h2>
+      <table class="platform-table">
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Pattern</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Signer and app on the same device?</td>
+            <td><span class="badge-hw">A &mdash; Local (NIP-07)</span></td>
+          </tr>
+          <tr>
+            <td>You control both apps + the relay?</td>
+            <td><span class="badge-hw">B &mdash; Your Relay</span></td>
+          </tr>
+          <tr>
+            <td>Third-party apps or general interop?</td>
+            <td><span class="badge-hw">C &mdash; Any Relay (NIP-46)</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Most products start with <strong>Pattern A</strong> (browser extension) and add <strong>Pattern B</strong>
+        (mobile bunker) later. Pattern C is for when you want your signer to work with the broader
+        Nostr ecosystem &mdash; any app, any relay.
+      </p>
+      <p>
+        The good news: NSE works identically in all three patterns. The <code>nse.sign(event)</code> call
+        doesn't know or care how the signing request arrived. It just decrypts, signs, and zeros.
+      </p>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- THE RELAY QUESTION                           -->
+    <!-- ============================================ -->
+    <section class="section">
+      <h2>The Relay Question</h2>
+      <p>
+        "Do I need to run a relay?" is the most common question. The answer depends on your pattern:
+      </p>
+      <ul>
+        <li><strong>Pattern A:</strong> No. There is no relay. Signing is local.</li>
+        <li><strong>Pattern B:</strong> Yes, but it's just a WebSocket message bus. Any NIP-01 relay works. NostrKeep's relay (<code>relay.nostrkeep.com</code>) is deployed and free for ephemeral NIP-46 traffic. Or run your own &mdash; a minimal NIP-01 relay is a surprisingly small amount of code.</li>
+        <li><strong>Pattern C:</strong> The signer specifies which relay to use in the <code>bunker://</code> URI. Your users connect to that relay. You can use an existing public relay or host your own.</li>
+      </ul>
+      <p>
+        The relay does <strong>not</strong> see keys. It only sees encrypted NIP-46 messages
+        (kind 24133, ephemeral). Even a compromised relay can't extract signatures or keys &mdash;
+        it's just passing encrypted envelopes. The encryption is end-to-end between the client
+        and the signer, using NIP-04 or NIP-44.
+      </p>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- THE STACK DIAGRAM                            -->
+    <!-- ============================================ -->
+    <section class="section">
+      <h2>What You're Building On</h2>
+      <p>Here's how all the pieces fit together, from your application down to hardware:</p>
+
+      <div class="flow">&boxdr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;
+&boxv;              <span class="hl">Your Application</span>               &boxv;
+&boxv;   (browser extension, mobile app, bot)      &boxv;
+&boxur;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxul;
+                     &boxv;
+         &boxdr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;
+         &boxv;           &boxv;               &boxv;
+    &boxdr;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxdl; &boxdr;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;  &boxdr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;
+    &boxv;  NIP-07  &boxv; &boxv;  NIP-46   &boxv;  &boxv;   Direct   &boxv;
+    &boxv;  (local) &boxv; &boxv;  (relay)  &boxv;  &boxv;  (library) &boxv;
+    &boxur;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxul; &boxur;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxh;&boxul;  &boxur;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxul;
+         &boxv;           &boxv;               &boxv;
+         &boxur;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxul;
+                     &boxv;
+         &boxdr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;
+         &boxv;          <span class="hl">NSE</span>              &boxv;
+         &boxv;   Decrypt &rarr; Sign &rarr; Zero  &boxv;
+         &boxur;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxul;
+                     &boxv;
+         &boxdr;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdash;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdl;
+         &boxv;    <span class="hl">Hardware Protection</span>    &boxv;
+         &boxv;  SE / StrongBox / TPM /  &boxv;
+         &boxv;  SubtleCrypto / KMS      &boxv;
+         &boxur;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxul;</div>
+
+      <p>
+        <strong>Direct (library)</strong> means calling <code>nse.sign()</code> directly in your code &mdash;
+        no NIP-07, no NIP-46. This is what bots, AI entities, and server processes use.
+        Same NSE underneath, just no signing protocol layer on top.
+      </p>
+      <p>
+        The <a href="https://www.npmjs.com/package/nostr-crypto-utils">nostr-crypto-utils</a> library includes
+        NIP-46 client and server-side signer primitives if you need a head start on the
+        <code>encryptNip46Request</code> / <code>decryptNip46Response</code> functions shown above.
+      </p>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- NEXT STEPS                                   -->
+    <!-- ============================================ -->
+    <section class="cta">
+      <h2>Next Steps</h2>
+      <p>Pick a pattern and start building.</p>
+      <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 520px; margin: 0 auto 12px;">
+        <strong style="color: var(--text);">Start with Pattern A</strong> &mdash;
+        install <code style="font-family: var(--mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 6px; border-radius: 4px; color: var(--cyan);">nostr-secure-enclave-browser</code>
+        and protect keys in your extension.
+      </p>
+      <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 520px; margin: 0 auto 12px;">
+        <strong style="color: var(--text);">Add Pattern B</strong> &mdash;
+        install <code style="font-family: var(--mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 6px; border-radius: 4px; color: var(--cyan);">nostr-secure-enclave-ios</code> or
+        <code style="font-family: var(--mono); font-size: 0.85em; background: var(--bg-card); padding: 2px 6px; border-radius: 4px; color: var(--cyan);">nostr-secure-enclave-android</code>,
+        connect through your relay.
+      </p>
+      <p style="color: var(--text-dim); font-size: 0.9rem; max-width: 520px; margin: 0 auto 32px;">
+        <strong style="color: var(--text);">Go full NIP-46</strong> &mdash;
+        your signer works with any Nostr app through any relay. Maximum interoperability.
+      </p>
+      <div>
+        <a class="cta-btn" href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src">GitHub</a>
+        <a class="cta-btn-outline" href="https://www.npmjs.com/search?q=nostr-secure-enclave">npm</a>
+      </div>
+    </section>
+
+    <footer>
+      <p><a href="/">&larr; Back to nse.dev</a></p>
+      <p style="margin-top: 12px;">NSE is open source (MIT) &middot; Part of the <a href="https://www.npmjs.com/~vveerrgg">nostr-*</a> library family &middot; A <a href="https://humanjava.com">Humanjava</a> project</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -147,11 +147,14 @@ Before NSE:
 
 Now the whole stack is yours: **NSE protects the key, NostrKey/NostrKeep is the signer, your relay is the transport.** Built in by design, not bolted on after.
 
+**[Read the Bunker 101 guide →](https://nse.dev/guide.html)** — code examples for all three patterns, relay architecture, and the complete wiring diagram.
+
 ## Repo Structure
 
 ```
 docs/                     ← GitHub Pages source (nse.dev)
-  index.html              ← Single-page site (HTML + inline CSS)
+  index.html              ← Landing page (HTML + inline CSS)
+  guide.html              ← Bunker 101 — integration guide
   og-image.png            ← 1200x630 social card
   CNAME                   ← Custom domain: nse.dev
 platforms/                ← Working code for each target platform
