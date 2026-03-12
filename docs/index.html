@@ -413,6 +413,36 @@
     </section>
 
     <section class="section">
+      <h2>Direct Login — No Relay Required</h2>
+      <p>
+        Traditional NIP-46 bunker logins require both sides to connect through a Nostr relay
+        for discovery and message passing. NSE changes that. When the signer is <strong>local</strong> —
+        built into the browser extension or the app itself — signing is a direct, peer-to-peer
+        operation. No relay lookup, no network round-trip, no discovery protocol.
+      </p>
+      <p>
+        Think of it like an <strong>SSH key</strong>. The key lives on your device. When a site asks you to
+        prove your identity, the extension decrypts and signs locally. The Nostr network isn't involved
+        in the authentication — only in what you do after.
+      </p>
+
+      <div class="flow"><span class="hl">Traditional NIP-46 bunker</span>
+  App → relay → signer → relay → App
+  (relay discovery, network latency, relay must be online)
+
+<span class="hl">NSE direct login</span>
+  App → extension/local signer → App
+  (peer-to-peer, instant, works offline)</div>
+
+      <p>
+        For <strong>cross-device</strong> signing (phone as bunker for desktop), you still need a relay —
+        but it can be <strong>your own</strong> relay with a known address. No public relay discovery,
+        no hoping a third-party relay stays online. The connection is direct and deterministic,
+        like pointing SSH at a specific host.
+      </p>
+    </section>
+
+    <section class="section">
       <h2>Packages</h2>
       <table class="platform-table">
         <thead>

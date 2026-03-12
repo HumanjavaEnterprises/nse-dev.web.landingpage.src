@@ -96,6 +96,24 @@ Level 2  NIP-46 bunker — keys never leave hardware
 
 Products like [NostrKey](https://nostrkey.com) use NSE to protect keys in the browser. NIP-46 bunker signers use NSE on the backend. The principle: **Don't explain cryptography. Explain consequences.**
 
+## Direct Login — No Relay Required
+
+Traditional NIP-46 bunker logins require both sides to connect through a Nostr relay for discovery and message passing. NSE changes that. When the signer is **local** — built into a browser extension or the app itself — signing is a direct, peer-to-peer operation. No relay lookup, no network round-trip, no discovery protocol.
+
+Think of it like an **SSH key**. The key lives on your device. When a site asks you to prove your identity, the extension decrypts and signs locally. The Nostr network isn't involved in the authentication — only in what you do after.
+
+```
+Traditional NIP-46 bunker:
+  App → relay → signer → relay → App
+  (relay discovery, network latency, relay must be online)
+
+NSE direct login:
+  App → extension/local signer → App
+  (peer-to-peer, instant, works offline)
+```
+
+For **cross-device** signing (phone as bunker for desktop), you still need a relay — but it can be **your own** relay with a known address. No public relay discovery, no hoping a third-party relay stays online. The connection is direct and deterministic, like pointing SSH at a specific host.
+
 ## Repo Structure
 
 ```
