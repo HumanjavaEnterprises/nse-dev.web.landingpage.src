@@ -414,11 +414,14 @@
 
     <section class="section">
       <h2>Direct Login — No Relay Required</h2>
+
+      <h3 style="font-size: 1.1rem; margin-bottom: 12px; color: var(--cyan);">Local bunker (no relay needed at all)</h3>
       <p>
-        Traditional NIP-46 bunker logins require both sides to connect through a Nostr relay
-        for discovery and message passing. NSE changes that. When the signer is <strong>local</strong> —
-        built into the browser extension or the app itself — signing is a direct, peer-to-peer
-        operation. No relay lookup, no network round-trip, no discovery protocol.
+        This is the big one. When NSE is built into the product — say a browser extension like
+        <a href="https://nostrkey.com">NostrKey</a> — the signer and the app are on the same device.
+        A web app calls <code>window.nostr.signEvent()</code> (NIP-07), the extension uses NSE to decrypt
+        the key, signs, returns. No relay round-trip, no discovery, no latency. The NIP-46 contract is
+        the API shape, but the transport is local — <code>chrome.runtime</code> messaging, App Groups on iOS, etc.
       </p>
       <p>
         Think of it like an <strong>SSH key</strong>. The key lives on your device. When a site asks you to
@@ -434,11 +437,24 @@
   App → extension/local signer → App
   (peer-to-peer, instant, works offline)</div>
 
+      <h3 style="font-size: 1.1rem; margin: 24px 0 12px; color: var(--cyan);">Remote bunker (your relay, no lookup)</h3>
       <p>
-        For <strong>cross-device</strong> signing (phone as bunker for desktop), you still need a relay —
-        but it can be <strong>your own</strong> relay with a known address. No public relay discovery,
-        no hoping a third-party relay stays online. The connection is direct and deterministic,
-        like pointing SSH at a specific host.
+        When the phone acts as bunker for the desktop (NostrKeep Signer signing for a web app),
+        you still need a relay — but it's <strong>your</strong> relay. <code>relay.nostrkeep.com</code>
+        is already built and deployed. Both ends know where to connect because you control the product.
+        No <code>bunker://</code> URI parsing, no public relay discovery, no hoping some random relay is online.
+        NSE handles the key protection on the phone, the relay handles the transport.
+      </p>
+
+      <h3 style="font-size: 1.1rem; margin: 24px 0 12px; color: var(--cyan);">The dependency chain NSE eliminates</h3>
+      <p>
+        <strong>Before NSE:</strong> You needed a third-party signer (nsecBunker, etc.), which needed a
+        public relay both sides agreed on, which needed relay discovery or manual <code>bunker://</code> URIs —
+        and the key was stored in software anyway.
+      </p>
+      <p>
+        <strong>Now the whole stack is yours:</strong> NSE protects the key, NostrKey/NostrKeep is the signer,
+        your relay is the transport. Built in by design, not bolted on after.
       </p>
     </section>
 

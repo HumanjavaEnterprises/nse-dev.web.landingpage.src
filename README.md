@@ -98,7 +98,9 @@ Products like [NostrKey](https://nostrkey.com) use NSE to protect keys in the br
 
 ## Direct Login — No Relay Required
 
-Traditional NIP-46 bunker logins require both sides to connect through a Nostr relay for discovery and message passing. NSE changes that. When the signer is **local** — built into a browser extension or the app itself — signing is a direct, peer-to-peer operation. No relay lookup, no network round-trip, no discovery protocol.
+### Local bunker (no relay needed at all)
+
+This is the big one. When NSE is built into the product — say NostrKey browser extension — the signer and the app are on the same device. A web app calls `window.nostr.signEvent()` (NIP-07), the extension uses NSE to decrypt the key, signs, returns. No relay round-trip, no discovery, no latency. The NIP-46 contract is the API shape, but the transport is local — `chrome.runtime` messaging, App Groups on iOS, etc.
 
 Think of it like an **SSH key**. The key lives on your device. When a site asks you to prove your identity, the extension decrypts and signs locally. The Nostr network isn't involved in the authentication — only in what you do after.
 
@@ -112,7 +114,19 @@ NSE direct login:
   (peer-to-peer, instant, works offline)
 ```
 
-For **cross-device** signing (phone as bunker for desktop), you still need a relay — but it can be **your own** relay with a known address. No public relay discovery, no hoping a third-party relay stays online. The connection is direct and deterministic, like pointing SSH at a specific host.
+### Remote bunker (your relay, no lookup)
+
+When the phone acts as bunker for the desktop (NostrKeep Signer signing for a web app), you still need a relay — but it's **your** relay. `relay.nostrkeep.com` is already built and deployed. Both ends know where to connect because you control the product. No `bunker://` URI parsing, no public relay discovery, no hoping some random relay is online. NSE handles the key protection on the phone, the relay handles the transport.
+
+### The dependency chain NSE eliminates
+
+Before NSE:
+- You needed a third-party signer (nsecBunker, etc.)
+- Which needed a public relay both sides agreed on
+- Which needed relay discovery or manual `bunker://` URIs
+- And the key was stored in software anyway
+
+Now the whole stack is yours: **NSE protects the key, NostrKey/NostrKeep is the signer, your relay is the transport.** Built in by design, not bolted on after.
 
 ## Repo Structure
 
