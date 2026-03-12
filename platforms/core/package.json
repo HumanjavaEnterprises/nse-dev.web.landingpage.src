@@ -1,0 +1,39 @@
+{
+  "name": "@nse-dev/core",
+  "version": "0.1.0",
+  "description": "Shared types for Nostr Secure Enclave — hardware-backed key management for Nostr",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": ["nostr", "secure-enclave", "key-management", "hardware-security"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src",
+    "directory": "platforms/core"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.0"
+  },
+  "peerDependencies": {
+    "nostr-crypto-utils": "^0.7.0"
+  },
+  "peerDependenciesMeta": {
+    "nostr-crypto-utils": {
+      "optional": true
+    }
+  }
+}
