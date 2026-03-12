@@ -93,8 +93,8 @@ val signed = nse.sign(NostrEvent(kind = 1, content = "hello", tags = emptyList()
 | [`nostr-secure-enclave-server`](https://www.npmjs.com/package/nostr-secure-enclave-server) | CF Workers / Node.js | npm | **Published** |
 | [`nostr-secure-enclave-browser`](https://www.npmjs.com/package/nostr-secure-enclave-browser) | WebAuthn + SubtleCrypto | npm | **Published** |
 | [`nostr-secure-enclave`](https://pypi.org/project/nostr-secure-enclave/) | Python (AI entities, bots, MCP) | PyPI | **Published** |
-| `nostr-secure-enclave-ios` | Swift via Secure Enclave | Swift Package | **Implemented** |
-| `nostr-secure-enclave-android` | Kotlin via StrongBox | Maven | **Implemented** |
+| [`nostr-secure-enclave-ios`](https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/tree/main/platforms/ios) | Swift via Secure Enclave | Swift Package | **Implemented** |
+| [`nostr-secure-enclave-android`](https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/tree/main/platforms/android) | Kotlin via StrongBox | Maven | **Implemented** |
 
 ## Where NSE Fits
 
