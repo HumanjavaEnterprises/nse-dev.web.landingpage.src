@@ -3,65 +3,325 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>nSec Locker</title>
-  <meta name="description" content="nSec Locker — Secure nsec and bunker management for Nostr tools and services.">
+  <title>NSE — Nostr Secure Enclave</title>
+  <meta name="description" content="Open-source hardware-backed key management for Nostr. Your nsec, encrypted at rest by hardware you already own.">
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #22d3ee;
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --text: #f0f0f5;
+      --text-dim: #8888a0;
+      --cyan: #22d3ee;
+      --cyan-dim: #0891b2;
+      --border: #1e1e2e;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: var(--font);
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      line-height: 1.6;
     }
+
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     .container {
-      max-width: 640px;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero */
+    .hero {
       text-align: center;
+      padding: 100px 0 60px;
     }
 
-    h1 {
+    .hero-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 1px solid var(--cyan-dim);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
       font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 span { color: var(--cyan); }
+
+    .hero-tagline {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      margin-bottom: 32px;
+    }
+
+    .hero-one-liner {
+      font-size: 1.05rem;
+      color: var(--text);
+      max-width: 520px;
+      margin: 0 auto 40px;
+    }
+
+    /* Code block */
+    .code-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 28px;
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--text-dim);
+      margin-bottom: 60px;
+      overflow-x: auto;
+    }
+
+    .code-block .fn { color: var(--cyan); }
+    .code-block .comment { color: #555568; }
+    .code-block .str { color: #a78bfa; }
+    .code-block .kw { color: #f472b6; }
+
+    /* Sections */
+    .section {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section h2 {
+      font-size: 1.4rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
+      margin-bottom: 16px;
     }
 
-    .accent { color: var(--accent); }
-
-    p {
-      font-size: 1.25rem;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 2rem;
+    .section p {
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      font-size: 0.95rem;
     }
 
+    .section p strong { color: var(--text); }
+
+    /* Flow diagram */
+    .flow {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+      margin: 20px 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .flow .hl { color: var(--cyan); }
+
+    /* Platform table */
+    .platform-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.85rem;
+    }
+
+    .platform-table th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--text-dim);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .platform-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(30,30,46,0.5);
+      color: var(--text-dim);
+    }
+
+    .platform-table td:first-child { color: var(--text); font-weight: 500; }
+
+    .badge-hw {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: rgba(34,211,238,0.12);
+      color: var(--cyan);
+    }
+
+    /* CTA */
+    .cta {
+      text-align: center;
+      padding: 60px 0 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .cta h2 {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+
+    .cta p {
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: var(--cyan);
+      color: #0a0a0f;
+      font-weight: 600;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: opacity 0.15s;
+    }
+    .cta-btn:hover { opacity: 0.9; text-decoration: none; }
+
+    /* Footer */
     footer {
-      position: fixed;
-      bottom: 2rem;
-      color: var(--muted);
-      font-size: 0.875rem;
+      text-align: center;
+      padding: 32px 0;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: var(--text-dim); }
+    footer a:hover { color: var(--cyan); }
+
+    @media (max-width: 480px) {
+      .hero { padding: 60px 0 40px; }
+      .hero h1 { font-size: 2.2rem; }
+      .code-block { font-size: 0.75rem; padding: 16px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1><span class="accent">nSec Locker</span></h1>
-    <p>Coming soon.</p>
+    <section class="hero">
+      <div class="hero-badge">Open Source</div>
+      <h1><span>NSE</span></h1>
+      <p class="hero-tagline">Nostr Secure Enclave</p>
+      <p class="hero-one-liner">
+        Hardware-backed key management for Nostr. Your nsec, encrypted at rest
+        by hardware you already own. One API across iOS, Android, server, and browser.
+      </p>
+
+      <div class="code-block">
+        <span class="comment">// Same API everywhere</span><br>
+        <span class="kw">const</span> nse = <span class="kw">await</span> <span class="fn">NSE.init</span>();<br><br>
+        <span class="comment">// Generate — key protected by Secure Enclave</span><br>
+        <span class="kw">const</span> { pubkey } = <span class="kw">await</span> nse.<span class="fn">generate</span>();<br><br>
+        <span class="comment">// Sign — biometric unlock, sign, zero memory</span><br>
+        <span class="kw">const</span> signed = <span class="kw">await</span> nse.<span class="fn">sign</span>(event);<br><br>
+        <span class="comment">// The nsec is encrypted at rest. Plaintext only exists in memory during signing.</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>The Problem</h2>
+      <p>
+        Nostr uses <strong>secp256k1</strong> (Schnorr/BIP-340). Mobile secure enclaves only support <strong>P-256</strong>.
+        You can't sign Nostr events directly in hardware.
+      </p>
+      <p>
+        Every Nostr app today stores keys in software. If the device is compromised, the key is gone.
+        Nobody has bridged this gap.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>The Solution</h2>
+      <p>
+        NSE uses the hardware enclave to <strong>protect</strong> the key, not to sign with it.
+        A P-256 key lives in hardware (non-exportable, biometric-gated). It encrypts
+        your secp256k1 key at rest via AES-GCM. At signing time: unlock, decrypt, sign, zero.
+      </p>
+
+      <div class="flow"><span class="hl">nse.sign(event)</span>
+  ├── Biometric unlock → Secure Enclave access
+  ├── Derive AES key from hardware P-256 key
+  ├── Decrypt secp256k1 key into memory
+  ├── Schnorr sign the event
+  ├── <span class="hl">Zero plaintext key from memory</span>
+  └── Return signed event</div>
+    </section>
+
+    <section class="section">
+      <h2>Platform Support</h2>
+      <table class="platform-table">
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Hardware</th>
+            <th>Key Wrapping</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>iOS</td>
+            <td><span class="badge-hw">Secure Enclave</span></td>
+            <td>CryptoKit P-256 → AES-GCM → secp256k1</td>
+          </tr>
+          <tr>
+            <td>Android</td>
+            <td><span class="badge-hw">StrongBox / TEE</span></td>
+            <td>KeyStore P-256 → AES-GCM → secp256k1</td>
+          </tr>
+          <tr>
+            <td>Server</td>
+            <td>TPM / KMS</td>
+            <td>AES-GCM with hardware-derived key</td>
+          </tr>
+          <tr>
+            <td>Browser</td>
+            <td>WebAuthn</td>
+            <td>SubtleCrypto P-256 → AES-GCM → secp256k1</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>What NSE Is Not</h2>
+      <p><strong>Not a remote signer.</strong> NSE is a local library. Use NIP-46 for remote signing.</p>
+      <p><strong>Not custodial.</strong> Keys never leave your device.</p>
+      <p><strong>Not a wallet.</strong> No Lightning, no transactions. Just keys and signing.</p>
+      <p><strong>Not magic.</strong> The secp256k1 key exists briefly in application memory during signing. NSE minimizes that window and zeros the key after — but a rooted/jailbroken device with memory access is out of scope. Hardware enclaves protect the key at rest, not during use.</p>
+    </section>
+
+    <section class="cta">
+      <h2>Coming Soon</h2>
+      <p>NSE is in the design phase. Star the repo to follow progress.</p>
+      <a class="cta-btn" href="https://github.com/HumanjavaEnterprises/nse-dev.bizdocs.src">GitHub</a>
+    </section>
+
+    <footer>
+      <p>NSE is open source (MIT) &middot; A <a href="https://humanjava.com">Humanjava</a> project</p>
+    </footer>
   </div>
-  <footer>&copy; 2026 nSec Locker</footer>
 </body>
 </html>
