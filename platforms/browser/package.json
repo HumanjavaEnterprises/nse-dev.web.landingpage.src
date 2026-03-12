@@ -1,0 +1,36 @@
+{
+  "name": "@nse-dev/browser",
+  "version": "0.1.0",
+  "description": "Browser Nostr Secure Enclave — WebAuthn + SubtleCrypto key wrapping for secp256k1",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": ["nostr", "secure-enclave", "browser", "webauthn", "subtlecrypto"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src",
+    "directory": "platforms/browser"
+  },
+  "dependencies": {
+    "nostr-crypto-utils": "^0.7.0",
+    "@noble/curves": "^2.0.1",
+    "@noble/hashes": "^2.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.0"
+  }
+}
