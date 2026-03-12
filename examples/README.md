@@ -16,6 +16,12 @@ and stores the encrypted blob in KV.
 
 → [`cloudflare-worker-identity.ts`](./cloudflare-worker-identity.ts)
 
+### Netlify Function Identity
+A Netlify serverless function with process identity stored in Netlify Blobs.
+Includes env-var storage for pre-generated keys and Edge Function notes.
+
+→ [`netlify-function-identity.ts`](./netlify-function-identity.ts)
+
 ### Browser Extension Signer
 A browser extension (like NostrKey) that manages keys in IndexedDB
 and signs events on behalf of the user.
