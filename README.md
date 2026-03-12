@@ -66,6 +66,25 @@ info = nse.generate()
 signed = nse.sign(NostrEvent(kind=1, content="hello", tags=[], created_at=now))
 ```
 
+```swift
+// iOS (Swift)
+import NSE
+
+let nse = NSE() // Uses Secure Enclave when available
+let keyInfo = try nse.generate()
+let signed = try nse.sign(NostrEvent(kind: 1, content: "hello", tags: [], createdAt: now))
+```
+
+```kotlin
+// Android (Kotlin)
+import dev.nse.NSE
+import dev.nse.NSEConfig
+
+val nse = NSE(NSEConfig(context = ctx)) // StrongBox → TEE fallback
+val keyInfo = nse.generate()
+val signed = nse.sign(NostrEvent(kind = 1, content = "hello", tags = emptyList(), createdAt = now))
+```
+
 ## Packages
 
 | Package | Platform | Registry | Status |
@@ -74,8 +93,8 @@ signed = nse.sign(NostrEvent(kind=1, content="hello", tags=[], created_at=now))
 | [`nostr-secure-enclave-server`](https://www.npmjs.com/package/nostr-secure-enclave-server) | CF Workers / Node.js | npm | **Published** |
 | [`nostr-secure-enclave-browser`](https://www.npmjs.com/package/nostr-secure-enclave-browser) | WebAuthn + SubtleCrypto | npm | **Published** |
 | [`nostr-secure-enclave`](https://pypi.org/project/nostr-secure-enclave/) | Python (AI entities, bots, MCP) | PyPI | **Published** |
-| `nostr-secure-enclave-ios` | Swift via Secure Enclave | Swift Package | Planned |
-| `nostr-secure-enclave-android` | Kotlin via StrongBox | Maven | Planned |
+| `nostr-secure-enclave-ios` | Swift via Secure Enclave | Swift Package | **Implemented** |
+| `nostr-secure-enclave-android` | Kotlin via StrongBox | Maven | **Implemented** |
 
 ## Where NSE Fits
 
@@ -140,8 +159,8 @@ platforms/                ← Working code for each target platform
   server/                 ← nostr-secure-enclave-server — AES-256-GCM + nostr-crypto-utils
   browser/                ← nostr-secure-enclave-browser — SubtleCrypto + IndexedDB
   python/                 ← nostr-secure-enclave (PyPI) — cryptography + secp256k1
-  ios/                    ← Planned — Swift Package (Secure Enclave)
-  android/                ← Planned — Kotlin (StrongBox / TEE)
+  ios/                    ← nostr-secure-enclave-ios — Swift (Secure Enclave + CryptoKit)
+  android/                ← nostr-secure-enclave-android — Kotlin (StrongBox/TEE + secp256k1-kmp)
 examples/                 ← 7 real-world usage patterns
   server-process-identity.ts
   cloudflare-worker-identity.ts
@@ -158,6 +177,7 @@ examples/                 ← 7 real-world usage patterns
 cd platforms
 npm install          # Links workspaces (core, server, browser)
 npm test             # Runs all 82 tests (core + server + browser + python)
+cd ios && swift test # Runs 27 iOS tests (software mode)
 npm run build        # Compiles TypeScript to dist/
 ```
 

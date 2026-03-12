@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         // secp256k1 Schnorr signing
-        .package(url: "https://github.com/21-DOT-DEV/swift-secp256k1", from: "0.17.0")
+        .package(url: "https://github.com/21-DOT-DEV/swift-secp256k1", "0.17.0"..<"0.20.0")
     ],
     targets: [
         .target(

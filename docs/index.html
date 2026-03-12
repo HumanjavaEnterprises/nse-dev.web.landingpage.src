@@ -301,16 +301,6 @@
         </thead>
         <tbody>
           <tr>
-            <td>iOS</td>
-            <td><span class="badge-hw">Secure Enclave</span></td>
-            <td>CryptoKit P-256 → AES-GCM → secp256k1</td>
-          </tr>
-          <tr>
-            <td>Android</td>
-            <td><span class="badge-hw">StrongBox / TEE</span></td>
-            <td>KeyStore P-256 → AES-GCM → secp256k1</td>
-          </tr>
-          <tr>
             <td>Server</td>
             <td>TPM / KMS</td>
             <td>AES-GCM with hardware-derived key</td>
@@ -319,6 +309,16 @@
             <td>Browser</td>
             <td>WebAuthn</td>
             <td>SubtleCrypto P-256 → AES-GCM → secp256k1</td>
+          </tr>
+          <tr>
+            <td>Android</td>
+            <td><span class="badge-hw">StrongBox / TEE</span></td>
+            <td>KeyStore P-256 → AES-GCM → secp256k1</td>
+          </tr>
+          <tr>
+            <td>iOS</td>
+            <td><span class="badge-hw">Secure Enclave</span></td>
+            <td>CryptoKit P-256 → AES-GCM → secp256k1</td>
           </tr>
         </tbody>
       </table>
@@ -498,13 +498,13 @@
             <td>nostr-secure-enclave-ios</td>
             <td>Swift via Secure Enclave</td>
             <td>Swift Package</td>
-            <td style="color: var(--text-dim);">Planned</td>
+            <td><span class="badge-hw">Implemented</span></td>
           </tr>
           <tr>
             <td>nostr-secure-enclave-android</td>
             <td>Kotlin via StrongBox</td>
             <td>Maven</td>
-            <td style="color: var(--text-dim);">Planned</td>
+            <td><span class="badge-hw">Implemented</span></td>
           </tr>
         </tbody>
       </table>
@@ -561,7 +561,7 @@
 
     <section class="cta">
       <h2>Start Building</h2>
-      <p>NSE is published and ready. Server, browser, and Python — install and go.</p>
+      <p>NSE is live on all 6 platforms. Server, browser, Python, iOS, and Android — install and go.</p>
       <a class="cta-btn" href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src">GitHub</a>
     </section>
 
