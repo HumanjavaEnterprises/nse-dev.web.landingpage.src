@@ -1,5 +1,5 @@
 {
-  "name": "@nse-dev/server",
+  "name": "nostr-secure-enclave-server",
   "version": "0.1.0",
   "description": "Server-side Nostr Secure Enclave — process keypairs for relays, blossom, MCP",
   "type": "module",
@@ -25,9 +25,8 @@
     "directory": "platforms/server"
   },
   "dependencies": {
-    "@nse-dev/core": "^0.1.0",
+    "nostr-secure-enclave": "^0.1.0",
     "nostr-crypto-utils": "^0.7.0",
-    "@noble/curves": "^2.0.1",
     "@noble/hashes": "^2.0.1"
   },
   "devDependencies": {

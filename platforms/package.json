@@ -1,5 +1,5 @@
 {
-  "name": "@nse-dev/platforms",
+  "name": "nostr-secure-enclave-platforms",
   "private": true,
   "version": "0.1.0",
   "description": "NSE monorepo — Nostr Secure Enclave platform implementations",

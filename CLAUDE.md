@@ -12,12 +12,12 @@ docs/                  ← GitHub Pages source (served from main branch)
   og-image.png         ← 1200x630 OG/Twitter social card
   CNAME                ← Custom domain: nse.dev
 platforms/             ← Working code for each target platform
-  core/                ← @nse-dev/core — shared TypeScript types + NSEProvider interface
-  ios/                 ← @nse-dev/ios — Swift Package (Secure Enclave)
-  android/             ← @nse-dev/android — Kotlin (StrongBox / TEE)
-  server/              ← @nse-dev/server — TypeScript (CF Workers + Node.js)
-  browser/             ← @nse-dev/browser — TypeScript (WebAuthn + SubtleCrypto)
-  python/              ← nse-dev — Python (PyPI)
+  core/                ← nostr-secure-enclave — shared TypeScript types + NSEProvider interface
+  ios/                 ← nostr-secure-enclave-ios — Swift Package (Secure Enclave)
+  android/             ← nostr-secure-enclave-android — Kotlin (StrongBox / TEE)
+  server/              ← nostr-secure-enclave-server — TypeScript (CF Workers + Node.js)
+  browser/             ← nostr-secure-enclave-browser — TypeScript (WebAuthn + SubtleCrypto)
+  python/              ← nostr-secure-enclave — Python (PyPI)
 examples/              ← Real-world usage patterns (7 examples)
 generate-og.py         ← Pillow script to regenerate the social card
 README.md              ← Full project overview + DNS setup
@@ -34,12 +34,12 @@ README.md              ← Full project overview + DNS setup
 
 ### Platform Code
 - **npm workspaces:** `platforms/package.json` defines workspaces for core, server, browser.
-- **Install:** `cd platforms && npm install` — links `@nse-dev/core` for local development.
+- **Install:** `cd platforms && npm install` — links `nostr-secure-enclave` for local development.
 - **Run all tests:** `cd platforms && npm test` — runs core (vitest), server (vitest), browser (vitest), python (pytest). 82 tests total.
 - **Individual tests:** `npm run test:core`, `npm run test:server`, `npm run test:browser`, `npm run test:python`
 - **Build TypeScript:** `npm run build` — compiles core, server, browser to `dist/`.
 - **Python tests:** Requires `pip install cryptography secp256k1 pytest`.
-- **Imports:** Server and browser import from `@nse-dev/core` (workspace-linked). In development, vitest resolves to `core/src/index.ts` directly.
+- **Imports:** Server and browser import from `nostr-secure-enclave` (workspace-linked). In development, vitest resolves to `core/src/index.ts` directly.
 
 ## Content Sections
 

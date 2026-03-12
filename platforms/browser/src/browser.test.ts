@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { NSEBrowser } from './browser.js';
 import { NSEMemoryStorage } from './storage-memory.js';
-import { NSEError, NSEErrorCode } from '@nse-dev/core';
+import { NSEError, NSEErrorCode } from 'nostr-secure-enclave';
 import { verifySignature } from 'nostr-crypto-utils';
 import { bytesToHex } from './crypto.js';
 
-describe('@nse-dev/browser — NSEBrowser', () => {
+describe('nostr-secure-enclave-browser — NSEBrowser', () => {
   let nse: NSEBrowser;
   let storage: NSEMemoryStorage;
 

@@ -1,8 +1,8 @@
-# @nse-dev/android
+# nostr-secure-enclave-android
 
 Kotlin library for hardware-backed Nostr key management via Android StrongBox / TEE.
 
-## Package: `@nse-dev/android` (Maven)
+## Package: `nostr-secure-enclave-android` (Maven)
 
 ## How It Works
 

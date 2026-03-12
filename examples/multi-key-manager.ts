@@ -8,8 +8,8 @@
  * AI entities with multiple personas
  */
 
-import { NSEServer } from '@nse-dev/server';
-import type { NSEStorage, NSEProvider } from '@nse-dev/core';
+import { NSEServer } from 'nostr-secure-enclave-server';
+import type { NSEStorage, NSEProvider } from 'nostr-secure-enclave';
 
 // ---------------------------------------------------------------------------
 // 1. Prefixed storage — each identity gets its own namespace

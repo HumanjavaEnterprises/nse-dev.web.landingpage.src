@@ -2,22 +2,12 @@
  * Browser AES-256-GCM encrypt/decrypt using SubtleCrypto
  *
  * Uses the Web Crypto API (crypto.subtle) — available in all modern browsers.
- * The wrapping key is derived from a P-256 key pair stored in SubtleCrypto
- * (non-extractable). This is NOT hardware-backed like Secure Enclave,
- * but it does keep the wrapping key inside the browser's crypto boundary.
+ * This is NOT hardware-backed like Secure Enclave, but it does keep the
+ * wrapping key inside the browser's crypto boundary.
  */
 
 const IV_LENGTH = 12;
 const ALGO = 'AES-GCM';
-
-/** Generate a non-extractable AES-256-GCM wrapping key in SubtleCrypto */
-export async function generateWrappingKey(): Promise<CryptoKey> {
-  return crypto.subtle.generateKey(
-    { name: ALGO, length: 256 },
-    false, // non-extractable
-    ['encrypt', 'decrypt'],
-  );
-}
 
 /** Export a CryptoKey to JWK for IndexedDB storage (only if extractable) */
 export async function exportKeyToJwk(key: CryptoKey): Promise<JsonWebKey> {
@@ -43,7 +33,7 @@ export async function importHexKey(hexKey: string): Promise<CryptoKey> {
   }
   return crypto.subtle.importKey(
     'raw',
-    bytes,
+    bytes as BufferSource,
     { name: ALGO },
     false,
     ['encrypt', 'decrypt'],
@@ -58,9 +48,9 @@ export async function encrypt(
   const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
 
   const encrypted = await crypto.subtle.encrypt(
-    { name: ALGO, iv },
+    { name: ALGO, iv: iv as BufferSource },
     key,
-    plaintext,
+    plaintext as BufferSource,
   );
 
   return {
@@ -76,9 +66,9 @@ export async function decrypt(
   key: CryptoKey,
 ): Promise<Uint8Array> {
   const decrypted = await crypto.subtle.decrypt(
-    { name: ALGO, iv },
+    { name: ALGO, iv: iv as BufferSource },
     key,
-    ciphertext,
+    ciphertext as BufferSource,
   );
 
   return new Uint8Array(decrypted);

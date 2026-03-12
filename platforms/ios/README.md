@@ -1,8 +1,8 @@
-# @nse-dev/ios
+# nostr-secure-enclave-ios
 
 Swift Package for hardware-backed Nostr key management via iOS Secure Enclave.
 
-## Package: `@nse-dev/ios` (Swift Package Manager)
+## Package: `nostr-secure-enclave-ios` (Swift Package Manager)
 
 ## How It Works
 

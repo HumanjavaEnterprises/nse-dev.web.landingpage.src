@@ -20,7 +20,7 @@ async function importKey(masterKeyHex: string): Promise<CryptoKey> {
   }
   return crypto.subtle.importKey(
     'raw',
-    keyBytes,
+    keyBytes as BufferSource,
     { name: ALGO },
     false,
     ['encrypt', 'decrypt'],
@@ -37,9 +37,9 @@ export async function encrypt(
   const plaintext = hexToBytes(plaintextHex);
 
   const encrypted = await crypto.subtle.encrypt(
-    { name: ALGO, iv },
+    { name: ALGO, iv: iv as BufferSource },
     key,
-    plaintext,
+    plaintext as BufferSource,
   );
 
   // Zero plaintext bytes
@@ -62,9 +62,9 @@ export async function decrypt(
   const ciphertext = hexToBytes(ciphertextHex);
 
   const decrypted = await crypto.subtle.decrypt(
-    { name: ALGO, iv },
+    { name: ALGO, iv: iv as BufferSource },
     key,
-    ciphertext,
+    ciphertext as BufferSource,
   );
 
   return new Uint8Array(decrypted);

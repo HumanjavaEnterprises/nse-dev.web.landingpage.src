@@ -8,14 +8,14 @@
  * Use case: NostrKeep Signer (iOS/Android), remote signing service
  */
 
-import { NSEServer } from '@nse-dev/server';
-// In real code, use: import { NSEBrowser } from '@nse-dev/browser';
+import { NSEServer } from 'nostr-secure-enclave-server';
+// In real code, use: import { NSEBrowser } from 'nostr-secure-enclave-browser';
 // or the iOS/Android native implementation
-import type { NSEProvider } from '@nse-dev/core';
+import type { NSEProvider } from 'nostr-secure-enclave';
 
 // On mobile, this would be:
-// import { NSE } from '@nse-dev/ios';  // Swift
-// import { NSE } from '@nse-dev/android';  // Kotlin
+// import { NSE } from 'nostr-secure-enclave-ios';  // Swift
+// import { NSE } from 'nostr-secure-enclave-android';  // Kotlin
 
 // nostr-crypto-utils has NIP-46 server-side signer primitives
 import {

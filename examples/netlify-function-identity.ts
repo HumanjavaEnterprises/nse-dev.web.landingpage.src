@@ -9,8 +9,8 @@
  * Nostr-authenticated backends on Netlify
  */
 
-import { NSEServer } from '@nse-dev/server';
-import type { NSEStorage } from '@nse-dev/core';
+import { NSEServer } from 'nostr-secure-enclave-server';
+import type { NSEStorage } from 'nostr-secure-enclave';
 import { getStore } from '@netlify/blobs';
 import type { Context } from '@netlify/functions';
 
@@ -50,8 +50,8 @@ class NetlifyBlobStorage implements NSEStorage {
 //
 //   1. Generate locally:
 //      node -e "
-//        const { NSEServer } = require('@nse-dev/server');
-//        const { NSEMemoryStorage } = require('@nse-dev/server');
+//        const { NSEServer } = require('nostr-secure-enclave-server');
+//        const { NSEMemoryStorage } = require('nostr-secure-enclave-server');
 //        const s = new NSEMemoryStorage();
 //        const nse = new NSEServer({ masterKey: process.env.NSE_MASTER_KEY, storage: s });
 //        nse.generate().then(() => s.get('nse:blob').then(console.log));
@@ -194,7 +194,7 @@ export default async function handler(request: Request, context: Context) {
 // (Netlify Blobs, Upstash Redis, etc.) since Edge Functions
 // are even more ephemeral than serverless functions.
 //
-// import { NSEServer } from '@nse-dev/server';
+// import { NSEServer } from 'nostr-secure-enclave-server';
 //
 // export default async (request: Request, context: any) => {
 //   const nse = new NSEServer({

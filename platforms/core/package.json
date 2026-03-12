@@ -1,5 +1,5 @@
 {
-  "name": "@nse-dev/core",
+  "name": "nostr-secure-enclave",
   "version": "0.1.0",
   "description": "Shared types for Nostr Secure Enclave — hardware-backed key management for Nostr",
   "type": "module",

@@ -3,7 +3,7 @@
  * NOT for production (keys lost on restart)
  */
 
-import type { NSEStorage } from '@nse-dev/core';
+import type { NSEStorage } from 'nostr-secure-enclave';
 
 export class NSEMemoryStorage implements NSEStorage {
   private store = new Map<string, string>();

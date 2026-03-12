@@ -1,12 +1,12 @@
 /**
- * @nse-dev/browser — Browser Nostr Secure Enclave
+ * nostr-secure-enclave-browser — Browser Nostr Secure Enclave
  *
  * Uses SubtleCrypto for AES-256-GCM key wrapping and
  * nostr-crypto-utils for Schnorr signing.
  */
 
-export type { NSEProvider, NSEEvent, NSESignedEvent, NSEKeyInfo, NSEStorage, NSEEncryptedBlob } from '@nse-dev/core';
-export { NSEError, NSEErrorCode } from '@nse-dev/core';
+export type { NSEProvider, NSEEvent, NSESignedEvent, NSEKeyInfo, NSEStorage, NSEEncryptedBlob } from 'nostr-secure-enclave';
+export { NSEError, NSEErrorCode } from 'nostr-secure-enclave';
 
 export { NSEBrowser } from './browser.js';
 export type { NSEBrowserConfig } from './browser.js';

@@ -215,6 +215,13 @@ class NSE:
                 "Master key must be 64 hex chars (32 bytes)",
                 NSEErrorCode.HARDWARE_UNAVAILABLE,
             )
+        try:
+            bytes.fromhex(master_key)
+        except ValueError:
+            raise NSEError(
+                "Master key must be valid hex",
+                NSEErrorCode.HARDWARE_UNAVAILABLE,
+            )
         self._master_key = master_key
 
         if storage is None:
@@ -227,21 +234,20 @@ class NSE:
         if self.exists():
             raise NSEError("Key already exists — call destroy() first", NSEErrorCode.KEY_EXISTS)
 
-        # Generate random 32-byte private key
-        privkey_bytes = os.urandom(32)
+        # Generate random 32-byte private key as mutable bytearray
+        privkey_ba = bytearray(os.urandom(32))
 
         # Derive public key (x-only, 32 bytes)
-        pubkey_bytes = _get_schnorr_pubkey(privkey_bytes)
+        pubkey_bytes = _get_schnorr_pubkey(bytes(privkey_ba))
         pubkey_hex = pubkey_bytes.hex()
         npub = npub_encode(pubkey_hex)
 
         # Encrypt private key
-        ciphertext, iv = _aes_encrypt(privkey_bytes, self._master_key)
+        ciphertext, iv = _aes_encrypt(bytes(privkey_ba), self._master_key)
 
-        # Zero plaintext private key (best effort — Python GC may have copies)
-        # This overwrites the bytearray but the original bytes object is immutable
-        # Documented limitation in README
-        privkey_ba = bytearray(privkey_bytes)
+        # Zero plaintext private key (best effort — Python GC may retain copies
+        # of the intermediate bytes objects passed to _get_schnorr_pubkey and
+        # _aes_encrypt, but at least the primary copy is zeroed)
         for i in range(len(privkey_ba)):
             privkey_ba[i] = 0
 
@@ -270,12 +276,13 @@ class NSE:
         """Decrypt key, Schnorr sign, zero memory."""
         blob = self._load_blob()
 
-        # Decrypt the private key
+        # Decrypt the private key into mutable bytearray
         privkey_bytes = _aes_decrypt(
             bytes.fromhex(blob.ciphertext),
             bytes.fromhex(blob.iv),
             self._master_key,
         )
+        privkey_ba = bytearray(privkey_bytes)
 
         try:
             pubkey_hex = blob.pubkey
@@ -287,7 +294,7 @@ class NSE:
 
             # Schnorr sign the event ID hash
             event_id_bytes = bytes.fromhex(event_id)
-            sig = _schnorr_sign(event_id_bytes, privkey_bytes)
+            sig = _schnorr_sign(event_id_bytes, bytes(privkey_ba))
 
             return SignedEvent(
                 id=event_id,
@@ -299,8 +306,8 @@ class NSE:
                 created_at=event.created_at,
             )
         finally:
-            # Zero private key bytes (best effort)
-            privkey_ba = bytearray(privkey_bytes)
+            # Zero the mutable copy (best effort — Python GC may retain the
+            # immutable bytes returned by _aes_decrypt)
             for i in range(len(privkey_ba)):
                 privkey_ba[i] = 0
 

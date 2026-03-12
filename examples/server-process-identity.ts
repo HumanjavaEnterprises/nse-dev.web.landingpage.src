@@ -8,8 +8,8 @@
  * Use case: relay, blossom server, MCP server, app backend
  */
 
-import { NSEServer } from '@nse-dev/server';
-import type { NSEStorage } from '@nse-dev/core';
+import { NSEServer } from 'nostr-secure-enclave-server';
+import type { NSEStorage } from 'nostr-secure-enclave';
 
 // ---------------------------------------------------------------------------
 // 1. Define your storage backend (file, KV, database, etc.)

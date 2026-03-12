@@ -1,8 +1,8 @@
-# @nse-dev/core
+# nostr-secure-enclave
 
 Shared TypeScript interfaces and types for NSE. Every platform implementation conforms to these contracts.
 
-## Package: `@nse-dev/core` (npm)
+## Package: `nostr-secure-enclave` (npm)
 
 ## Types
 

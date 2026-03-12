@@ -9,7 +9,7 @@ import type {
   NSEEncryptedBlob,
 } from './index.js';
 
-describe('@nse-dev/core types', () => {
+describe('nostr-secure-enclave types', () => {
   it('NSEEvent is compatible with nostr-crypto-utils BaseNostrEvent', () => {
     const event: NSEEvent = {
       kind: 1,

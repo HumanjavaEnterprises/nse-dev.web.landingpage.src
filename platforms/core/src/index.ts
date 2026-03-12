@@ -1,5 +1,5 @@
 /**
- * @nse-dev/core — Shared types for Nostr Secure Enclave
+ * nostr-secure-enclave — Shared types for Nostr Secure Enclave
  *
  * These types align with nostr-crypto-utils where possible.
  * NSE adds hardware-backing metadata on top of standard Nostr types.

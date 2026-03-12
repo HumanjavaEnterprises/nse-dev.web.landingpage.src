@@ -1,8 +1,8 @@
-# nse-dev
+# nostr-secure-enclave
 
 Python package for Nostr Secure Enclave. Server-side key management for AI entities, bots, and backend services.
 
-## Package: `nse-dev` (PyPI)
+## Package: `nostr-secure-enclave` (PyPI)
 
 ## Implementation
 

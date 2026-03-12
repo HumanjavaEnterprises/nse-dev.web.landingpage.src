@@ -1,8 +1,8 @@
-# @nse-dev/server
+# nostr-secure-enclave-server
 
 TypeScript library for server-side Nostr key management. Process keypairs for relays, blossom servers, MCP servers, and app backends.
 
-## Package: `@nse-dev/server` (npm)
+## Package: `nostr-secure-enclave-server` (npm)
 
 ## Implementations
 

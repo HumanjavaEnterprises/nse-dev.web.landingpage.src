@@ -7,7 +7,7 @@
  * Two modes:
  * 1. SubtleCrypto mode (default): generates a non-extractable AES key
  *    in the browser's crypto boundary. Key stored as JWK in IndexedDB.
- * 2. Master key mode: uses a hex master key (compatible with @nse-dev/server).
+ * 2. Master key mode: uses a hex master key (compatible with nostr-secure-enclave-server).
  *
  * Note: This is NOT hardware-backed like iOS Secure Enclave or Android StrongBox.
  * The browser's SubtleCrypto provides process isolation but not hardware protection.
@@ -18,11 +18,10 @@ import {
   generateKeyPair,
   signEvent,
   getPublicKeySync,
-  verifySignature,
   nip19,
 } from 'nostr-crypto-utils';
-import { encrypt, decrypt, hexToBytes, bytesToHex, generateWrappingKey, exportKeyToJwk, importKeyFromJwk, importHexKey } from './crypto.js';
-import { NSEError, NSEErrorCode } from '@nse-dev/core';
+import { encrypt, decrypt, hexToBytes, bytesToHex, exportKeyToJwk, importKeyFromJwk, importHexKey } from './crypto.js';
+import { NSEError, NSEErrorCode } from 'nostr-secure-enclave';
 import type {
   NSEProvider,
   NSEEvent,
@@ -30,7 +29,7 @@ import type {
   NSEKeyInfo,
   NSEStorage,
   NSEEncryptedBlob,
-} from '@nse-dev/core';
+} from 'nostr-secure-enclave';
 
 const BLOB_KEY = 'nse:blob';
 const WRAPPING_KEY = 'nse:wrapping-key';
@@ -41,7 +40,7 @@ export interface NSEBrowserConfig {
   /**
    * Optional hex master key (64 chars).
    * If provided, uses this instead of generating a SubtleCrypto key.
-   * Compatible with @nse-dev/server master key.
+   * Compatible with nostr-secure-enclave-server master key.
    */
   masterKey?: string;
 }
@@ -51,7 +50,7 @@ export class NSEBrowser implements NSEProvider {
   private readonly masterKey?: string;
 
   constructor(config: NSEBrowserConfig) {
-    if (config.masterKey && config.masterKey.length !== 64) {
+    if (config.masterKey && (config.masterKey.length !== 64 || !/^[0-9a-f]+$/i.test(config.masterKey))) {
       throw new NSEError(
         'Master key must be 64 hex chars (32 bytes)',
         NSEErrorCode.HARDWARE_UNAVAILABLE,
@@ -123,6 +122,8 @@ export class NSEBrowser implements NSEProvider {
       );
     }
 
+    // Note: privkeyHex is an immutable JS string — it cannot be zeroed and
+    // persists until GC. This is a documented limitation of JS key handling.
     const privkeyHex = bytesToHex(privkeyBytes);
 
     try {
@@ -224,6 +225,10 @@ export class NSEBrowser implements NSEProvider {
     if (!raw) {
       throw new NSEError('No key found — call generate() first', NSEErrorCode.KEY_NOT_FOUND);
     }
-    return JSON.parse(raw) as NSEEncryptedBlob;
+    try {
+      return JSON.parse(raw) as NSEEncryptedBlob;
+    } catch {
+      throw new NSEError('Corrupted key blob in storage', NSEErrorCode.STORAGE_ERROR);
+    }
   }
 }

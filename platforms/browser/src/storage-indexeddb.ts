@@ -5,7 +5,7 @@
  * Origin-scoped by the browser — only the same origin can access.
  */
 
-import type { NSEStorage } from '@nse-dev/core';
+import type { NSEStorage } from 'nostr-secure-enclave';
 
 const DB_NAME = 'nse-dev';
 const STORE_NAME = 'keys';

@@ -44,8 +44,15 @@ class FileStorage:
             return f.read()
 
     def put(self, key: str, value: str) -> None:
-        with open(self._path(key), "w") as f:
-            f.write(value)
+        import os
+        import stat
+        path = self._path(key)
+        # Write with restrictive permissions (owner-only) — key material
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, stat.S_IRUSR | stat.S_IWUSR)
+        try:
+            os.write(fd, value.encode("utf-8"))
+        finally:
+            os.close(fd)
 
     def delete(self, key: str) -> None:
         import os

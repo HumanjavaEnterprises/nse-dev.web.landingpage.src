@@ -1,12 +1,8 @@
 /**
  * NSEServer — Server-side NSE implementation
  *
- * Uses nostr-crypto-utils for all Nostr operations:
- * - generateKeyPair() for secp256k1 key generation
- * - finalizeEvent() for event signing (pubkey derivation + id + sig)
- * - npubEncode() for bech32 encoding
- *
- * Uses @noble/hashes for AES-GCM key wrapping.
+ * Uses nostr-crypto-utils for Nostr crypto (generateKeyPair, signEvent,
+ * getPublicKeySync, nip19) and @noble/hashes for AES-256-GCM key wrapping.
  */
 
 import {
@@ -17,7 +13,7 @@ import {
 } from 'nostr-crypto-utils';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 import { encrypt, decrypt } from './crypto.js';
-import { NSEError, NSEErrorCode } from '@nse-dev/core';
+import { NSEError, NSEErrorCode } from 'nostr-secure-enclave';
 import type {
   NSEProvider,
   NSEEvent,
@@ -25,7 +21,7 @@ import type {
   NSEKeyInfo,
   NSEStorage,
   NSEEncryptedBlob,
-} from '@nse-dev/core';
+} from 'nostr-secure-enclave';
 
 const BLOB_KEY = 'nse:blob';
 
@@ -41,7 +37,7 @@ export class NSEServer implements NSEProvider {
   private readonly storage: NSEStorage;
 
   constructor(config: NSEServerConfig) {
-    if (!config.masterKey || config.masterKey.length !== 64) {
+    if (!config.masterKey || config.masterKey.length !== 64 || !/^[0-9a-f]+$/i.test(config.masterKey)) {
       throw new NSEError(
         'Master key must be 64 hex chars (32 bytes)',
         NSEErrorCode.HARDWARE_UNAVAILABLE,
@@ -65,9 +61,6 @@ export class NSEServer implements NSEProvider {
 
     // Encrypt private key with AES-256-GCM
     const { ciphertext, iv } = await encrypt(privkeyHex, this.masterKey);
-
-    // Zero the plaintext private key
-    // (privkeyHex is a string — best effort, fill the source bytes if we had them)
 
     const now = Math.floor(Date.now() / 1000);
 
@@ -104,6 +97,8 @@ export class NSEServer implements NSEProvider {
       throw new NSEError('Failed to decrypt key — wrong master key or corrupted blob', NSEErrorCode.DECRYPTION_FAILED);
     }
 
+    // Note: privkeyHex is an immutable JS string — it cannot be zeroed and
+    // persists until GC. This is a documented limitation of JS key handling.
     const privkeyHex = bytesToHex(privkeyBytes);
 
     try {
@@ -163,6 +158,10 @@ export class NSEServer implements NSEProvider {
     if (!raw) {
       throw new NSEError('No key found — call generate() first', NSEErrorCode.KEY_NOT_FOUND);
     }
-    return JSON.parse(raw) as NSEEncryptedBlob;
+    try {
+      return JSON.parse(raw) as NSEEncryptedBlob;
+    } catch {
+      throw new NSEError('Corrupted key blob in storage', NSEErrorCode.STORAGE_ERROR);
+    }
   }
 }

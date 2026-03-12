@@ -8,8 +8,8 @@
  * Use case: relay worker, blossom worker, API worker, MCP endpoint
  */
 
-import { NSEServer } from '@nse-dev/server';
-import type { NSEStorage } from '@nse-dev/core';
+import { NSEServer } from 'nostr-secure-enclave-server';
+import type { NSEStorage } from 'nostr-secure-enclave';
 
 // ---------------------------------------------------------------------------
 // KV-backed storage (Cloudflare Workers KV)

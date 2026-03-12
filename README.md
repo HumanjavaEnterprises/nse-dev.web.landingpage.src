@@ -90,12 +90,12 @@ nse.destroy()           → wipe key material
 
 | Package | Platform | Registry |
 |---------|----------|----------|
-| `@nse-dev/core` | TypeScript types + interface | npm |
-| `@nse-dev/ios` | Swift via Secure Enclave | Swift Package |
-| `@nse-dev/android` | Kotlin via StrongBox | Maven |
-| `@nse-dev/server` | CF Workers / Node.js | npm |
-| `@nse-dev/browser` | WebAuthn + SubtleCrypto | npm |
-| `nse-dev` | Python wrapper | PyPI |
+| `nostr-secure-enclave` | TypeScript types + interface | npm |
+| `nostr-secure-enclave-ios` | Swift via Secure Enclave | Swift Package |
+| `nostr-secure-enclave-android` | Kotlin via StrongBox | Maven |
+| `nostr-secure-enclave-server` | CF Workers / Node.js | npm |
+| `nostr-secure-enclave-browser` | WebAuthn + SubtleCrypto | npm |
+| `nostr-secure-enclave` | Python wrapper | PyPI |
 
 ## Hosting
 

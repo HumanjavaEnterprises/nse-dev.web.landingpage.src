@@ -2,10 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { NSEServer } from './server.js';
 import { NSEMemoryStorage } from './storage-memory.js';
 import { generateMasterKey } from './crypto.js';
-import { NSEError, NSEErrorCode } from '@nse-dev/core';
+import { NSEError, NSEErrorCode } from 'nostr-secure-enclave';
 import { verifySignature } from 'nostr-crypto-utils';
 
-describe('@nse-dev/server — NSEServer', () => {
+describe('nostr-secure-enclave-server — NSEServer', () => {
   let nse: NSEServer;
   let storage: NSEMemoryStorage;
   let masterKey: string;
@@ -219,7 +219,7 @@ describe('@nse-dev/server — NSEServer', () => {
   });
 });
 
-describe('@nse-dev/server — NSEMemoryStorage', () => {
+describe('nostr-secure-enclave-server — NSEMemoryStorage', () => {
   it('get returns null for missing key', async () => {
     const s = new NSEMemoryStorage();
     expect(await s.get('missing')).toBeNull();
@@ -239,7 +239,7 @@ describe('@nse-dev/server — NSEMemoryStorage', () => {
   });
 });
 
-describe('@nse-dev/server — crypto', () => {
+describe('nostr-secure-enclave-server — crypto', () => {
   it('generateMasterKey returns 64-char hex', () => {
     const key = generateMasterKey();
     expect(key).toHaveLength(64);

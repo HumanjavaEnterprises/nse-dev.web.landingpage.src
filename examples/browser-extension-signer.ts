@@ -7,7 +7,7 @@
  * Use case: browser extension, web app with local key management
  */
 
-import { NSEBrowser, NSEIndexedDBStorage } from '@nse-dev/browser';
+import { NSEBrowser, NSEIndexedDBStorage } from 'nostr-secure-enclave-browser';
 
 // ---------------------------------------------------------------------------
 // 1. Initialize NSE with IndexedDB storage (origin-scoped, persistent)
@@ -116,7 +116,7 @@ async function initWithMasterKey(masterKeyHex: string) {
     masterKey: masterKeyHex,
   });
 
-  // Now this NSE instance is compatible with @nse-dev/server
+  // Now this NSE instance is compatible with nostr-secure-enclave-server
   // using the same master key — same blob format, same encryption.
   return nseWithKey;
 }

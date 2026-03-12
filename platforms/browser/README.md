@@ -1,8 +1,8 @@
-# @nse-dev/browser
+# nostr-secure-enclave-browser
 
 TypeScript library for browser-based Nostr key management via WebAuthn + SubtleCrypto.
 
-## Package: `@nse-dev/browser` (npm)
+## Package: `nostr-secure-enclave-browser` (npm)
 
 ## How It Works
 
