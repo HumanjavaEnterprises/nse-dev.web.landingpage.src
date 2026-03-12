@@ -14,7 +14,7 @@
       "types": "./src/index.ts"
     }
   },
-  "files": ["dist", "src"],
+  "files": ["dist", "src/index.ts"],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",

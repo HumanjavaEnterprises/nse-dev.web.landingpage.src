@@ -241,7 +241,7 @@
 <body>
   <div class="container">
     <section class="hero">
-      <div class="hero-badge">Open Source</div>
+      <div class="hero-badge">Open Source &middot; Published on npm + PyPI</div>
       <h1><span>NSE</span></h1>
       <p class="hero-tagline">Nostr Secure Enclave</p>
       <p class="hero-one-liner">
@@ -250,13 +250,13 @@
       </p>
 
       <div class="code-block">
-        <span class="comment">// Same API everywhere</span><br>
-        <span class="kw">const</span> nse = <span class="kw">await</span> <span class="fn">NSE.init</span>();<br><br>
-        <span class="comment">// Generate — key protected by Secure Enclave</span><br>
-        <span class="kw">const</span> { pubkey } = <span class="kw">await</span> nse.<span class="fn">generate</span>();<br><br>
-        <span class="comment">// Sign — biometric unlock, sign, zero memory</span><br>
+        <span class="comment">// npm install nostr-secure-enclave-server</span><br>
+        <span class="kw">import</span> { NSEServer, generateMasterKey } <span class="kw">from</span> <span class="str">'nostr-secure-enclave-server'</span>;<br><br>
+        <span class="kw">const</span> nse = <span class="kw">new</span> <span class="fn">NSEServer</span>({ masterKey, storage });<br>
+        <span class="kw">const</span> { pubkey, npub } = <span class="kw">await</span> nse.<span class="fn">generate</span>();<br>
         <span class="kw">const</span> signed = <span class="kw">await</span> nse.<span class="fn">sign</span>(event);<br><br>
-        <span class="comment">// The nsec is encrypted at rest. Plaintext only exists in memory during signing.</span>
+        <span class="comment">// The nsec is AES-256-GCM encrypted at rest.</span><br>
+        <span class="comment">// Plaintext only exists in memory during signing, then zeroed.</span>
       </div>
     </section>
 
@@ -267,8 +267,8 @@
         You can't sign Nostr events directly in hardware.
       </p>
       <p>
-        Every Nostr app today stores keys in software. If the device is compromised, the key is gone.
-        Nobody has bridged this gap.
+        Most Nostr apps today store keys in software. If the device is compromised, the key is gone.
+        NSE bridges this gap.
       </p>
     </section>
 
@@ -413,48 +413,96 @@
     </section>
 
     <section class="section">
-      <h2>Planned Packages</h2>
+      <h2>Packages</h2>
       <table class="platform-table">
         <thead>
           <tr>
             <th>Package</th>
             <th>Platform</th>
             <th>Registry</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>nostr-secure-enclave</td>
-            <td>TypeScript types + interface</td>
+            <td><a href="https://www.npmjs.com/package/nostr-secure-enclave">nostr-secure-enclave</a></td>
+            <td>TypeScript types + NSEProvider interface</td>
             <td>npm</td>
+            <td><span class="badge-hw">Published</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.npmjs.com/package/nostr-secure-enclave-server">nostr-secure-enclave-server</a></td>
+            <td>CF Workers / Node.js</td>
+            <td>npm</td>
+            <td><span class="badge-hw">Published</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://www.npmjs.com/package/nostr-secure-enclave-browser">nostr-secure-enclave-browser</a></td>
+            <td>WebAuthn + SubtleCrypto</td>
+            <td>npm</td>
+            <td><span class="badge-hw">Published</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://pypi.org/project/nostr-secure-enclave/">nostr-secure-enclave</a></td>
+            <td>Python (AI entities, bots, MCP)</td>
+            <td>PyPI</td>
+            <td><span class="badge-hw">Published</span></td>
           </tr>
           <tr>
             <td>nostr-secure-enclave-ios</td>
             <td>Swift via Secure Enclave</td>
             <td>Swift Package</td>
+            <td style="color: var(--text-dim);">Planned</td>
           </tr>
           <tr>
             <td>nostr-secure-enclave-android</td>
             <td>Kotlin via StrongBox</td>
             <td>Maven</td>
-          </tr>
-          <tr>
-            <td>nostr-secure-enclave-server</td>
-            <td>CF Workers / Node.js</td>
-            <td>npm</td>
-          </tr>
-          <tr>
-            <td>nostr-secure-enclave-browser</td>
-            <td>WebAuthn + SubtleCrypto</td>
-            <td>npm</td>
-          </tr>
-          <tr>
-            <td>nostr-secure-enclave</td>
-            <td>Python wrapper</td>
-            <td>PyPI</td>
+            <td style="color: var(--text-dim);">Planned</td>
           </tr>
         </tbody>
       </table>
+    </section>
+
+    <section class="section">
+      <h2>Install</h2>
+      <div class="code-block">
+        <span class="comment"># Server / CF Workers / Node.js</span><br>
+        npm install <span class="fn">nostr-secure-enclave-server</span><br><br>
+        <span class="comment"># Browser extensions / web apps</span><br>
+        npm install <span class="fn">nostr-secure-enclave-browser</span><br><br>
+        <span class="comment"># Python bots, AI entities, MCP servers</span><br>
+        pip install <span class="fn">nostr-secure-enclave</span><br><br>
+        <span class="comment"># Types only (peer dependency, installed automatically)</span><br>
+        npm install <span class="fn">nostr-secure-enclave</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Where NSE Fits</h2>
+      <p>
+        NSE is <strong>Level 0 infrastructure</strong> — the cryptographic foundation that makes
+        sovereign key management possible without asking users to understand cryptography.
+      </p>
+      <p>
+        It sits underneath products like <a href="https://nostrkey.com">NostrKey</a> (browser extension)
+        and enables NIP-46 bunker signers — the kind of thing that powers
+        Level 2 sovereign key management where your keys never leave hardware you control.
+      </p>
+      <div class="flow"><span class="hl">Level 0</span>  NSE encrypts the key at rest
+        └── Browser extension stores wrapped key in IndexedDB
+        └── Server process holds encrypted identity in KV
+
+<span class="hl">Level 1</span>  Mobile app as backup + authenticator
+        └── iOS Secure Enclave / Android StrongBox wrap the key
+
+<span class="hl">Level 2</span>  NIP-46 bunker — keys never leave hardware
+        └── NSE signs behind the NIP-46 interface
+        └── Remote apps request signatures, never see the nsec</div>
+      <p>
+        <strong>The principle:</strong> Don't explain cryptography. Explain consequences.
+        NSE handles the crypto so products can focus on the user.
+      </p>
     </section>
 
     <section class="section">
@@ -466,13 +514,13 @@
     </section>
 
     <section class="cta">
-      <h2>Coming Soon</h2>
-      <p>NSE is in the design phase. Star the repo to follow progress.</p>
+      <h2>Start Building</h2>
+      <p>NSE is published and ready. Server, browser, and Python — install and go.</p>
       <a class="cta-btn" href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src">GitHub</a>
     </section>
 
     <footer>
-      <p>NSE is open source (MIT) &middot; A <a href="https://humanjava.com">Humanjava</a> project</p>
+      <p>NSE is open source (MIT) &middot; Part of the <a href="https://www.npmjs.com/~vveerrgg">nostr-*</a> library family &middot; A <a href="https://humanjava.com">Humanjava</a> project</p>
     </footer>
   </div>
 </body>
