@@ -1,127 +1,161 @@
 # NSE — Nostr Secure Enclave
 
-Open-source hardware-backed key management for Nostr.
+Open-source hardware-backed key management for Nostr. Your nsec, encrypted at rest by hardware you already own.
 
-**Website:** [nse.dev](https://nse.dev) · **GitHub:** [HumanjavaEnterprises/nse-dev.web.landingpage.src](https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src)
+**Website:** [nse.dev](https://nse.dev) · **npm:** [nostr-secure-enclave](https://www.npmjs.com/package/nostr-secure-enclave) · **PyPI:** [nostr-secure-enclave](https://pypi.org/project/nostr-secure-enclave/)
 
 ## The Problem
 
-Nostr keys (secp256k1/Schnorr) can't be generated or used directly inside mobile secure enclaves (iOS Secure Enclave, Android StrongBox/TEE) — those only support P-256. Every Nostr app today stores keys in software. If the device is compromised, the key is gone.
+Nostr keys (secp256k1/Schnorr) can't be generated or used directly inside mobile secure enclaves (iOS Secure Enclave, Android StrongBox/TEE) — those only support P-256. Most Nostr apps today store keys in software. If the device is compromised, the key is gone.
 
 ## The Solution
 
-NSE wraps the gap:
-
-1. **Generate** a secp256k1 keypair
-2. **Protect** it with a hardware-backed P-256 key (non-exportable, biometric-gated)
-3. **Sign** Nostr events with the secp256k1 key (briefly decrypted in memory, then zeroed)
-4. **Expose** a simple API: `generate()`, `sign()`, `getPublicKey()`
-
-The nsec never exists unprotected at rest. The P-256 key never leaves hardware.
-
-## Platform Support
-
-| Platform | Hardware | Key Wrapping | Status |
-|----------|----------|-------------|--------|
-| iOS | Secure Enclave (SEP) | P-256 → AES-GCM → secp256k1 | Planned |
-| Android | StrongBox / TEE | KeyStore → AES-GCM → secp256k1 | Planned |
-| Server (CF Workers) | `crypto.subtle` | AES-GCM with KV-stored DEK | Planned |
-| Server (Node.js) | TPM 2.0 (optional) | AES-GCM with file/env key | Planned |
-| Browser | WebAuthn / SubtleCrypto | P-256 → AES-GCM → secp256k1 | Research |
-
-## API Surface
+NSE uses hardware to **protect** the key, not to sign with it. A P-256 key lives in hardware (non-exportable, biometric-gated). It encrypts the secp256k1 key at rest via AES-256-GCM. At signing time: unlock, decrypt, sign, zero.
 
 ```
-// All platforms — same interface
-nse.generate()          → { pubkey, npub }
-nse.sign(event)         → signed event (id + sig populated)
-nse.getPublicKey()      → hex pubkey
-nse.getNpub()           → bech32 npub
-nse.exists()            → boolean (has a stored key?)
-nse.destroy()           → wipe key material
+nse.sign(event)
+  ├── Biometric unlock → Secure Enclave access
+  ├── Derive AES key from hardware P-256 key
+  ├── Decrypt secp256k1 key into memory
+  ├── Schnorr sign the event
+  ├── Zero plaintext key from memory
+  └── Return signed event
 ```
 
-## Architecture
+## Install
 
-```
-┌─────────────────────────────────────┐
-│          Your Nostr App             │
-│   nse.sign(event) / nse.generate() │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│            NSE Library              │
-│  Platform detection + unified API   │
-└──────────────┬──────────────────────┘
-               │
-   ┌───────────┼───────────┐
-   │           │           │
-┌──▼──┐   ┌───▼───┐   ┌───▼───┐
-│ iOS │   │Android│   │Server │
-│ SEP │   │StrongB│   │ TPM/  │
-│P-256│   │ P-256 │   │ KMS   │
-└─────┘   └───────┘   └───────┘
-   │           │           │
-   └───────────┼───────────┘
-               │
-        AES-GCM encrypted
-        secp256k1 key blob
-        (stored in Keychain/
-         KeyStore/KV/env)
+```bash
+# Server / CF Workers / Node.js
+npm install nostr-secure-enclave-server
+
+# Browser extensions / web apps
+npm install nostr-secure-enclave-browser
+
+# Python bots, AI entities, MCP servers
+pip install nostr-secure-enclave
+
+# Types only (peer dependency, installed automatically)
+npm install nostr-secure-enclave
 ```
 
-## Prior Art
+## Quick Start
 
-| Project | Scope | Gap NSE Fills |
-|---------|-------|---------------|
-| noauth-enclaved | NIP-46 signer in AWS Nitro | Server-only, not mobile |
-| keycrux | Key persistence for Nitro enclaves | Server-only |
-| K1 (Swift) | secp256k1 Schnorr signing | No enclave key wrapping |
-| LNbits NSD | ESP32 hardware signer | DIY device, not phone-native |
-| HardKey SDK | Cross-platform hardware keys | P-256 only, no secp256k1 |
+```typescript
+// Server
+import { NSEServer, generateMasterKey } from 'nostr-secure-enclave-server';
 
-## NIP Integration
-
-- **NIP-46** — NSE sits behind the NIP-46 signer interface. The app calls `nse.sign()`, NSE handles hardware unlock + decryption.
-- **NIP-49** — NSE replaces ncryptsec for key storage. Instead of passphrase-encrypted keys, the enclave protects them.
-- **Future NIP** — We may propose a NIP for hardware-backed key attestation (prove to a relay that a key is hardware-protected).
-
-## Packages (planned)
-
-| Package | Platform | Registry |
-|---------|----------|----------|
-| `nostr-secure-enclave` | TypeScript types + interface | npm |
-| `nostr-secure-enclave-ios` | Swift via Secure Enclave | Swift Package |
-| `nostr-secure-enclave-android` | Kotlin via StrongBox | Maven |
-| `nostr-secure-enclave-server` | CF Workers / Node.js | npm |
-| `nostr-secure-enclave-browser` | WebAuthn + SubtleCrypto | npm |
-| `nostr-secure-enclave` | Python wrapper | PyPI |
-
-## Hosting
-
-- **Pages source:** `main` branch, `/docs` folder
-- **Custom domain:** `nse.dev`
-
-### DNS Configuration
-
-**A records** (apex domain):
-```
-185.199.108.153
-185.199.109.153
-185.199.110.153
-185.199.111.153
+const nse = new NSEServer({ masterKey: process.env.NSE_MASTER_KEY, storage });
+const { pubkey, npub } = await nse.generate();
+const signed = await nse.sign({ kind: 1, content: 'hello', tags: [], created_at: now });
 ```
 
-**CNAME** (www subdomain):
+```typescript
+// Browser
+import { NSEBrowser, NSEIndexedDBStorage } from 'nostr-secure-enclave-browser';
+
+const nse = new NSEBrowser({ storage: new NSEIndexedDBStorage() });
+const { pubkey, npub } = await nse.generate();
+const signed = await nse.sign(event);
 ```
-www → humanjavaenterprises.github.io
+
+```python
+# Python
+from nse import NSE
+nse = NSE(master_key=os.environ['NSE_MASTER_KEY'])
+info = nse.generate()
+signed = nse.sign(NostrEvent(kind=1, content="hello", tags=[], created_at=now))
 ```
 
-HTTPS enforced automatically by GitHub Pages.
+## Packages
 
-## OG Image
+| Package | Platform | Registry | Status |
+|---------|----------|----------|--------|
+| [`nostr-secure-enclave`](https://www.npmjs.com/package/nostr-secure-enclave) | TypeScript types + NSEProvider interface | npm | **Published** |
+| [`nostr-secure-enclave-server`](https://www.npmjs.com/package/nostr-secure-enclave-server) | CF Workers / Node.js | npm | **Published** |
+| [`nostr-secure-enclave-browser`](https://www.npmjs.com/package/nostr-secure-enclave-browser) | WebAuthn + SubtleCrypto | npm | **Published** |
+| [`nostr-secure-enclave`](https://pypi.org/project/nostr-secure-enclave/) | Python (AI entities, bots, MCP) | PyPI | **Published** |
+| `nostr-secure-enclave-ios` | Swift via Secure Enclave | Swift Package | Planned |
+| `nostr-secure-enclave-android` | Kotlin via StrongBox | Maven | Planned |
 
-Regenerate the social card: `python3 generate-og.py`
+## Where NSE Fits
+
+NSE is **Level 0 infrastructure** — the cryptographic foundation that makes sovereign key management possible without asking users to understand cryptography.
+
+```
+Level 0  NSE encrypts the key at rest
+         └── Browser extension stores wrapped key in IndexedDB
+         └── Server process holds encrypted identity in KV
+
+Level 1  Mobile app as backup + authenticator
+         └── iOS Secure Enclave / Android StrongBox wrap the key
+
+Level 2  NIP-46 bunker — keys never leave hardware
+         └── NSE signs behind the NIP-46 interface
+         └── Remote apps request signatures, never see the nsec
+```
+
+Products like [NostrKey](https://nostrkey.com) use NSE to protect keys in the browser. NIP-46 bunker signers use NSE on the backend. The principle: **Don't explain cryptography. Explain consequences.**
+
+## Repo Structure
+
+```
+docs/                     ← GitHub Pages source (nse.dev)
+  index.html              ← Single-page site (HTML + inline CSS)
+  og-image.png            ← 1200x630 social card
+  CNAME                   ← Custom domain: nse.dev
+platforms/                ← Working code for each target platform
+  core/                   ← nostr-secure-enclave — shared types + NSEProvider interface
+  server/                 ← nostr-secure-enclave-server — AES-256-GCM + nostr-crypto-utils
+  browser/                ← nostr-secure-enclave-browser — SubtleCrypto + IndexedDB
+  python/                 ← nostr-secure-enclave (PyPI) — cryptography + secp256k1
+  ios/                    ← Planned — Swift Package (Secure Enclave)
+  android/                ← Planned — Kotlin (StrongBox / TEE)
+examples/                 ← 7 real-world usage patterns
+  server-process-identity.ts
+  cloudflare-worker-identity.ts
+  netlify-function-identity.ts
+  browser-extension-signer.ts
+  python-bot-identity.py
+  nip46-signer-backend.ts
+  multi-key-manager.ts
+```
+
+## Development
+
+```bash
+cd platforms
+npm install          # Links workspaces (core, server, browser)
+npm test             # Runs all 82 tests (core + server + browser + python)
+npm run build        # Compiles TypeScript to dist/
+```
+
+Individual test suites: `npm run test:core`, `npm run test:server`, `npm run test:browser`, `npm run test:python`
+
+Python tests require: `pip install cryptography secp256k1 pytest`
+
+## API
+
+All platforms implement the same `NSEProvider` interface:
+
+```
+nse.generate()          → { pubkey, npub, created_at, hardware_backed }
+nse.sign(event)         → signed event (id + pubkey + sig populated)
+nse.getPublicKey()      → hex pubkey (no unlock needed)
+nse.getNpub()           → bech32 npub (no unlock needed)
+nse.exists()            → boolean
+nse.destroy()           → wipe all key material
+```
+
+## What NSE Is Not
+
+- **Not a remote signer.** NSE is a local library. Use NIP-46 for remote signing.
+- **Not custodial.** Keys never leave your device.
+- **Not a wallet.** No Lightning, no transactions. Just keys and signing.
+- **Not magic.** The secp256k1 key exists briefly in application memory during signing. NSE minimizes that window and zeros the key after — but a rooted/jailbroken device with memory access is out of scope.
+
+## Part of the nostr-* Family
+
+NSE is built on [`nostr-crypto-utils`](https://www.npmjs.com/package/nostr-crypto-utils) and sits alongside the rest of the [Humanjava nostr-* libraries](https://www.npmjs.com/~vveerrgg).
 
 ## License
 
