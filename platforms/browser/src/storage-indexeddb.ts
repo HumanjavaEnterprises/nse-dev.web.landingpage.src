@@ -5,7 +5,7 @@
  * Origin-scoped by the browser — only the same origin can access.
  */
 
-import type { NSEStorage } from '../../core/src/index.js';
+import type { NSEStorage } from '@nse-dev/core';
 
 const DB_NAME = 'nse-dev';
 const STORE_NAME = 'keys';

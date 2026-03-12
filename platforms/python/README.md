@@ -4,28 +4,61 @@ Python package for Nostr Secure Enclave. Server-side key management for AI entit
 
 ## Package: `nse-dev` (PyPI)
 
-## Approaches
+## Implementation
 
-1. **Wrapper** around `@nse-dev/server` (subprocess or FFI)
-2. **Pure Python** using `cryptography` for AES-GCM + `secp256k1` for signing
+Pure Python using `cryptography` for AES-256-GCM + `secp256k1` for Schnorr signing (BIP-340).
 
 ## Use Cases
 
 - OpenClaw / AI entity identity
 - Bot process keypairs
 - Backend service identity
+- MCP tool server signing
 
 ## API
 
 ```python
-from nse import NSE
+import os
+from nse import NSE, NostrEvent
+from nse.storage import FileStorage
 
-nse = NSE(master_key=os.environ['NSE_MASTER_KEY'])
-key_info = await nse.generate()
-signed = await nse.sign(event)
-pubkey = await nse.get_public_key()
-exists = await nse.exists()
-await nse.destroy()
+# Initialize with master key + persistent storage
+nse = NSE(
+    master_key=os.environ['NSE_MASTER_KEY'],
+    storage=FileStorage('.nse'),
+)
+
+# Generate on first run
+if not nse.exists():
+    info = nse.generate()
+    print(f"Identity: {info.npub}")
+
+# Sign events
+signed = nse.sign(NostrEvent(
+    kind=1,
+    content="Hello Nostr",
+    tags=[],
+    created_at=int(time.time()),
+))
+
+# Read identity (no unlock needed)
+pubkey = nse.get_public_key()
+npub = nse.get_npub()
+
+# Wipe everything
+nse.destroy()
 ```
 
-## Status: Planned (Phase 6)
+## Storage Backends
+
+- `MemoryStorage` — testing / ephemeral processes
+- `FileStorage(directory)` — persistent file storage
+
+## Security Notes
+
+- AES-256-GCM encryption with unique IV per operation
+- Best-effort memory zeroing after signing (`bytearray.fill(0)`)
+- Python's GC may retain copies of key material — this is a documented limitation
+- `hardware_backed` is always `False` for Python keys (honest)
+
+## Status: Implemented (Phase 6) — 27 tests passing

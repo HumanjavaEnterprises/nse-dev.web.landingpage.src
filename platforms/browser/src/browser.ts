@@ -22,7 +22,7 @@ import {
   nip19,
 } from 'nostr-crypto-utils';
 import { encrypt, decrypt, hexToBytes, bytesToHex, generateWrappingKey, exportKeyToJwk, importKeyFromJwk, importHexKey } from './crypto.js';
-import { NSEError, NSEErrorCode } from '../../core/src/index.js';
+import { NSEError, NSEErrorCode } from '@nse-dev/core';
 import type {
   NSEProvider,
   NSEEvent,
@@ -30,7 +30,7 @@ import type {
   NSEKeyInfo,
   NSEStorage,
   NSEEncryptedBlob,
-} from '../../core/src/index.js';
+} from '@nse-dev/core';
 
 const BLOB_KEY = 'nse:blob';
 const WRAPPING_KEY = 'nse:wrapping-key';

@@ -1,0 +1,22 @@
+{
+  "name": "@nse-dev/platforms",
+  "private": true,
+  "version": "0.1.0",
+  "description": "NSE monorepo — Nostr Secure Enclave platform implementations",
+  "workspaces": [
+    "core",
+    "server",
+    "browser"
+  ],
+  "scripts": {
+    "test": "npm run test:core && npm run test:server && npm run test:browser && npm run test:python",
+    "test:core": "cd core && npx vitest run",
+    "test:server": "cd server && npx vitest run",
+    "test:browser": "cd browser && npx vitest run",
+    "test:python": "cd python && python3 -m pytest tests/ -v",
+    "build": "npm run build:core && npm run build:server && npm run build:browser",
+    "build:core": "cd core && npx tsc",
+    "build:server": "cd server && npx tsc",
+    "build:browser": "cd browser && npx tsc"
+  }
+}

@@ -25,6 +25,7 @@
     "directory": "platforms/browser"
   },
   "dependencies": {
+    "@nse-dev/core": "^0.1.0",
     "nostr-crypto-utils": "^0.7.0",
     "@noble/curves": "^2.0.1",
     "@noble/hashes": "^2.0.1"

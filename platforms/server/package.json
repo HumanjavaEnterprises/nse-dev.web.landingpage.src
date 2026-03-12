@@ -9,14 +9,6 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./cloudflare": {
-      "import": "./dist/cloudflare.js",
-      "types": "./dist/cloudflare.d.ts"
-    },
-    "./node": {
-      "import": "./dist/node.js",
-      "types": "./dist/node.d.ts"
     }
   },
   "files": ["dist"],
@@ -33,6 +25,7 @@
     "directory": "platforms/server"
   },
   "dependencies": {
+    "@nse-dev/core": "^0.1.0",
     "nostr-crypto-utils": "^0.7.0",
     "@noble/curves": "^2.0.1",
     "@noble/hashes": "^2.0.1"

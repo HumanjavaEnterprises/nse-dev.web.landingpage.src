@@ -3,7 +3,7 @@
  * NOT for production (keys lost on restart)
  */
 
-import type { NSEStorage } from '../../core/src/index.js';
+import type { NSEStorage } from '@nse-dev/core';
 
 export class NSEMemoryStorage implements NSEStorage {
   private store = new Map<string, string>();

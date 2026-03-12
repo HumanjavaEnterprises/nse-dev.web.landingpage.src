@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { NSEBrowser } from './browser.js';
 import { NSEMemoryStorage } from './storage-memory.js';
-import { NSEError, NSEErrorCode } from '../../core/src/index.js';
+import { NSEError, NSEErrorCode } from '@nse-dev/core';
 import { verifySignature } from 'nostr-crypto-utils';
 import { bytesToHex } from './crypto.js';
 

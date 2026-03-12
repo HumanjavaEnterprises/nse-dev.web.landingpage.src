@@ -18,17 +18,28 @@ platforms/             ← Working code for each target platform
   server/              ← @nse-dev/server — TypeScript (CF Workers + Node.js)
   browser/             ← @nse-dev/browser — TypeScript (WebAuthn + SubtleCrypto)
   python/              ← nse-dev — Python (PyPI)
+examples/              ← Real-world usage patterns (7 examples)
 generate-og.py         ← Pillow script to regenerate the social card
 README.md              ← Full project overview + DNS setup
 ```
 
 ## How to Work With This Repo
 
+### Landing Page
 - **No build step.** Edit `docs/index.html` directly. Push to `main` and GitHub Pages deploys.
 - **Design system:** Dark theme with CSS custom properties. `--bg: #0a0a0f`, `--cyan: #22d3ee`, `--text: #f0f0f5`. System font stack, monospace for code.
 - **OG image:** Regenerate with `python3 generate-og.py` (requires Pillow). Output goes to `docs/og-image.png`.
 - **No JavaScript.** The page is pure HTML + CSS. Keep it that way unless there's a strong reason.
 - **Mobile responsive.** Media query at 480px. Test any changes at small viewports.
+
+### Platform Code
+- **npm workspaces:** `platforms/package.json` defines workspaces for core, server, browser.
+- **Install:** `cd platforms && npm install` — links `@nse-dev/core` for local development.
+- **Run all tests:** `cd platforms && npm test` — runs core (vitest), server (vitest), browser (vitest), python (pytest). 82 tests total.
+- **Individual tests:** `npm run test:core`, `npm run test:server`, `npm run test:browser`, `npm run test:python`
+- **Build TypeScript:** `npm run build` — compiles core, server, browser to `dist/`.
+- **Python tests:** Requires `pip install cryptography secp256k1 pytest`.
+- **Imports:** Server and browser import from `@nse-dev/core` (workspace-linked). In development, vitest resolves to `core/src/index.ts` directly.
 
 ## Content Sections
 

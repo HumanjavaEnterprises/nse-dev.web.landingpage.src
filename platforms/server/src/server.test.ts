@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { NSEServer } from './server.js';
 import { NSEMemoryStorage } from './storage-memory.js';
 import { generateMasterKey } from './crypto.js';
-import { NSEError, NSEErrorCode } from '../../core/src/index.js';
+import { NSEError, NSEErrorCode } from '@nse-dev/core';
 import { verifySignature } from 'nostr-crypto-utils';
 
 describe('@nse-dev/server — NSEServer', () => {

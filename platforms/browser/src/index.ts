@@ -5,8 +5,8 @@
  * nostr-crypto-utils for Schnorr signing.
  */
 
-export type { NSEProvider, NSEEvent, NSESignedEvent, NSEKeyInfo, NSEStorage, NSEEncryptedBlob } from '../../core/src/index.js';
-export { NSEError, NSEErrorCode } from '../../core/src/index.js';
+export type { NSEProvider, NSEEvent, NSESignedEvent, NSEKeyInfo, NSEStorage, NSEEncryptedBlob } from '@nse-dev/core';
+export { NSEError, NSEErrorCode } from '@nse-dev/core';
 
 export { NSEBrowser } from './browser.js';
 export type { NSEBrowserConfig } from './browser.js';

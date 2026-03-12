@@ -2,7 +2,7 @@
  * In-memory storage — for testing (no IndexedDB needed)
  */
 
-import type { NSEStorage } from '../../core/src/index.js';
+import type { NSEStorage } from '@nse-dev/core';
 
 export class NSEMemoryStorage implements NSEStorage {
   private store = new Map<string, string>();

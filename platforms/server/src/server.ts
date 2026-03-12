@@ -17,7 +17,7 @@ import {
 } from 'nostr-crypto-utils';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 import { encrypt, decrypt } from './crypto.js';
-import { NSEError, NSEErrorCode } from '../../core/src/index.js';
+import { NSEError, NSEErrorCode } from '@nse-dev/core';
 import type {
   NSEProvider,
   NSEEvent,
@@ -25,7 +25,7 @@ import type {
   NSEKeyInfo,
   NSEStorage,
   NSEEncryptedBlob,
-} from '../../core/src/index.js';
+} from '@nse-dev/core';
 
 const BLOB_KEY = 'nse:blob';
 
