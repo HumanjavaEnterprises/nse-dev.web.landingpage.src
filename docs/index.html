@@ -126,6 +126,14 @@
     }
 
     .section p strong { color: var(--text); }
+    .section p code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: var(--bg-card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--cyan);
+    }
 
     /* Flow diagram */
     .flow {
@@ -311,6 +319,139 @@
             <td>Browser</td>
             <td>WebAuthn</td>
             <td>SubtleCrypto P-256 → AES-GCM → secp256k1</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Architecture</h2>
+      <p>NSE is a <strong>library</strong>, not a service. It detects the platform and delegates to the right hardware.</p>
+      <div class="flow">┌─────────────────────────────────────┐
+│          Your Nostr App             │
+│   nse.sign(event) / nse.generate() │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│            NSE Library              │
+│  Platform detection + unified API   │
+└──────────────┬──────────────────────┘
+               │
+   ┌───────────┼───────────┐
+   │           │           │
+┌──▼──┐   ┌───▼───┐   ┌───▼───┐
+│ iOS │   │Android│   │Server │
+│ SEP │   │StrongB│   │ TPM/  │
+│P-256│   │ P-256 │   │ KMS   │
+└─────┘   └───────┘   └───────┘
+   │           │           │
+   └───────────┼───────────┘
+               │
+        <span class="hl">AES-GCM encrypted</span>
+        <span class="hl">secp256k1 key blob</span>
+        (Keychain / KeyStore / KV)</div>
+    </section>
+
+    <section class="section">
+      <h2>Full API</h2>
+      <div class="code-block">
+        <span class="fn">nse.generate</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → { pubkey, npub }</span><br>
+        <span class="fn">nse.sign</span>(event)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → signed event (id + sig populated)</span><br>
+        <span class="fn">nse.getPublicKey</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → hex pubkey</span><br>
+        <span class="fn">nse.getNpub</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → bech32 npub</span><br>
+        <span class="fn">nse.exists</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → boolean</span><br>
+        <span class="fn">nse.destroy</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → wipe key material</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Prior Art</h2>
+      <p>Existing projects solve <strong>pieces</strong> of this. Nobody has assembled the full stack.</p>
+      <table class="platform-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Scope</th>
+            <th>Gap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>noauth-enclaved</td>
+            <td>NIP-46 signer in AWS Nitro</td>
+            <td>Server-only, not mobile</td>
+          </tr>
+          <tr>
+            <td>keycrux</td>
+            <td>Key persistence for Nitro enclaves</td>
+            <td>Server-only</td>
+          </tr>
+          <tr>
+            <td>K1 (Swift)</td>
+            <td>secp256k1 Schnorr signing</td>
+            <td>No enclave key wrapping</td>
+          </tr>
+          <tr>
+            <td>LNbits NSD</td>
+            <td>ESP32 hardware signer</td>
+            <td>DIY device, not phone-native</td>
+          </tr>
+          <tr>
+            <td>HardKey SDK</td>
+            <td>Cross-platform hardware keys</td>
+            <td>P-256 only, no secp256k1</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>NIP Integration</h2>
+      <p><strong>NIP-46</strong> — NSE sits behind the NIP-46 signer interface. Your app calls <code>nse.sign()</code>, NSE handles hardware unlock + decryption.</p>
+      <p><strong>NIP-49</strong> — NSE replaces ncryptsec for key storage. Instead of passphrase-encrypted keys, the enclave protects them.</p>
+      <p><strong>Future NIP</strong> — Hardware-backed key attestation. Prove to a relay that a key is hardware-protected.</p>
+    </section>
+
+    <section class="section">
+      <h2>Planned Packages</h2>
+      <table class="platform-table">
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Platform</th>
+            <th>Registry</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>@nse-dev/core</td>
+            <td>TypeScript types + interface</td>
+            <td>npm</td>
+          </tr>
+          <tr>
+            <td>@nse-dev/ios</td>
+            <td>Swift via Secure Enclave</td>
+            <td>Swift Package</td>
+          </tr>
+          <tr>
+            <td>@nse-dev/android</td>
+            <td>Kotlin via StrongBox</td>
+            <td>Maven</td>
+          </tr>
+          <tr>
+            <td>@nse-dev/server</td>
+            <td>CF Workers / Node.js</td>
+            <td>npm</td>
+          </tr>
+          <tr>
+            <td>@nse-dev/browser</td>
+            <td>WebAuthn + SubtleCrypto</td>
+            <td>npm</td>
+          </tr>
+          <tr>
+            <td>nse-dev</td>
+            <td>Python wrapper</td>
+            <td>PyPI</td>
           </tr>
         </tbody>
       </table>
