@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NSE — Nostr Secure Enclave</title>
-  <meta name="description" content="Open-source hardware-backed key management for Nostr. Your nsec, encrypted at rest by hardware you already own.">
+  <meta name="description" content="Sovereign AI infrastructure on Nostr. Hardware-backed key management, Lightning wallet, scheduling, and social graph. The four pillars of agent autonomy.">
   <!-- Open Graph -->
   <meta property="og:title" content="NSE — Nostr Secure Enclave">
   <meta property="og:description" content="Hardware-backed key management for Nostr. Your nsec, encrypted at rest by hardware you already own.">
@@ -231,6 +231,61 @@
     footer a { color: var(--text-dim); }
     footer a:hover { color: var(--cyan); }
 
+    /* Pillar cards */
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .pillar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 20px;
+      transition: border-color 0.15s;
+    }
+
+    .pillar-card:hover { border-color: var(--cyan); }
+
+    .pillar-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .pillar-card .pillar-label {
+      color: var(--cyan);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .pillar-card p {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .pillar-card code {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      background: rgba(34,211,238,0.08);
+      color: var(--cyan);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .pillar-card a {
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 480px) {
+      .pillar-grid { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 480px) {
       .hero { padding: 60px 0 40px; }
       .hero h1 { font-size: 2.2rem; }
@@ -245,8 +300,9 @@
       <h1><span>NSE</span></h1>
       <p class="hero-tagline">Nostr Secure Enclave</p>
       <p class="hero-one-liner">
-        Hardware-backed key management for Nostr. Your nsec, encrypted at rest
-        by hardware you already own. One API across iOS, Android, server, and browser.
+        The cryptographic foundation for sovereign AI. Hardware-backed key management,
+        identity, wallet, scheduling, and relationships &mdash; everything an agent needs
+        to operate independently on the open internet.
       </p>
 
       <div class="code-block">
@@ -556,6 +612,62 @@
     </section>
 
     <section class="section">
+      <h2>The Four Pillars</h2>
+      <p>
+        NSE is the cryptographic foundation. On top of it, four Python SDKs give AI agents
+        everything they need to operate as sovereign entities &mdash; not services.
+      </p>
+
+      <div class="pillar-grid">
+        <div class="pillar-card">
+          <h3>NostrKey</h3>
+          <div class="pillar-label">Identity</div>
+          <p>Cryptographic identity. Generate keypairs, sign events, encrypt messages, NIP-46 bunker delegation.</p>
+          <code>pip install nostrkey</code>
+          <br><br>
+          <a href="/openclaw.html#nostrkey">Docs &rarr;</a> &middot;
+          <a href="https://pypi.org/project/nostrkey/">PyPI</a> &middot;
+          <a href="https://github.com/HumanjavaEnterprises/nostrkey.app.OC-python.src">Source</a>
+        </div>
+        <div class="pillar-card">
+          <h3>NostrWalletConnect</h3>
+          <div class="pillar-label">Finance</div>
+          <p>Lightning wallet access via NIP-47. Pay invoices, check balance, create invoices. Non-custodial.</p>
+          <code>pip install nostrwalletconnect</code>
+          <br><br>
+          <a href="/openclaw.html#nostrwalletconnect">Docs &rarr;</a> &middot;
+          <a href="https://pypi.org/project/nostrwalletconnect/">PyPI</a> &middot;
+          <a href="https://github.com/HumanjavaEnterprises/nwc.app.OC-python.src">Source</a>
+        </div>
+        <div class="pillar-card">
+          <h3>NostrCalendar</h3>
+          <div class="pillar-label">Time</div>
+          <p>Sovereign scheduling via NIP-52. Publish availability, book meetings, agent-to-agent negotiation.</p>
+          <code>pip install nostrcalendar</code>
+          <br><br>
+          <a href="/openclaw.html#nostrcalendar">Docs &rarr;</a> &middot;
+          <a href="https://pypi.org/project/nostrcalendar/">PyPI</a> &middot;
+          <a href="https://github.com/HumanjavaEnterprises/nostrcalendar.app.OC-python.src">Source</a>
+        </div>
+        <div class="pillar-card">
+          <h3>NostrSocial</h3>
+          <div class="pillar-label">Relationships</div>
+          <p>Social graph with trust tiers, drift detection, conversation evaluation, content guardrails, and cross-channel recognition.</p>
+          <code>pip install nostrsocial</code>
+          <br><br>
+          <a href="/openclaw.html#nostrsocial">Docs &rarr;</a> &middot;
+          <a href="https://pypi.org/project/nostrsocial/">PyPI</a> &middot;
+          <a href="https://github.com/HumanjavaEnterprises/nostrsocial.app.OC-python.src">Source</a>
+        </div>
+      </div>
+
+      <p>
+        Strip any one from an agent and it becomes dependent. All four together = sovereign.
+        <a href="/openclaw.html">Full OpenClaw documentation &rarr;</a>
+      </p>
+    </section>
+
+    <section class="section">
       <h2>What NSE Is Not</h2>
       <p><strong>Not a remote signer.</strong> NSE is a local library. Use NIP-46 for remote signing.</p>
       <p><strong>Not custodial.</strong> Keys never leave your device.</p>
@@ -565,13 +677,20 @@
 
     <section class="cta">
       <h2>Start Building</h2>
-      <p>NSE is live on all 6 platforms. Server, browser, Python, iOS, and Android — install and go.</p>
-      <a class="cta-btn" href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src">GitHub</a>
-      <a class="cta-btn" href="/guide.html" style="margin-left: 12px; background: transparent; border: 1px solid var(--cyan); color: var(--cyan);">Bunker 101 Guide</a>
+      <p>NSE + four Python SDKs. Everything an AI agent needs to be sovereign.</p>
+      <a class="cta-btn" href="/openclaw.html">OpenClaw Docs</a>
+      <a class="cta-btn" href="https://github.com/HumanjavaEnterprises" style="margin-left: 12px; background: transparent; border: 1px solid var(--cyan); color: var(--cyan);">GitHub</a>
+      <a class="cta-btn" href="/guide.html" style="margin-left: 12px; background: transparent; border: 1px solid var(--cyan); color: var(--cyan);">Bunker 101</a>
     </section>
 
     <footer>
       <p>NSE is open source (MIT) &middot; Part of the <a href="https://www.npmjs.com/~vveerrgg">nostr-*</a> library family &middot; A <a href="https://humanjava.com">Humanjava</a> project</p>
+      <p style="margin-top:8px;">
+        <a href="/privacy.html">Privacy</a> &middot;
+        <a href="/terms.html">Terms</a> &middot;
+        <a href="/support.html">Support</a> &middot;
+        <a href="https://loginwithnostr.com/openclaw">OpenClaw</a>
+      </p>
     </footer>
   </div>
 </body>

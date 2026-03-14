@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support — NSE</title>
+    <meta name="description" content="Get help with NSE (Nostr Secure Enclave). Bug reports, security issues, and community resources.">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --text: #f0f0f5;
+            --text-dim: #8888a0;
+            --cyan: #22d3ee;
+            --cyan-dim: #0891b2;
+            --border: #1e1e2e;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .container { max-width: 720px; margin: 0 auto; padding: 60px 24px; }
+        .nav { margin-bottom: 48px; }
+        .nav a { color: var(--text-dim); font-size: 0.9rem; }
+        .nav a:hover { color: var(--text); }
+        .nav .sep { color: var(--border); margin: 0 8px; }
+        h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+        h1 span { color: var(--cyan); }
+        .subtitle { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 32px; }
+        h2 { font-size: 1.25rem; font-weight: 700; margin: 32px 0 12px; color: var(--cyan); }
+        p, ul { margin-bottom: 16px; color: var(--text-dim); }
+        ul { padding-left: 24px; }
+        li { margin-bottom: 8px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 16px 0; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
+        .card p { margin-bottom: 8px; }
+        .card p:last-child { margin-bottom: 0; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+        footer { text-align: center; padding: 48px 0 24px; color: var(--text-dim); font-size: 0.85rem; }
+        footer a { color: var(--text-dim); }
+        footer a:hover { color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">NSE</a>
+            <span class="sep">/</span>
+            <span style="color:var(--text);">Support</span>
+        </div>
+
+        <h1><span>Support</span></h1>
+        <p class="subtitle">NSE is open source. All support happens in the open.</p>
+
+        <h2>Report a Bug or Request a Feature</h2>
+        <p>File an issue on the relevant GitHub repository:</p>
+
+        <div class="grid">
+            <div class="card">
+                <h3>NSE Core</h3>
+                <p>TypeScript types, NSEProvider interface</p>
+                <p><a href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/issues">Open an issue</a></p>
+            </div>
+            <div class="card">
+                <h3>NSE Server</h3>
+                <p>CF Workers, Node.js</p>
+                <p><a href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/issues">Open an issue</a></p>
+            </div>
+            <div class="card">
+                <h3>NSE Browser</h3>
+                <p>WebAuthn, SubtleCrypto</p>
+                <p><a href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/issues">Open an issue</a></p>
+            </div>
+            <div class="card">
+                <h3>NSE Python</h3>
+                <p>PyPI package for AI agents</p>
+                <p><a href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/issues">Open an issue</a></p>
+            </div>
+        </div>
+
+        <h2>Security Vulnerabilities</h2>
+        <p>If you discover a security vulnerability in NSE, <strong>do not open a public issue.</strong> Use GitHub's private vulnerability reporting feature on the repository's Security tab. Given that NSE handles cryptographic key material, we take security reports seriously and will respond promptly.</p>
+
+        <h2>OpenClaw Packages</h2>
+        <p>For issues with the OpenClaw Python ecosystem (nostrkey, nostrwalletconnect, nostrcalendar, nostrsocial), see the <a href="https://loginwithnostr.com/openclaw/support/">OpenClaw support page</a>.</p>
+
+        <h2>General Questions</h2>
+        <ul>
+            <li><strong>GitHub Discussions</strong> — Use the Discussions tab on the repository</li>
+            <li><strong>Nostr</strong> — Tag or DM <a href="https://npub.bio">the team on Nostr</a></li>
+        </ul>
+
+        <h2>This Website</h2>
+        <p>For issues with nse.dev itself:</p>
+        <p><a href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/issues">Open an issue on the website repo</a></p>
+
+        <h2>Company</h2>
+        <p><a href="https://humanjava.com">Humanjava Enterprises Inc.</a><br>Ontario, Canada</p>
+
+        <footer>
+            <a href="/">NSE</a> &middot;
+            <a href="/guide.html">Guide</a> &middot;
+            <a href="/privacy.html">Privacy</a> &middot;
+            <a href="/terms.html">Terms</a> &middot;
+            <a href="https://loginwithnostr.com/openclaw">OpenClaw</a> &middot;
+            <a href="https://github.com/HumanjavaEnterprises">GitHub</a>
+            <br><br>
+            &copy; 2026 <a href="https://humanjava.com">Humanjava Enterprises Inc.</a>
+        </footer>
+    </div>
+</body>
+</html>

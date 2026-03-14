@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — NSE</title>
+    <meta name="description" content="Privacy policy for NSE (Nostr Secure Enclave) and the nse.dev website.">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --text: #f0f0f5;
+            --text-dim: #8888a0;
+            --cyan: #22d3ee;
+            --cyan-dim: #0891b2;
+            --border: #1e1e2e;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .container { max-width: 720px; margin: 0 auto; padding: 60px 24px; }
+        .nav { margin-bottom: 48px; }
+        .nav a { color: var(--text-dim); font-size: 0.9rem; }
+        .nav a:hover { color: var(--text); }
+        .nav .sep { color: var(--border); margin: 0 8px; }
+        h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+        h1 span { color: var(--cyan); }
+        .updated { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 32px; }
+        h2 { font-size: 1.25rem; font-weight: 700; margin: 32px 0 12px; color: var(--cyan); }
+        p, ul { margin-bottom: 16px; color: var(--text-dim); }
+        ul { padding-left: 24px; }
+        li { margin-bottom: 8px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 24px 0; }
+        footer { text-align: center; padding: 48px 0 24px; color: var(--text-dim); font-size: 0.85rem; }
+        footer a { color: var(--text-dim); }
+        footer a:hover { color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">NSE</a>
+            <span class="sep">/</span>
+            <span style="color:var(--text);">Privacy</span>
+        </div>
+
+        <h1>Privacy <span>Policy</span></h1>
+        <p class="updated">Last updated: March 13, 2026</p>
+
+        <div class="card">
+            <p style="color:var(--text);margin-bottom:0;"><strong>The short version:</strong> NSE libraries run entirely on your device. We don't collect telemetry, require accounts, or phone home. Your keys never leave your hardware.</p>
+        </div>
+
+        <h2>Who We Are</h2>
+        <p>NSE (Nostr Secure Enclave) is maintained by <a href="https://humanjava.com">Humanjava Enterprises Inc.</a> This policy covers the NSE libraries (across npm, PyPI, Swift Package Manager, and Maven) and the nse.dev website.</p>
+
+        <h2>The Libraries</h2>
+        <p>NSE libraries are open-source, distributed under the MIT license. When you install and use them:</p>
+        <ul>
+            <li><strong>No telemetry.</strong> The libraries do not collect usage data, analytics, crash reports, or any other information.</li>
+            <li><strong>No network calls.</strong> NSE operates entirely locally. Key generation, encryption, and signing happen on your device. The only network activity is what your application does with the signed output.</li>
+            <li><strong>No accounts.</strong> No registration, API keys, or user accounts required.</li>
+            <li><strong>Keys stay local.</strong> Private keys are encrypted by your device's hardware enclave and stored in platform-native secure storage (Keychain, KeyStore, etc.). We never have access.</li>
+        </ul>
+
+        <h2>Hardware Enclave Interaction</h2>
+        <p>NSE uses your device's hardware security module (iOS Secure Enclave, Android StrongBox/TEE, or software fallback) to protect keys. It's worth being explicit:</p>
+        <ul>
+            <li><strong>The hardware key never leaves the device.</strong> The P-256 wrapping key is generated inside the secure enclave and is non-exportable by design.</li>
+            <li><strong>Biometric data stays in hardware.</strong> When biometric unlock is used, the biometric check happens entirely within the secure enclave. NSE never sees or processes biometric data.</li>
+            <li><strong>The encrypted key blob is stored locally.</strong> The AES-GCM encrypted secp256k1 key is stored in platform-native secure storage on your device.</li>
+        </ul>
+
+        <h2>OpenClaw Integration</h2>
+        <p>NSE is the cryptographic foundation for the <a href="https://loginwithnostr.com/openclaw">OpenClaw</a> ecosystem. The OpenClaw Python packages (nostrkey, nostrwalletconnect, nostrcalendar, nostrsocial) follow the same privacy principles: local-first, no telemetry, no accounts. See the <a href="/openclaw.html">OpenClaw documentation</a> for details on each package.</p>
+
+        <h2>The Website</h2>
+        <p>nse.dev is a static site hosted on GitHub Pages. We use:</p>
+        <ul>
+            <li><strong>No cookies.</strong></li>
+            <li><strong>No analytics.</strong></li>
+            <li><strong>GitHub Pages hosting.</strong> GitHub may collect standard server logs. See <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#data-collection">GitHub's data collection policy</a>.</li>
+        </ul>
+
+        <h2>Children</h2>
+        <p>NSE libraries and this website are developer tools not directed at children under 13.</p>
+
+        <h2>Changes</h2>
+        <p>If this policy changes, we'll update the date at the top. Significant changes will be noted in release changelogs.</p>
+
+        <h2>Contact</h2>
+        <p>Questions? See our <a href="/support.html">support page</a> or file an issue on <a href="https://github.com/HumanjavaEnterprises">GitHub</a>.</p>
+
+        <footer>
+            <a href="/">NSE</a> &middot;
+            <a href="/guide.html">Guide</a> &middot;
+            <a href="/terms.html">Terms</a> &middot;
+            <a href="/support.html">Support</a> &middot;
+            <a href="https://loginwithnostr.com/openclaw">OpenClaw</a> &middot;
+            <a href="https://github.com/HumanjavaEnterprises">GitHub</a>
+            <br><br>
+            &copy; 2026 <a href="https://humanjava.com">Humanjava Enterprises Inc.</a>
+        </footer>
+    </div>
+</body>
+</html>
