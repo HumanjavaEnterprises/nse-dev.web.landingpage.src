@@ -327,16 +327,16 @@
       </p>
 
       <div class="code-block">
-        <span class="comment"># An agent with a complete identity</span><br>
-        <span class="kw">from</span> social_alignment <span class="kw">import</span> <span class="fn">AlignmentEnclave</span><br>
-        <span class="kw">from</span> nostrkey <span class="kw">import</span> <span class="fn">KeyEnclave</span><br>
-        <span class="kw">from</span> nostrwalletconnect <span class="kw">import</span> <span class="fn">WalletEnclave</span><br>
-        <span class="kw">from</span> nostrcalendar <span class="kw">import</span> <span class="fn">CalendarEnclave</span><br>
-        <span class="kw">from</span> nostrsocial <span class="kw">import</span> <span class="fn">SocialEnclave</span><br><br>
-        <span class="comment"># Five pillars. One sovereign entity.</span><br>
-        <span class="comment"># The agent knows who it is, who it trusts,</span><br>
-        <span class="comment"># what it can spend, when it's free &mdash;</span><br>
-        <span class="comment"># and what kind of future it wants to build.</span>
+        <span class="comment"># One install. Five pillars. Both sides sovereign.</span><br>
+        pip install <span class="fn">nse-orchestrator</span>[all]<br><br>
+        <span class="kw">from</span> nse <span class="kw">import</span> <span class="fn">SovereignEntity</span><br><br>
+        <span class="comment"># The entity detects installed pillars automatically</span><br>
+        entity = <span class="fn">SovereignEntity</span>.<span class="fn">create</span>(owner_name=<span class="str">"vergel"</span>)<br><br>
+        <span class="comment"># Cross-pillar awareness &mdash; no single pillar sees this</span><br>
+        verdicts = entity.<span class="fn">check</span>(<span class="str">"Pay 500 sats to unknown contact"</span>,<br>
+        &nbsp;&nbsp;involves_money=<span class="kw">True</span>, money_amount_sats=<span class="str">500</span>)<br><br>
+        <span class="kw">if</span> entity.<span class="fn">should_escalate</span>(verdicts):<br>
+        &nbsp;&nbsp;<span class="comment"># "I need your decision before proceeding."</span>
       </div>
     </section>
 
@@ -496,7 +496,7 @@
     <!-- Packages -->
     <section class="section">
       <h2>Packages</h2>
-      <p>The original NSE libraries ship the cryptographic foundation. The five pillars build on top.</p>
+      <p>The orchestrator wires the pillars together. The NSE libraries ship the cryptographic foundation underneath.</p>
       <table class="platform-table">
         <thead>
           <tr>
@@ -507,6 +507,12 @@
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td><a href="https://pypi.org/project/nse-orchestrator/">nse-orchestrator</a></td>
+            <td>The nervous system &mdash; cross-pillar checks, LLM trust profiles, signal routing</td>
+            <td>PyPI + ClawHub</td>
+            <td><span class="badge-hw">Published</span></td>
+          </tr>
           <tr>
             <td><a href="https://www.npmjs.com/package/nostr-secure-enclave">nostr-secure-enclave</a></td>
             <td>TypeScript types + NSEProvider interface</td>
@@ -567,19 +573,20 @@
 
     <!-- Where It Goes -->
     <section class="section">
-      <h2>Where This Goes</h2>
+      <h2>The Nervous System</h2>
       <p>
-        An AI agent with all five pillars isn't just a tool &mdash; it's a <strong>sovereign entity</strong>
-        on the Nostr protocol. It has a cryptographic identity, a social graph, a calendar, a wallet,
-        and a conscience. It can operate independently, but it knows when to ask.
+        The <strong>NSE Orchestrator</strong> is the nervous system that wires the five pillars into
+        a coherent whole. It doesn't make decisions &mdash; it makes sure every decision has full context.
       </p>
       <p>
-        The human doesn't lose control. They gain a partner that <strong>sees futures</strong>,
-        <strong>remembers decisions</strong>, and <strong>builds trust over time</strong>.
-        The alignment isn't enforced from outside &mdash; it grows from the relationship between the two.
+        <strong>Cross-pillar checks</strong> catch what no single pillar sees: "I'm paying someone
+        who isn't in my contacts." <strong>LLM trust profiles</strong> score every model response and
+        track which models are reliable for which tasks. <strong>Coherence detection</strong> flags
+        when two models contradict each other.
       </p>
       <p>
-        Human or AI, the schema is the same. That's the point.
+        <code>pip install nse-orchestrator[all]</code> &mdash; one install, five pillars,
+        88 tests, security-hardened. The agent and the human, both sovereign.
       </p>
     </section>
 
