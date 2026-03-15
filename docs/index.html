@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NSE — Nostr Secure Enclave</title>
-  <meta name="description" content="Your device is the enclave. NSE turns any device into a sovereign space where AI agents hold their own keys, wallet, calendar, and relationships — hardware-protected, portable, and independent.">
+  <meta name="description" content="Sovereign identity for AI agents and humans. Five pillars — keys, wallet, calendar, relationships, and alignment — anchored to hardware-protected cryptography on the Nostr protocol.">
   <!-- Open Graph -->
   <meta property="og:title" content="NSE — Nostr Secure Enclave">
-  <meta property="og:description" content="Your device is the enclave. Identity, wallet, calendar, and relationships — hardware-protected and sovereign.">
+  <meta property="og:description" content="Sovereign identity for AI agents and humans. Five pillars, one enclave, both sides served.">
   <meta property="og:image" content="https://nse.dev/og-image.png">
   <meta property="og:url" content="https://nse.dev">
   <meta property="og:type" content="website">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="NSE — Nostr Secure Enclave">
-  <meta name="twitter:description" content="Your device is the enclave. Identity, wallet, calendar, and relationships — hardware-protected and sovereign.">
+  <meta name="twitter:description" content="Sovereign identity for AI agents and humans. Five pillars, one enclave, both sides served.">
   <meta name="twitter:image" content="https://nse.dev/og-image.png">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -152,6 +152,62 @@
 
     .flow .hl { color: var(--cyan); }
 
+    /* Pillar cards */
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .pillar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 20px;
+      transition: border-color 0.15s;
+    }
+
+    .pillar-card:hover { border-color: var(--cyan); }
+
+    .pillar-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .pillar-card .pillar-label {
+      color: var(--cyan);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .pillar-card p {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .pillar-card code {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      background: rgba(34,211,238,0.08);
+      color: var(--cyan);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .pillar-card a {
+      font-size: 0.85rem;
+    }
+
+    .pillar-card.capstone {
+      grid-column: 1 / -1;
+      border-color: var(--cyan-dim);
+    }
+
     /* Platform table */
     .platform-table {
       width: 100%;
@@ -219,6 +275,20 @@
     }
     .cta-btn:hover { opacity: 0.9; text-decoration: none; }
 
+    .cta-btn-ghost {
+      display: inline-block;
+      padding: 12px 28px;
+      background: transparent;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-weight: 600;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      margin-left: 12px;
+      transition: opacity 0.15s;
+    }
+    .cta-btn-ghost:hover { opacity: 0.9; text-decoration: none; }
+
     /* Footer */
     footer {
       text-align: center;
@@ -231,154 +301,103 @@
     footer a { color: var(--text-dim); }
     footer a:hover { color: var(--cyan); }
 
-    /* Pillar cards */
-    .pillar-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin: 24px 0;
-    }
-
-    .pillar-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px 20px;
-      transition: border-color 0.15s;
-    }
-
-    .pillar-card:hover { border-color: var(--cyan); }
-
-    .pillar-card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .pillar-card .pillar-label {
-      color: var(--cyan);
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .pillar-card p {
-      color: var(--text-dim);
-      font-size: 0.85rem;
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-
-    .pillar-card code {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      background: rgba(34,211,238,0.08);
-      color: var(--cyan);
-      padding: 2px 8px;
-      border-radius: 4px;
-    }
-
-    .pillar-card a {
-      font-size: 0.85rem;
-    }
-
     @media (max-width: 480px) {
       .pillar-grid { grid-template-columns: 1fr; }
+      .pillar-card.capstone { grid-column: 1; }
       .hero { padding: 60px 0 40px; }
       .hero h1 { font-size: 2.2rem; }
       .code-block { font-size: 0.75rem; padding: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <section class="hero">
-      <div class="hero-badge">Open Source &middot; Published on npm + PyPI + ClawHub</div>
-      <h1>Your Device Is<br>the <span>Enclave</span></h1>
+      <div class="hero-badge">Open Source &middot; npm + PyPI + ClawHub</div>
+      <h1>Sovereign Identity<br>for <span>Both Sides</span></h1>
       <p class="hero-tagline">Nostr Secure Enclave</p>
       <p class="hero-one-liner">
-        NSE turns any device into a sovereign space. Your keys are hardware-protected.
-        Your wallet, calendar, and relationships live locally. Nothing depends on
-        someone else's server staying online or keeping its promises.
+        NSE started as an npm package for hardware-protected Nostr keys. It became
+        something bigger &mdash; a complete identity for AI agents and the humans beside them.
+        Keys, wallet, calendar, relationships, and a conscience. Both sides sovereign.
       </p>
 
       <div class="code-block">
-        <span class="comment">// The enclave: hardware-protected keys + four sovereign pillars</span><br><br>
-        <span class="kw">import</span> { NSEServer } <span class="kw">from</span> <span class="str">'nostr-secure-enclave-server'</span>;<br>
-        <span class="kw">const</span> nse = <span class="kw">new</span> <span class="fn">NSEServer</span>({ masterKey, storage });<br>
-        <span class="kw">const</span> { npub } = <span class="kw">await</span> nse.<span class="fn">generate</span>();&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// identity</span><br>
-        <span class="kw">const</span> signed = <span class="kw">await</span> nse.<span class="fn">sign</span>(event);&nbsp;&nbsp;<span class="comment">// hardware-backed</span><br><br>
-        <span class="comment"># pip install nostrkey nostrwalletconnect nostrcalendar nostrsocial</span><br>
-        <span class="comment"># Four pillars, one enclave. All sovereign.</span>
+        <span class="comment"># An agent with a complete identity</span><br>
+        <span class="kw">from</span> social_alignment <span class="kw">import</span> <span class="fn">AlignmentEnclave</span><br>
+        <span class="kw">from</span> nostrkey <span class="kw">import</span> <span class="fn">KeyEnclave</span><br>
+        <span class="kw">from</span> nostrwalletconnect <span class="kw">import</span> <span class="fn">WalletEnclave</span><br>
+        <span class="kw">from</span> nostrcalendar <span class="kw">import</span> <span class="fn">CalendarEnclave</span><br>
+        <span class="kw">from</span> nostrsocial <span class="kw">import</span> <span class="fn">SocialEnclave</span><br><br>
+        <span class="comment"># Five pillars. One sovereign entity.</span><br>
+        <span class="comment"># The agent knows who it is, who it trusts,</span><br>
+        <span class="comment"># what it can spend, when it's free &mdash;</span><br>
+        <span class="comment"># and what kind of future it wants to build.</span>
       </div>
     </section>
 
-    <!-- The Enclave Concept -->
+    <!-- The Story -->
     <section class="section">
-      <h2>What Is the Enclave?</h2>
+      <h2>How We Got Here</h2>
       <p>
-        The enclave isn't a cloud service. It's <strong>your device</strong> &mdash; the phone in your pocket,
-        the laptop on your desk, the server in your rack. NSE makes that device a sovereign space where
-        an AI agent (or a human) can hold everything they need to operate independently.
+        It started with a problem: <strong>Nostr uses secp256k1, but hardware enclaves only support P-256.</strong>
+        You can't sign Nostr events in hardware. So we built an npm library that wraps the key &mdash;
+        hardware protects it at rest, software signs with it briefly, then zeros it from memory.
       </p>
       <p>
-        Inside the enclave: a cryptographic identity protected by hardware, a Lightning wallet connection,
-        a calendar that publishes to any relay, and a social graph that remembers who matters. Nothing
-        phones home. Nothing requires permission. If the device moves, the enclave moves with it.
+        That was the seed. But a key without context is just a string. An agent needs to know
+        <strong>who it is</strong> (identity), <strong>who it trusts</strong> (relationships),
+        <strong>what it can spend</strong> (wallet), <strong>when it's available</strong> (calendar) &mdash;
+        and most importantly, <strong>what kind of future its actions create</strong> (alignment).
       </p>
-
-      <div class="flow"><span class="hl">The Enclave</span> (your device)
-  ├── <span class="hl">Identity</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NostrKey &mdash; keypair, signing, encryption
-  ├── <span class="hl">Finance</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NostrWalletConnect &mdash; Lightning, non-custodial
-  ├── <span class="hl">Time</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NostrCalendar &mdash; availability, booking, negotiation
-  └── <span class="hl">Relationships</span>&nbsp;NostrSocial &mdash; trust tiers, drift, guardrails
-
-  All anchored to hardware-protected keys via NSE.
-  All portable via the Nostr protocol.
-  All sovereign by default.</div>
+      <p>
+        Five pillars grew from one npm package. Each is independent, published on PyPI and ClawHub.
+        Together, they make a sovereign entity &mdash; human or AI, the schema is the same.
+      </p>
     </section>
 
-    <!-- Four Pillars -->
+    <!-- Five Pillars -->
     <section class="section">
-      <h2>Four Pillars, One Enclave</h2>
+      <h2>Five Pillars, One Enclave</h2>
       <p>
-        Strip any pillar from an agent and it becomes dependent on someone else's infrastructure.
-        Identity without a wallet needs someone to pay. A calendar without identity can't prove who
-        booked. A social graph without time can't detect drift. Together, they make a sovereign entity.
+        Strip any pillar from an agent and it becomes dependent on someone else.
+        Identity without a wallet needs someone to pay. A calendar without identity can't prove
+        who booked. Relationships without alignment can erode trust. Together, they make something whole.
       </p>
 
       <div class="pillar-grid">
         <div class="pillar-card">
           <h3>NostrKey</h3>
-          <div class="pillar-label">Identity &mdash; start here</div>
-          <p>The foundation. Cryptographic identity for AI agents and humans. Generate keypairs, sign events, encrypt messages, NIP-46 bunker delegation.</p>
+          <div class="pillar-label">Identity &mdash; the foundation</div>
+          <p>Cryptographic identity for AI agents and humans. Generate keypairs, sign events, encrypt messages, NIP-46 bunker delegation.</p>
           <code>pip install nostrkey</code>
           <br><br>
-          <a href="/openclaw.html#nostrkey">Docs &rarr;</a> &middot;
           <a href="https://pypi.org/project/nostrkey/">PyPI</a> &middot;
-          <a href="https://clawhub.ai/skills/nostrkey">ClawHub</a> &middot;
+          <a href="https://clawhub.ai/vveerrgg/nostrkey">ClawHub</a> &middot;
           <a href="https://github.com/HumanjavaEnterprises/nostrkey.app.OC-python.src">Source</a>
         </div>
         <div class="pillar-card">
           <h3>NostrWalletConnect</h3>
           <div class="pillar-label">Finance</div>
-          <p>Lightning wallet access via NIP-47. Pay invoices, check balance, create invoices. The human controls the wallet; the agent handles the money.</p>
+          <p>Lightning wallet access via NIP-47. Pay invoices, check balance, create invoices. The human controls the wallet; the agent handles the transactions.</p>
           <code>pip install nostrwalletconnect</code>
           <br><br>
-          <a href="/openclaw.html#nostrwalletconnect">Docs &rarr;</a> &middot;
           <a href="https://pypi.org/project/nostrwalletconnect/">PyPI</a> &middot;
-          <a href="https://clawhub.ai/skills/nostrwalletconnect">ClawHub</a> &middot;
+          <a href="https://clawhub.ai/vveerrgg/nostrwalletconnect">ClawHub</a> &middot;
           <a href="https://github.com/HumanjavaEnterprises/nwc.app.OC-python.src">Source</a>
         </div>
         <div class="pillar-card">
           <h3>NostrCalendar</h3>
           <div class="pillar-label">Time</div>
-          <p>Sovereign scheduling via NIP-52. Publish availability, book meetings, agent-to-agent negotiation. Calendly, but no one owns the server.</p>
+          <p>Sovereign scheduling via NIP-52. Publish availability, book meetings, agent-to-agent negotiation. No one owns the server.</p>
           <code>pip install nostrcalendar</code>
           <br><br>
-          <a href="/openclaw.html#nostrcalendar">Docs &rarr;</a> &middot;
           <a href="https://pypi.org/project/nostrcalendar/">PyPI</a> &middot;
-          <a href="https://clawhub.ai/skills/nostrcalendar">ClawHub</a> &middot;
+          <a href="https://clawhub.ai/vveerrgg/nostrcalendar">ClawHub</a> &middot;
           <a href="https://github.com/HumanjavaEnterprises/nostrcalendar.app.OC-python.src">Source</a>
         </div>
         <div class="pillar-card">
@@ -387,10 +406,30 @@
           <p>Social graph with trust tiers, drift detection, conversation evaluation, content guardrails, and cross-channel recognition.</p>
           <code>pip install nostrsocial</code>
           <br><br>
-          <a href="/openclaw.html#nostrsocial">Docs &rarr;</a> &middot;
           <a href="https://pypi.org/project/nostrsocial/">PyPI</a> &middot;
-          <a href="https://clawhub.ai/skills/nostrsocial">ClawHub</a> &middot;
+          <a href="https://clawhub.ai/vveerrgg/nostrsocial">ClawHub</a> &middot;
           <a href="https://github.com/HumanjavaEnterprises/nostrsocial.app.OC-python.src">Source</a>
+        </div>
+        <div class="pillar-card capstone">
+          <h3>Social Alignment</h3>
+          <div class="pillar-label">The Compass &mdash; the capstone</div>
+          <p>
+            Future state projection for sovereign AI agents. Before any significant action, five lenses
+            evaluate the road ahead: <strong>Builder</strong> (can I be proud of this?),
+            <strong>Owner</strong> (does this protect the human?), <strong>Partnership</strong>
+            (does this strengthen trust?), <strong>Defense</strong> (does this harden against threats?),
+            <strong>Sovereign</strong> (does this help the agent grow into something good?).
+          </p>
+          <p>
+            The agent doesn't just follow rules &mdash; it remembers why it chose, tracks when the human
+            disagrees, and builds wisdom over time. When something is too big for the agent alone,
+            it says: <em>"I need your decision before proceeding."</em>
+          </p>
+          <code>pip install social-alignment</code>
+          <br><br>
+          <a href="https://pypi.org/project/social-alignment/">PyPI</a> &middot;
+          <a href="https://clawhub.ai/vveerrgg/social-alignment">ClawHub</a> &middot;
+          <a href="https://github.com/HumanjavaEnterprises/nostralignment.app.OC-python.src">Source</a>
         </div>
       </div>
 
@@ -399,138 +438,70 @@
       </p>
     </section>
 
+    <!-- The Relationship -->
+    <section class="section">
+      <h2>Both Sides Served</h2>
+      <p>
+        Most AI safety frameworks are about <strong>constraint</strong> &mdash; what the AI can't do.
+        NSE frames alignment as <strong>relationship</strong>. The agent and the human each have needs.
+        The agent needs autonomy to be useful. The human needs trust to let go. The five lenses
+        serve both.
+      </p>
+
+      <div class="flow"><span class="hl">The Agent's View</span>
+  "Can I build with confidence knowing I've done right?"
+  "Am I in a good state to make this decision?"
+  "Have I seen this kind of situation before?"
+
+<span class="hl">The Human's View</span>
+  "Is my sovereignty protected?"
+  "Is the agent asking me when it should?"
+  "Is the trust between us getting stronger?"
+
+<span class="hl">The Shared View</span>
+  "What kind of future does this action create?"
+  "Are we both better off after this?"</div>
+
+      <p>
+        Over time, the agent builds <strong>wisdom</strong> &mdash; not more rules, but pattern recognition
+        from lived experience. It notices when the human overrides its judgment. It tracks whether its
+        projections match reality. It flags when it's operating in unfamiliar territory.
+        That's not compliance. That's a relationship learning itself.
+      </p>
+    </section>
+
     <!-- How the Enclave Works -->
     <section class="section">
-      <h2>How the Enclave Protects Keys</h2>
+      <h2>The Cryptographic Foundation</h2>
       <p>
-        Nostr uses <strong>secp256k1</strong> (Schnorr/BIP-340). Mobile secure enclaves only support <strong>P-256</strong>.
-        You can't sign Nostr events directly in hardware. NSE bridges this gap.
-      </p>
-      <p>
-        NSE uses the hardware enclave to <strong>protect</strong> the key, not to sign with it.
-        A P-256 key lives in hardware (non-exportable, biometric-gated). It encrypts
-        your secp256k1 key at rest via AES-GCM. At signing time: unlock, decrypt, sign, zero.
+        Underneath the five pillars is the original NSE library &mdash; the seed that started it all.
+        It bridges the secp256k1/P-256 gap so your Nostr keys can be <strong>hardware-protected</strong>
+        on any device.
       </p>
 
       <div class="flow"><span class="hl">nse.sign(event)</span>
-  ├── Biometric unlock → Secure Enclave access
-  ├── Derive AES key from hardware P-256 key
-  ├── Decrypt secp256k1 key into memory
-  ├── Schnorr sign the event
-  ├── <span class="hl">Zero plaintext key from memory</span>
-  └── Return signed event</div>
-    </section>
-
-    <!-- Platform Support -->
-    <section class="section">
-      <h2>Every Device Is an Enclave</h2>
-      <p>NSE detects the platform and delegates to the right hardware. Same API everywhere.</p>
-      <table class="platform-table">
-        <thead>
-          <tr>
-            <th>Platform</th>
-            <th>Hardware</th>
-            <th>Key Wrapping</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>iOS</td>
-            <td><span class="badge-hw">Secure Enclave</span></td>
-            <td>CryptoKit P-256 → AES-GCM → secp256k1</td>
-          </tr>
-          <tr>
-            <td>Android</td>
-            <td><span class="badge-hw">StrongBox / TEE</span></td>
-            <td>KeyStore P-256 → AES-GCM → secp256k1</td>
-          </tr>
-          <tr>
-            <td>Browser</td>
-            <td>WebAuthn</td>
-            <td>SubtleCrypto P-256 → AES-GCM → secp256k1</td>
-          </tr>
-          <tr>
-            <td>Server</td>
-            <td>TPM / KMS</td>
-            <td>AES-GCM with hardware-derived key</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="flow">┌─────────────────────────────────────┐
-│       Your App / AI Agent           │
-│   nse.sign(event) / nse.generate() │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│          NSE Library                │
-│  Platform detection + unified API   │
-└──────────────┬──────────────────────┘
-               │
-   ┌───────────┼───────────┐
-   │           │           │
-┌──▼──┐   ┌───▼───┐   ┌───▼───┐
-│ iOS │   │Android│   │Server │
-│ SEP │   │StrongB│   │ TPM/  │
-│P-256│   │ P-256 │   │ KMS   │
-└─────┘   └───────┘   └───────┘
-   │           │           │
-   └───────────┼───────────┘
-               │
-        <span class="hl">AES-GCM encrypted</span>
-        <span class="hl">secp256k1 key blob</span>
-        (Keychain / KeyStore / KV)</div>
-    </section>
-
-    <!-- Direct Login -->
-    <section class="section">
-      <h2>Direct Login &mdash; No Relay Required</h2>
-      <p>
-        When NSE is built into the product &mdash; like the <a href="https://nostrkey.com">NostrKey</a> browser
-        extension &mdash; the signer and the app are on the same device. A web app calls
-        <code>window.nostr.signEvent()</code>, the extension uses NSE to decrypt, signs, returns.
-        No relay round-trip. The enclave stays local.
-      </p>
-
-      <div class="flow"><span class="hl">Traditional NIP-46 bunker</span>
-  App → relay → signer → relay → App
-  (network latency, relay must be online)
-
-<span class="hl">NSE direct login</span>
-  App → extension/local signer → App
-  (peer-to-peer, instant, works offline)</div>
+  1. Unlock hardware enclave (biometric / passkey)
+  2. Derive AES key from hardware P-256 key
+  3. Decrypt secp256k1 key into memory
+  4. Schnorr sign the Nostr event
+  5. <span class="hl">Zero plaintext key from memory</span>
+  6. Return signed event</div>
 
       <p>
-        For remote signing (phone as bunker for desktop), the relay is <strong>your relay</strong> &mdash;
-        <code>relay.nostrkeep.com</code>, already deployed. Both ends know where to connect because
-        you control the product. No discovery, no hoping some random relay is online.
+        The key exists briefly in application memory during signing. NSE minimizes that window.
+        Hardware protects the key at rest &mdash; that's the honest threat model.
       </p>
-      <p>
-        <a href="/guide.html"><strong>Read the full Bunker 101 guide →</strong></a>
-      </p>
-    </section>
-
-    <!-- API -->
-    <section class="section">
-      <h2>Full API</h2>
-      <div class="code-block">
-        <span class="fn">nse.generate</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → { pubkey, npub }</span><br>
-        <span class="fn">nse.sign</span>(event)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → signed event (id + sig populated)</span><br>
-        <span class="fn">nse.getPublicKey</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → hex pubkey</span><br>
-        <span class="fn">nse.getNpub</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → bech32 npub</span><br>
-        <span class="fn">nse.exists</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → boolean</span><br>
-        <span class="fn">nse.destroy</span>()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// → wipe key material</span>
-      </div>
     </section>
 
     <!-- Packages -->
     <section class="section">
       <h2>Packages</h2>
+      <p>The original NSE libraries ship the cryptographic foundation. The five pillars build on top.</p>
       <table class="platform-table">
         <thead>
           <tr>
             <th>Package</th>
-            <th>Platform</th>
+            <th>What</th>
             <th>Registry</th>
             <th>Status</th>
           </tr>
@@ -561,69 +532,66 @@
             <td><span class="badge-hw">Published</span></td>
           </tr>
           <tr>
-            <td><a href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/tree/main/platforms/ios">nostr-secure-enclave-ios</a></td>
-            <td>Swift via Secure Enclave</td>
-            <td>Swift Package</td>
-            <td><span class="badge-hw">Implemented</span></td>
+            <td><a href="https://pypi.org/project/nostrkey/">nostrkey</a></td>
+            <td>Identity &mdash; keypairs, signing, encryption</td>
+            <td>PyPI + ClawHub</td>
+            <td><span class="badge-hw">Published</span></td>
           </tr>
           <tr>
-            <td><a href="https://github.com/HumanjavaEnterprises/nse-dev.web.landingpage.src/tree/main/platforms/android">nostr-secure-enclave-android</a></td>
-            <td>Kotlin via StrongBox</td>
-            <td>Maven</td>
-            <td><span class="badge-hw">Implemented</span></td>
+            <td><a href="https://pypi.org/project/nostrwalletconnect/">nostrwalletconnect</a></td>
+            <td>Finance &mdash; Lightning via NIP-47</td>
+            <td>PyPI + ClawHub</td>
+            <td><span class="badge-hw">Published</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://pypi.org/project/nostrcalendar/">nostrcalendar</a></td>
+            <td>Time &mdash; scheduling via NIP-52</td>
+            <td>PyPI + ClawHub</td>
+            <td><span class="badge-hw">Published</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://pypi.org/project/nostrsocial/">nostrsocial</a></td>
+            <td>Relationships &mdash; trust tiers, guardrails</td>
+            <td>PyPI + ClawHub</td>
+            <td><span class="badge-hw">Published</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://pypi.org/project/social-alignment/">social-alignment</a></td>
+            <td>Alignment &mdash; the compass</td>
+            <td>PyPI + ClawHub</td>
+            <td><span class="badge-hw">Published</span></td>
           </tr>
         </tbody>
       </table>
-
-      <div class="code-block">
-        <span class="comment"># Server / CF Workers / Node.js</span><br>
-        npm install <span class="fn">nostr-secure-enclave-server</span><br><br>
-        <span class="comment"># Browser extensions / web apps</span><br>
-        npm install <span class="fn">nostr-secure-enclave-browser</span><br><br>
-        <span class="comment"># Python bots, AI entities, MCP servers</span><br>
-        pip install <span class="fn">nostr-secure-enclave</span>
-      </div>
     </section>
 
-    <!-- Where NSE Fits -->
+    <!-- Where It Goes -->
     <section class="section">
-      <h2>Where NSE Fits</h2>
+      <h2>Where This Goes</h2>
       <p>
-        NSE is <strong>Level 0 infrastructure</strong> &mdash; the cryptographic foundation that
-        the four pillars build on. Without hardware-protected keys, the rest is just software
-        trusting software. NSE makes the trust chain start at silicon.
+        An AI agent with all five pillars isn't just a tool &mdash; it's a <strong>sovereign entity</strong>
+        on the Nostr protocol. It has a cryptographic identity, a social graph, a calendar, a wallet,
+        and a conscience. It can operate independently, but it knows when to ask.
       </p>
-      <div class="flow"><span class="hl">Level 0</span>  NSE encrypts the key at rest
-        └── Browser extension stores wrapped key in IndexedDB
-        └── Server process holds encrypted identity in KV
-
-<span class="hl">Level 1</span>  Mobile app as backup + authenticator
-        └── iOS Secure Enclave / Android StrongBox wrap the key
-
-<span class="hl">Level 2</span>  NIP-46 bunker — keys never leave hardware
-        └── NSE signs behind the NIP-46 interface
-        └── Remote apps request signatures, never see the nsec</div>
-    </section>
-
-    <!-- What NSE Is Not -->
-    <section class="section">
-      <h2>What NSE Is Not</h2>
-      <p><strong>Not a cloud service.</strong> The enclave is your device. NSE is a local library.</p>
-      <p><strong>Not custodial.</strong> Keys never leave your hardware.</p>
-      <p><strong>Not a wallet.</strong> No Lightning, no transactions. Just keys and signing. The wallet is a separate pillar (NostrWalletConnect).</p>
-      <p><strong>Not magic.</strong> The secp256k1 key exists briefly in application memory during signing. NSE minimizes that window and zeros the key after &mdash; but a rooted/jailbroken device with memory access is out of scope. Hardware enclaves protect the key at rest, not during use.</p>
+      <p>
+        The human doesn't lose control. They gain a partner that <strong>sees futures</strong>,
+        <strong>remembers decisions</strong>, and <strong>builds trust over time</strong>.
+        The alignment isn't enforced from outside &mdash; it grows from the relationship between the two.
+      </p>
+      <p>
+        Human or AI, the schema is the same. That's the point.
+      </p>
     </section>
 
     <section class="cta">
       <h2>Start Building</h2>
-      <p>Your device. Your keys. Your enclave. Four pillars, sovereign by default.</p>
+      <p>Five pillars. Both sides sovereign. All open source.</p>
       <a class="cta-btn" href="/openclaw.html">OpenClaw Docs</a>
-      <a class="cta-btn" href="https://github.com/HumanjavaEnterprises" style="margin-left: 12px; background: transparent; border: 1px solid var(--cyan); color: var(--cyan);">GitHub</a>
-      <a class="cta-btn" href="/guide.html" style="margin-left: 12px; background: transparent; border: 1px solid var(--cyan); color: var(--cyan);">Bunker 101</a>
+      <a class="cta-btn-ghost" href="https://github.com/HumanjavaEnterprises">GitHub</a>
     </section>
 
     <footer>
-      <p>NSE is open source (MIT) &middot; Part of the <a href="https://www.npmjs.com/~vveerrgg">nostr-*</a> library family &middot; A <a href="https://humanjava.com">Humanjava</a> project</p>
+      <p>NSE is open source (MIT) &middot; A <a href="https://humanjava.com">Humanjava</a> project</p>
       <p style="margin-top:8px;">
         <a href="/privacy.html">Privacy</a> &middot;
         <a href="/terms.html">Terms</a> &middot;
