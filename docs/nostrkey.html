@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0a0a0f">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NostrKey — Identity SDK | nse.dev</title>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-koTJh9eNIFNg6_JoamV9n.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+    <meta name="description" content="Cryptographic identity SDK for AI agents — generate Nostr keypairs, sign events, encrypt messages, persist identity. pip install nostrkey">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nse.dev/nostrkey.html">
+    <meta property="og:title" content="NostrKey — Identity SDK | nse.dev">
+    <meta property="og:description" content="Cryptographic identity SDK for AI agents — generate Nostr keypairs, sign events, encrypt messages, persist identity.">
+    <meta property="og:image" content="https://nse.dev/og-nostrkey.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NostrKey — Identity SDK | nse.dev">
+    <meta name="twitter:description" content="Cryptographic identity SDK for AI agents — generate Nostr keypairs, sign events, encrypt messages, persist identity.">
+    <meta name="twitter:image" content="https://nse.dev/og-nostrkey.png">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' stroke='%2322d3ee' stroke-width='4' fill='%2312121a'/><path d='M30 50h40M50 30v40' stroke='%2322d3ee' stroke-width='6' stroke-linecap='round' fill='none'/></svg>">
+
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-code: #0a0a12;
+            --text: #f0f0f5;
+            --text-dim: #8888a0;
+            --cyan: #22d3ee;
+            --cyan-dim: #0891b2;
+            --border: #1e1e2e;
+            --green: #4ade80;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { overflow-x: hidden; width: 100%; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* Nav */
+        .nav {
+            margin-bottom: 48px;
+        }
+
+        .nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav a:hover { color: var(--text); }
+        .nav .sep { color: var(--border); margin: 0 8px; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border: 1px solid var(--cyan-dim);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span { color: var(--cyan); }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+
+        /* Sections */
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        section h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        section h2 span.accent { color: var(--cyan); }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin: 24px 0 12px;
+            color: var(--cyan);
+        }
+
+        p { margin-bottom: 12px; }
+
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Code */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            margin: 12px 0 20px;
+            position: relative;
+        }
+
+        .code-block .fn { color: var(--cyan); }
+        .code-block .comment { color: #555568; }
+        .code-block .str { color: #a78bfa; }
+        .code-block .kw { color: #f472b6; }
+
+        code {
+            background: var(--bg-code);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 0.85em;
+            color: var(--cyan);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--border);
+            color: var(--text-dim);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .copy-btn:hover { background: #2a2a3e; color: var(--text); }
+
+        /* Tables */
+        .platform-table, .nip-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 16px 0;
+        }
+
+        .platform-table th, .nip-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-dim);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .platform-table td, .nip-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(30,30,46,0.5);
+            color: var(--text-dim);
+        }
+
+        .platform-table td:first-child, .nip-table td:first-child {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .status-done { color: var(--green); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.15s, transform 0.15s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .btn-primary { background: var(--cyan); color: #0a0a0f; }
+        .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--cyan); }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* Skill cards (ecosystem) */
+        .skill-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 20px;
+            transition: border-color 0.15s;
+        }
+
+        .skill-card:hover { border-color: var(--cyan); }
+
+        .skill-card h3 {
+            font-size: 1.1rem;
+            margin: 0 0 4px;
+            color: var(--text);
+        }
+
+        .skill-card h3 span { color: var(--text); }
+        .skill-card h3 em { display: block; color: var(--cyan); font-weight: 600; font-size: 0.8rem; font-style: normal; margin-top: 2px; }
+
+        .skill-card .card-desc {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .skill-card .card-install {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+
+        .skill-card .card-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .skill-card .card-links a {
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.15s;
+        }
+
+        .skill-card .card-links a:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .card-link-primary { background: var(--cyan); color: #0a0a0f !important; }
+        .card-link-secondary { background: transparent; border: 1px solid var(--border); color: var(--text) !important; }
+        .card-link-secondary:hover { border-color: var(--cyan); }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        footer a { color: var(--text-dim); text-decoration: none; }
+        footer a:hover { color: var(--cyan); }
+
+        /* Section header (outside cards) */
+        .section-header {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            padding-top: 16px;
+        }
+
+        .section-header span { color: var(--cyan); }
+
+        /* Section p overrides */
+        section p { color: var(--text-dim); font-size: 0.95rem; }
+        section p strong { color: var(--text); }
+
+        /* Lists */
+        ul { list-style-position: inside; margin: 12px 0; }
+        li { color: var(--text-dim); margin-bottom: 8px; }
+        li strong { color: var(--text); }
+
+        /* Install bar */
+        .install-bar {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 24px;
+            font-family: var(--mono);
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            text-align: center;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .install-bar .copy-btn {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 40px 16px; }
+            .hero h1 { font-size: 2rem; }
+            section { padding: 24px 16px; }
+            .code-block { font-size: 0.75rem; padding: 16px; }
+            .skill-cards { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { margin-bottom: 24px; }
+            .hero h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <nav class="nav" aria-label="Breadcrumb">
+            <a href="/">nse.dev</a>
+            <span class="sep">/</span>
+            <a href="/openclaw.html">openclaw</a>
+            <span class="sep">/</span>
+            <span style="color:var(--cyan);">nostrkey</span>
+        </nav>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">Identity SDK &middot; v0.1.3</div>
+            <h1>Nostr<span>Key</span></h1>
+            <p>Cryptographic identity SDK for AI agents &mdash; generate Nostr keypairs, sign events, encrypt messages, persist identity.</p>
+        </div>
+
+        <!-- Install bar -->
+        <div class="install-bar" id="install-bar">
+            <button class="copy-btn" onclick="copyCode('install-bar')">Copy</button>
+            pip install nostrkey
+        </div>
+
+        <!-- Links -->
+        <div class="btn-group" style="justify-content:center;margin-top:0;margin-bottom:48px;">
+            <a href="https://pypi.org/project/nostrkey/" class="btn btn-primary">PyPI</a>
+            <a href="https://clawhub.ai/skills/nostrkey" class="btn btn-secondary">ClawHub</a>
+            <a href="https://github.com/HumanjavaEnterprises/nostrkey.app.OC-python.src" class="btn btn-secondary">Source</a>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Quickstart                                     -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <section>
+            <h2>Quickstart</h2>
+            <p class="subtitle">Generate an identity, sign an event, and publish it to a relay.</p>
+            <div class="code-block" id="code-quickstart">
+                <button class="copy-btn" onclick="copyCode('code-quickstart')">Copy</button>
+<span class="kw">from</span> nostrkey <span class="kw">import</span> Identity
+<span class="kw">from</span> nostrkey.relay <span class="kw">import</span> RelayClient
+
+me = Identity.<span class="fn">generate</span>()
+
+event = me.<span class="fn">sign_event</span>(
+    kind=<span class="fn">1</span>,
+    content=<span class="str">"Hello from an AI agent"</span>,
+    tags=[]
+)
+
+<span class="kw">async with</span> <span class="fn">RelayClient</span>(<span class="str">"wss://relay.damus.io"</span>) <span class="kw">as</span> relay:
+    <span class="kw">await</span> relay.<span class="fn">publish</span>(event)</div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Core Capabilities                              -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <h2 class="section-header">Core <span>Capabilities</span></h2>
+
+        <!-- Generate Identity -->
+        <section>
+            <h2>Generate Your <span class="accent">Identity</span></h2>
+            <p class="subtitle">Create a fresh Nostr identity with your own npub/nsec keypair.</p>
+            <div class="code-block" id="code-generate">
+                <button class="copy-btn" onclick="copyCode('code-generate')">Copy</button>
+<span class="kw">from</span> nostrkey <span class="kw">import</span> Identity
+
+me = Identity.<span class="fn">generate</span>()
+<span class="comment"># me.npub  — your public identity (share freely)</span>
+<span class="comment"># me.nsec  — your private key (never expose)</span></div>
+        </section>
+
+        <!-- Import Existing -->
+        <section>
+            <h2>Import an Existing <span class="accent">Identity</span></h2>
+            <p class="subtitle">If you already have keys.</p>
+            <div class="code-block" id="code-import">
+                <button class="copy-btn" onclick="copyCode('code-import')">Copy</button>
+<span class="kw">import</span> os
+<span class="kw">from</span> nostrkey <span class="kw">import</span> Identity
+
+me = Identity.<span class="fn">from_nsec</span>(os.environ[<span class="str">"NOSTR_NSEC"</span>])
+<span class="comment"># or</span>
+me = Identity.<span class="fn">from_hex</span>(<span class="str">"deadbeef..."</span>)</div>
+        </section>
+
+        <!-- Sign Events -->
+        <section>
+            <h2>Sign <span class="accent">Events</span></h2>
+            <p class="subtitle">Sign any Nostr event (kind 1 = text note, kind 0 = metadata, etc.).</p>
+            <div class="code-block" id="code-sign">
+                <button class="copy-btn" onclick="copyCode('code-sign')">Copy</button>
+event = me.<span class="fn">sign_event</span>(
+    kind=<span class="fn">1</span>,
+    content=<span class="str">"Hello from an AI agent"</span>,
+    tags=[]
+)
+<span class="comment"># event.id, event.sig are now set and verifiable by anyone</span></div>
+        </section>
+
+        <!-- Publish to Relay -->
+        <section>
+            <h2>Publish to a <span class="accent">Relay</span></h2>
+            <p class="subtitle">Send signed events to the Nostr network.</p>
+            <div class="code-block" id="code-publish">
+                <button class="copy-btn" onclick="copyCode('code-publish')">Copy</button>
+<span class="kw">from</span> nostrkey.relay <span class="kw">import</span> RelayClient
+
+<span class="kw">async with</span> <span class="fn">RelayClient</span>(<span class="str">"wss://relay.damus.io"</span>) <span class="kw">as</span> relay:
+    <span class="kw">await</span> relay.<span class="fn">publish</span>(event)</div>
+        </section>
+
+        <!-- Encrypt Messages -->
+        <section>
+            <h2>Encrypt Private Messages <span class="accent">(NIP-44)</span></h2>
+            <p class="subtitle">Send encrypted messages to another npub.</p>
+            <div class="code-block" id="code-encrypt">
+                <button class="copy-btn" onclick="copyCode('code-encrypt')">Copy</button>
+<span class="kw">from</span> nostrkey.crypto <span class="kw">import</span> encrypt, decrypt
+
+ciphertext = <span class="fn">encrypt</span>(
+    sender_nsec=me.nsec,
+    recipient_npub=<span class="str">"npub1recipient..."</span>,
+    plaintext=<span class="str">"This is private"</span>
+)
+
+plaintext = <span class="fn">decrypt</span>(
+    recipient_nsec=me.nsec,
+    sender_npub=<span class="str">"npub1sender..."</span>,
+    ciphertext=ciphertext
+)</div>
+        </section>
+
+        <!-- Save / Load Identity -->
+        <section>
+            <h2>Save and Load <span class="accent">Identity</span></h2>
+            <p class="subtitle">Persist your identity between sessions (encrypted file).</p>
+            <div class="code-block" id="code-persist">
+                <button class="copy-btn" onclick="copyCode('code-persist')">Copy</button>
+<span class="comment"># Save (encrypted with passphrase)</span>
+me.<span class="fn">save</span>(<span class="str">"my-identity.nostrkey"</span>, passphrase=<span class="str">"strong-passphrase"</span>)
+
+<span class="comment"># Load later</span>
+me = Identity.<span class="fn">load</span>(<span class="str">"my-identity.nostrkey"</span>, passphrase=<span class="str">"strong-passphrase"</span>)</div>
+        </section>
+
+        <!-- Delegated Signing -->
+        <section>
+            <h2>Delegated Signing via <span class="accent">NIP-46 Bunker</span></h2>
+            <p class="subtitle">For high-stakes actions, request a human sponsor to co-sign.</p>
+            <div class="code-block" id="code-bunker">
+                <button class="copy-btn" onclick="copyCode('code-bunker')">Copy</button>
+<span class="kw">from</span> nostrkey.bunker <span class="kw">import</span> BunkerClient
+
+bunker = <span class="fn">BunkerClient</span>(me.private_key_hex)
+<span class="kw">await</span> bunker.<span class="fn">connect</span>(<span class="str">"bunker://npub1human...?relay=wss://relay.damus.io"</span>)
+signed = <span class="kw">await</span> bunker.<span class="fn">sign_event</span>(kind=<span class="fn">1</span>, content=<span class="str">"Human-approved action"</span>)</div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Module Reference                               -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <h2 class="section-header">Module <span>Reference</span></h2>
+
+        <section>
+            <table class="platform-table">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Module</th>
+                        <th>Function</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Generate new identity</td>
+                        <td><code>nostrkey</code></td>
+                        <td><code>Identity.generate()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Import existing keys</td>
+                        <td><code>nostrkey</code></td>
+                        <td><code>Identity.from_nsec()</code> / <code>Identity.from_hex()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Sign events</td>
+                        <td><code>nostrkey</code></td>
+                        <td><code>identity.sign_event()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Publish to relay</td>
+                        <td><code>nostrkey.relay</code></td>
+                        <td><code>RelayClient.publish()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Subscribe to events</td>
+                        <td><code>nostrkey.relay</code></td>
+                        <td><code>RelayClient.subscribe()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Encrypt messages</td>
+                        <td><code>nostrkey.crypto</code></td>
+                        <td><code>encrypt()</code> / <code>decrypt()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Delegated signing</td>
+                        <td><code>nostrkey.bunker</code></td>
+                        <td><code>BunkerClient.sign_event()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Save/load identity</td>
+                        <td><code>nostrkey</code></td>
+                        <td><code>identity.save()</code> / <code>Identity.load()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Low-level key ops</td>
+                        <td><code>nostrkey.keys</code></td>
+                        <td><code>generate_keypair()</code>, <code>hex_to_npub()</code>, etc.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Response Format / Return Types                 -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <h2 class="section-header">Response <span>Format</span></h2>
+
+        <!-- Identity Fields -->
+        <section>
+            <h2>Identity <span class="accent">Fields</span></h2>
+            <p class="subtitle">Returned by <code>Identity.generate()</code>, <code>Identity.from_nsec()</code>, or <code>Identity.from_hex()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>npub</code></td>
+                        <td><code>str</code></td>
+                        <td>Bech32-encoded public key (e.g. <code>npub1...</code>). Safe to share.</td>
+                    </tr>
+                    <tr>
+                        <td><code>nsec</code></td>
+                        <td><code>str</code></td>
+                        <td>Bech32-encoded private key (e.g. <code>nsec1...</code>). Never expose.</td>
+                    </tr>
+                    <tr>
+                        <td><code>private_key_hex</code></td>
+                        <td><code>str</code></td>
+                        <td>64-char hex private key. Used internally and for bunker clients.</td>
+                    </tr>
+                    <tr>
+                        <td><code>public_key_hex</code></td>
+                        <td><code>str</code></td>
+                        <td>64-char hex public key. Used in event <code>pubkey</code> fields.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Event Fields -->
+        <section>
+            <h2>Event <span class="accent">Fields</span></h2>
+            <p class="subtitle">Returned by <code>identity.sign_event()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>id</code></td>
+                        <td><code>str</code></td>
+                        <td>64-char hex event hash (SHA-256 of serialized event).</td>
+                    </tr>
+                    <tr>
+                        <td><code>sig</code></td>
+                        <td><code>str</code></td>
+                        <td>128-char hex Schnorr signature over <code>id</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>kind</code></td>
+                        <td><code>int</code></td>
+                        <td>Event kind (0 = metadata, 1 = text note, etc.).</td>
+                    </tr>
+                    <tr>
+                        <td><code>content</code></td>
+                        <td><code>str</code></td>
+                        <td>Event payload.</td>
+                    </tr>
+                    <tr>
+                        <td><code>tags</code></td>
+                        <td><code>list[list[str]]</code></td>
+                        <td>Event tags (e.g. <code>[["p", "pubkey..."], ["e", "eventid..."]]</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>pubkey</code></td>
+                        <td><code>str</code></td>
+                        <td>64-char hex public key of the signer.</td>
+                    </tr>
+                    <tr>
+                        <td><code>created_at</code></td>
+                        <td><code>int</code></td>
+                        <td>Unix timestamp (seconds).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Common Patterns                                -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <h2 class="section-header">Common <span>Patterns</span></h2>
+
+        <!-- Async Relay Usage -->
+        <section>
+            <h2>Async Relay <span class="accent">Usage</span></h2>
+            <p class="subtitle">Relay and bunker operations require asyncio. Use <code>async with</code> for relay connections.</p>
+            <div class="code-block" id="code-async">
+                <button class="copy-btn" onclick="copyCode('code-async')">Copy</button>
+<span class="kw">import</span> asyncio
+<span class="kw">from</span> nostrkey <span class="kw">import</span> Identity
+<span class="kw">from</span> nostrkey.relay <span class="kw">import</span> RelayClient
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    me = Identity.<span class="fn">generate</span>()
+    event = me.<span class="fn">sign_event</span>(kind=<span class="fn">1</span>, content=<span class="str">"Hello Nostr"</span>, tags=[])
+    <span class="kw">async with</span> <span class="fn">RelayClient</span>(<span class="str">"wss://relay.damus.io"</span>) <span class="kw">as</span> relay:
+        <span class="kw">await</span> relay.<span class="fn">publish</span>(event)
+
+asyncio.<span class="fn">run</span>(<span class="fn">main</span>())</div>
+        </section>
+
+        <!-- Error Handling -->
+        <section>
+            <h2>Error <span class="accent">Handling</span></h2>
+            <p class="subtitle">Handle invalid keys gracefully.</p>
+            <div class="code-block" id="code-errors">
+                <button class="copy-btn" onclick="copyCode('code-errors')">Copy</button>
+<span class="kw">from</span> nostrkey <span class="kw">import</span> Identity
+
+<span class="kw">try</span>:
+    me = Identity.<span class="fn">from_nsec</span>(<span class="str">"invalid-key"</span>)
+<span class="kw">except</span> Exception <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">f"Invalid key: </span>{e}<span class="str">"</span>)</div>
+        </section>
+
+        <!-- Load from Env -->
+        <section>
+            <h2>Load Identity from <span class="accent">Environment</span></h2>
+            <p class="subtitle">Fall back to generating a new identity if no key is set.</p>
+            <div class="code-block" id="code-env">
+                <button class="copy-btn" onclick="copyCode('code-env')">Copy</button>
+<span class="kw">import</span> os
+<span class="kw">from</span> nostrkey <span class="kw">import</span> Identity
+
+nsec = os.environ.<span class="fn">get</span>(<span class="str">"NOSTR_NSEC"</span>)
+<span class="kw">if</span> nsec:
+    me = Identity.<span class="fn">from_nsec</span>(nsec)
+<span class="kw">else</span>:
+    me = Identity.<span class="fn">generate</span>()
+    <span class="fn">print</span>(<span class="str">f"Generated new identity: </span>{me.npub}<span class="str">"</span>)</div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Security                                       -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <h2 class="section-header">Security</h2>
+
+        <section>
+            <ul>
+                <li><strong>Never expose your nsec.</strong> Treat it like a password. Use <code>identity.save()</code> with a strong passphrase to persist it.</li>
+                <li><strong>.nostrkey files are encrypted at rest.</strong> Never store raw nsec values on disk.</li>
+                <li><strong>Use environment variables, not hardcoded keys.</strong> Load nsec from <code>NOSTR_NSEC</code> at runtime, never commit it to source.</li>
+                <li><strong>All events are Schnorr-signed</strong> using secp256k1, per the Nostr protocol (NIP-01).</li>
+                <li><strong>NIP-44 encryption</strong> uses ECDH + HKDF + ChaCha20 with length padding &mdash; safe for private agent-to-agent or agent-to-human communication.</li>
+            </ul>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Configuration                                  -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <h2 class="section-header">Configuration</h2>
+
+        <section>
+            <p class="subtitle">Environment variables used by NostrKey.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Purpose</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>NOSTR_NSEC</code></td>
+                        <td>Private key for identity import</td>
+                        <td><code>nsec1...</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>NOSTR_RELAY</code></td>
+                        <td>Default relay WebSocket URL</td>
+                        <td><code>wss://relay.damus.io</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- NIPs                                           -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <h2 class="section-header">Nostr <span>NIPs</span></h2>
+
+        <section>
+            <p class="subtitle">Nostr Implementation Possibilities supported by NostrKey.</p>
+            <table class="nip-table">
+                <thead>
+                    <tr>
+                        <th>NIP</th>
+                        <th>Description</th>
+                        <th>Usage in NostrKey</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>NIP-01</td>
+                        <td>Basic protocol flow</td>
+                        <td>Event creation, Schnorr signing, relay communication</td>
+                    </tr>
+                    <tr>
+                        <td>NIP-19</td>
+                        <td>Bech32 encoding</td>
+                        <td>npub/nsec key encoding and decoding</td>
+                    </tr>
+                    <tr>
+                        <td>NIP-44</td>
+                        <td>Encrypted payloads</td>
+                        <td>ECDH + HKDF + ChaCha20 encryption for private messages</td>
+                    </tr>
+                    <tr>
+                        <td>NIP-46</td>
+                        <td>Nostr Connect (bunker)</td>
+                        <td>Delegated signing via human sponsor</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Ecosystem                                      -->
+        <!-- ═══════════════════════════════════════════════ -->
+
+        <h2 class="section-header">OpenClaw <span>Ecosystem</span></h2>
+
+        <div class="skill-cards">
+            <div class="skill-card">
+                <h3>Nostr<span>WalletConnect</span><br><em>&mdash; Wallet</em></h3>
+                <p class="card-desc">Lightning wallet access for AI agents. Pay invoices, check balance, create invoices via NIP-47.</p>
+                <div class="card-install">pip install nostrwalletconnect</div>
+                <div class="card-links">
+                    <a href="https://pypi.org/project/nostrwalletconnect/" class="card-link-primary">PyPI</a>
+                    <a href="https://clawhub.ai/skills/nostrwalletconnect" class="card-link-secondary">ClawHub</a>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h3>Nostr<span>Calendar</span><br><em>&mdash; Presence</em></h3>
+                <p class="card-desc">Sovereign scheduling for AI agents. Publish availability, book meetings, negotiate times over Nostr relays.</p>
+                <div class="card-install">pip install nostrcalendar</div>
+                <div class="card-links">
+                    <a href="https://pypi.org/project/nostrcalendar/" class="card-link-primary">PyPI</a>
+                    <a href="https://clawhub.ai/skills/nostrcalendar" class="card-link-secondary">ClawHub</a>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h3>Nostr<span>Social</span><br><em>&mdash; Relationships</em></h3>
+                <p class="card-desc">Social graph for AI agents. Trust tiers, drift detection, conversation evaluation, content guardrails.</p>
+                <div class="card-install">pip install nostrsocial</div>
+                <div class="card-links">
+                    <a href="https://pypi.org/project/nostrsocial/" class="card-link-primary">PyPI</a>
+                    <a href="https://clawhub.ai/skills/nostrsocial" class="card-link-secondary">ClawHub</a>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h3>Social <span>Alignment</span><br><em>&mdash; Compass</em></h3>
+                <p class="card-desc">Five-lens alignment scoring. Values, ethics, trust, boundaries, and relationship health for AI entities.</p>
+                <div class="card-install">pip install social-alignment</div>
+                <div class="card-links">
+                    <a href="https://pypi.org/project/social-alignment/" class="card-link-primary">PyPI</a>
+                    <a href="https://clawhub.ai/skills/social-alignment" class="card-link-secondary">ClawHub</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <a href="/">nse.dev</a> &middot;
+            <a href="https://humanjava.com">Humanjava Enterprises</a> &middot;
+            MIT &middot;
+            <a href="/support.html">Support</a>
+        </footer>
+
+    </div>
+
+    <script>
+    function copyCode(id) {
+        const el = document.getElementById(id);
+        const text = el.innerText.replace('Copy', '').trim();
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = el.querySelector('.copy-btn');
+            if (btn) {
+                btn.textContent = 'Copied';
+                setTimeout(() => btn.textContent = 'Copy', 1500);
+            }
+        });
+    }
+    </script>
+</body>
+</html>

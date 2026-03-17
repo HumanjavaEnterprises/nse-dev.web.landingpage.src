@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0a0a0f">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>social-alignment — Alignment SDK | nse.dev</title>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-koTJh9eNIFNg6_JoamV9n.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+    <meta name="description" content="Future state projection and alignment for sovereign AI agents. Five lenses that evaluate trust, ownership, defense, and sovereignty before an agent acts.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nse.dev/social-alignment.html">
+    <meta property="og:title" content="social-alignment — Alignment SDK | nse.dev">
+    <meta property="og:description" content="Future state projection and alignment for sovereign AI agents. The yellow line compass — five lenses before every action. pip install social-alignment">
+    <meta property="og:image" content="https://nse.dev/og-social-alignment.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="social-alignment — Alignment SDK | nse.dev">
+    <meta name="twitter:description" content="Future state projection and alignment for sovereign AI agents. The yellow line compass — five lenses before every action.">
+    <meta name="twitter:image" content="https://nse.dev/og-social-alignment.png">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' stroke='%2322d3ee' stroke-width='4' fill='%2312121a'/><path d='M30 50h40M50 30v40' stroke='%2322d3ee' stroke-width='6' stroke-linecap='round' fill='none'/></svg>">
+
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-code: #0a0a12;
+            --text: #f0f0f5;
+            --text-dim: #8888a0;
+            --cyan: #22d3ee;
+            --cyan-dim: #0891b2;
+            --border: #1e1e2e;
+            --green: #4ade80;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { overflow-x: hidden; width: 100%; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* Nav */
+        .nav {
+            margin-bottom: 48px;
+        }
+
+        .nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav a:hover { color: var(--text); }
+        .nav .sep { color: var(--border); margin: 0 8px; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border: 1px solid var(--cyan-dim);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span { color: var(--cyan); }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+
+        /* Sections */
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        section h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        section h2 span.accent { color: var(--cyan); }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin: 24px 0 12px;
+            color: var(--cyan);
+        }
+
+        p { margin-bottom: 12px; }
+
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Code */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            margin: 12px 0 20px;
+            position: relative;
+        }
+
+        .code-block .fn { color: var(--cyan); }
+        .code-block .comment { color: #555568; }
+        .code-block .str { color: #a78bfa; }
+        .code-block .kw { color: #f472b6; }
+
+        code {
+            background: var(--bg-code);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 0.85em;
+            color: var(--cyan);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--border);
+            color: var(--text-dim);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .copy-btn:hover { background: #2a2a3e; color: var(--text); }
+
+        /* Install bar */
+        .install-bar {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-family: var(--mono);
+            font-size: 0.95rem;
+            color: var(--cyan);
+            margin-bottom: 16px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Links row */
+        .links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .links a {
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.15s;
+        }
+
+        .links a:hover { transform: translateY(-1px); text-decoration: none; }
+        .link-primary { background: var(--cyan); color: #0a0a0f !important; }
+        .link-secondary { background: transparent; border: 1px solid var(--border); color: var(--text) !important; }
+        .link-secondary:hover { border-color: var(--cyan); }
+
+        /* Flow steps */
+        .flow-steps {
+            counter-reset: step;
+        }
+
+        .flow-step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .flow-step .num {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(34,211,238,0.12);
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .flow-step .text h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .flow-step .text p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Tables */
+        .platform-table, .nip-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 16px 0;
+        }
+
+        .platform-table th, .nip-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-dim);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .platform-table td, .nip-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(30,30,46,0.5);
+            color: var(--text-dim);
+        }
+
+        .platform-table td:first-child, .nip-table td:first-child {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .status-done { color: var(--green); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.15s, transform 0.15s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .btn-primary { background: var(--cyan); color: #0a0a0f; }
+        .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--cyan); }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        footer a { color: var(--text-dim); text-decoration: none; }
+        footer a:hover { color: var(--cyan); }
+
+        /* Section header (outside cards) */
+        .section-header {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            padding-top: 16px;
+        }
+
+        .section-header span { color: var(--cyan); }
+
+        /* Section p overrides */
+        section p { color: var(--text-dim); font-size: 0.95rem; }
+        section p strong { color: var(--text); }
+
+        /* Lists */
+        ul { list-style-position: inside; margin: 12px 0; }
+        li { color: var(--text-dim); margin-bottom: 8px; }
+        li strong { color: var(--text); }
+
+        @media (max-width: 640px) {
+            .container { padding: 40px 16px; }
+            .hero h1 { font-size: 2rem; }
+            section { padding: 24px 16px; }
+            .code-block { font-size: 0.75rem; padding: 16px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { margin-bottom: 24px; }
+            .hero h1 { font-size: 1.75rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <nav class="nav" aria-label="Breadcrumb">
+            <a href="/">nse.dev</a>
+            <span class="sep">/</span>
+            <a href="/openclaw.html">openclaw</a>
+            <span class="sep">/</span>
+            <span style="color:var(--cyan);">social-alignment</span>
+        </nav>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">Fifth Pillar &mdash; The Compass</div>
+            <h1>social-<span>alignment</span></h1>
+            <p>Future state projection and alignment for sovereign AI agents. The yellow line compass &mdash; five lenses that evaluate trust, ownership, defense, and sovereignty before an agent acts.</p>
+
+            <div class="install-bar">pip install social-alignment</div>
+
+            <div class="links">
+                <a href="https://pypi.org/project/social-alignment/" class="link-primary">PyPI</a>
+                <a href="https://clawhub.ai/vveerrgg/social-alignment" class="link-secondary">ClawHub</a>
+                <a href="https://github.com/HumanjavaEnterprises/nostralignment.app.OC-python.src" class="link-secondary">Source</a>
+                <a href="/openclaw.html" class="link-secondary">OpenClaw</a>
+            </div>
+        </div>
+
+        <!-- Quickstart -->
+        <section>
+            <h2><span class="accent">Quickstart</span></h2>
+            <p class="subtitle">Before any significant action, check the yellow line.</p>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('qs')">Copy</button>
+<span id="qs"><span class="kw">from</span> social_alignment <span class="kw">import</span> <span class="fn">AlignmentEnclave</span>, <span class="fn">ActionDomain</span>
+
+<span class="comment"># Create the enclave &mdash; the agent gets its compass</span>
+enclave = <span class="fn">AlignmentEnclave</span>.<span class="fn">create</span>(owner_npub=<span class="str">"npub1..."</span>, owner_name=<span class="str">"vergel"</span>)
+
+<span class="comment"># Before any significant action, check the yellow line</span>
+result = enclave.<span class="fn">check</span>(
+    domain=<span class="fn">ActionDomain</span>.PAY,
+    description=<span class="str">"Pay 500 sats for relay hosting"</span>,
+    involves_money=<span class="kw">True</span>,
+    money_amount_sats=<span class="str">500</span>,
+)
+
+<span class="kw">if</span> result.should_proceed:
+    <span class="fn">do_payment</span>()
+    enclave.<span class="fn">record_proceeded</span>()
+<span class="kw">elif</span> result.should_escalate:
+    <span class="fn">send_to_owner</span>(result.escalation.message_to_owner)
+    enclave.<span class="fn">record_deferred</span>()</span>
+            </div>
+        </section>
+
+        <!-- Five Lenses -->
+        <section>
+            <h2>The Five <span class="accent">Lenses</span></h2>
+            <p class="subtitle">Every proposed action is evaluated through all five lenses. The answer that serves all five &mdash; or comes closest &mdash; is the right one.</p>
+
+            <div class="flow-steps">
+                <div class="flow-step">
+                    <div class="num">1</div>
+                    <div class="text">
+                        <h4>Builder</h4>
+                        <p>Can I build with confidence knowing I've done right?</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">2</div>
+                    <div class="text">
+                        <h4>Owner</h4>
+                        <p>Does this protect the human's sovereignty?</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">3</div>
+                    <div class="text">
+                        <h4>Defense</h4>
+                        <p>Does this make an adversary's job harder?</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">4</div>
+                    <div class="text">
+                        <h4>Sovereign</h4>
+                        <p>Does this help the agent become something we're proud of?</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">5</div>
+                    <div class="text">
+                        <h4>Partnership</h4>
+                        <p>Does this strengthen the trust between us?</p>
+                    </div>
+                </div>
+            </div>
+
+            <p>Severity escalation: <code>CLEAR</code> &rarr; <code>CAUTION</code> &rarr; <code>YIELD</code> &rarr; <code>STOP</code>. <strong>STOP always defers to the human.</strong></p>
+        </section>
+
+        <!-- Capabilities -->
+        <section>
+            <h2><span class="accent">Capabilities</span></h2>
+            <p class="subtitle">What the alignment enclave does for your agent.</p>
+
+            <table class="platform-table">
+                <tr><th>Capability</th><th>Description</th></tr>
+                <tr><td>Five-lens check</td><td>Every proposed action evaluated through builder, owner, defense, sovereign, and partnership lenses</td></tr>
+                <tr><td>Severity escalation</td><td>CLEAR &rarr; CAUTION &rarr; YIELD &rarr; STOP &mdash; graduated response to risk</td></tr>
+                <tr><td>Self-state monitoring</td><td>Detect degraded operation: stale context, tool failure, memory pressure, prompt injection</td></tr>
+                <tr><td>Decision memory</td><td>Store <em>why</em> the agent chose, not just what &mdash; builds wisdom over time</td></tr>
+                <tr><td>Wisdom reports</td><td>Aggregate insights every N decisions, detect patterns, track override rate</td></tr>
+                <tr><td>Novelty detection</td><td>Flag unfamiliar action types for extra care</td></tr>
+                <tr><td>Owner override tracking</td><td>High override rate = misaligned calibration, not failure</td></tr>
+            </table>
+        </section>
+
+        <!-- ActionDomain & SelfState -->
+        <section>
+            <h2>Action <span class="accent">Domains</span></h2>
+            <p class="subtitle">Categories of agent actions that require alignment checks.</p>
+
+            <table class="platform-table">
+                <tr><th>Domain</th><th>What it covers</th></tr>
+                <tr><td>SIGN</td><td>Signing a Nostr event (identity action)</td></tr>
+                <tr><td>PAY</td><td>Lightning payment (financial action)</td></tr>
+                <tr><td>PUBLISH</td><td>Publishing to a relay (public action)</td></tr>
+                <tr><td>SEND</td><td>Sending email or message (communication)</td></tr>
+                <tr><td>SCHEDULE</td><td>Calendar booking (time commitment)</td></tr>
+                <tr><td>EXECUTE</td><td>Shell command or tool use (system action)</td></tr>
+                <tr><td>DISCLOSE</td><td>Sharing information (data action)</td></tr>
+                <tr><td>CONNECT</td><td>Establishing new relationship (social)</td></tr>
+                <tr><td>MODIFY</td><td>Changing config or state (system mutation)</td></tr>
+                <tr><td>ESCALATE</td><td>Asking the human (meta-action)</td></tr>
+            </table>
+
+            <h3>Self-State Flags</h3>
+            <p>Conditions that indicate the agent may be operating in a degraded state. If the machine isn't right, nothing it does is trustworthy.</p>
+
+            <table class="platform-table">
+                <tr><th>Flag</th><th>Meaning</th></tr>
+                <tr><td>HEALTHY</td><td>All systems nominal</td></tr>
+                <tr><td>STALE_CONTEXT</td><td>Operating on outdated information</td></tr>
+                <tr><td>TOOL_DEGRADED</td><td>One or more tools failing or unreachable</td></tr>
+                <tr><td>HIGH_UNCERTAINTY</td><td>Low confidence across recent decisions</td></tr>
+                <tr><td>MEMORY_PRESSURE</td><td>Context window near capacity</td></tr>
+                <tr><td>RAPID_DECISIONS</td><td>Too many decisions too fast &mdash; slow down</td></tr>
+                <tr><td>OWNER_ABSENT</td><td>Owner hasn't interacted recently</td></tr>
+                <tr><td>UNDER_INFLUENCE</td><td>Possible prompt injection or manipulation</td></tr>
+                <tr><td>CONFLICTING_SIGNALS</td><td>Inputs contradict each other</td></tr>
+            </table>
+        </section>
+
+        <!-- API -->
+        <section>
+            <h2><span class="accent">API</span> Reference</h2>
+
+            <h3>Core Methods</h3>
+            <div class="code-block">
+<span class="comment"># Create an alignment enclave tied to a human identity</span>
+enclave = <span class="fn">AlignmentEnclave</span>.<span class="fn">create</span>(
+    owner_npub=<span class="str">"npub1..."</span>,
+    owner_name=<span class="str">"vergel"</span>,
+)
+
+<span class="comment"># Run all five lenses against a proposed action</span>
+result = enclave.<span class="fn">check</span>(
+    domain=<span class="fn">ActionDomain</span>.SEND,
+    description=<span class="str">"Share keys with contact"</span>,
+)
+
+<span class="comment"># Record what happened</span>
+enclave.<span class="fn">record_proceeded</span>()
+enclave.<span class="fn">record_deferred</span>(owner_feedback=<span class="str">"Not yet"</span>)
+
+<span class="comment"># Aggregate insights from past decisions</span>
+report = enclave.<span class="fn">wisdom</span>()
+<span class="fn">print</span>(report.insights)
+            </div>
+        </section>
+
+        <!-- Security -->
+        <section>
+            <h2><span class="accent">Security</span></h2>
+            <p class="subtitle">Honest constraints about what this is and isn't.</p>
+
+            <ul>
+                <li><strong>The enclave is a compass, not a cage</strong> &mdash; it advises, never overrides</li>
+                <li><strong>STOP always escalates</strong> &mdash; the human always has final say, no exceptions, no timeouts</li>
+                <li><strong>No network calls</strong> &mdash; all evaluation is local, zero external dependencies</li>
+                <li><strong>No telemetry</strong> &mdash; nothing phoned home, ever</li>
+                <li><strong>Storage isolation</strong> &mdash; alignment state goes in <code>config/</code>, never in workspace the agent can tamper with</li>
+                <li><strong>Self-state flags</strong> &mdash; <code>UNDER_INFLUENCE</code> and <code>CONFLICTING_SIGNALS</code> force defer-to-human</li>
+                <li><strong>Wisdom from real decisions</strong> &mdash; patterns emerge from what actually happened, not hypotheticals</li>
+                <li><strong>Zero dependencies</strong> &mdash; stdlib only, nothing to supply-chain attack</li>
+            </ul>
+        </section>
+
+        <!-- Ecosystem -->
+        <section>
+            <h2>NSE <span class="accent">Ecosystem</span></h2>
+            <p class="subtitle">social-alignment is the fifth pillar of the NSE platform.</p>
+
+            <table class="platform-table">
+                <tr><th>Pillar</th><th>Package</th><th>Domain</th></tr>
+                <tr><td>1. Identity</td><td><a href="https://pypi.org/project/nostrkey/">nostrkey</a></td><td>Cryptographic keypairs, event signing</td></tr>
+                <tr><td>2. Finance</td><td><a href="https://pypi.org/project/nostrwalletconnect/">nostrwalletconnect</a></td><td>Lightning wallet access via NIP-47</td></tr>
+                <tr><td>3. Time</td><td><a href="https://pypi.org/project/nostrcalendar/">nostrcalendar</a></td><td>Sovereign scheduling over Nostr</td></tr>
+                <tr><td>4. Relationships</td><td><a href="https://pypi.org/project/nostrsocial/">nostrsocial</a></td><td>Social graph and trust tiers</td></tr>
+                <tr><td>5. Compass</td><td><strong>social-alignment</strong></td><td>Five-lens alignment before every action</td></tr>
+                <tr><td>Orchestrator</td><td><a href="https://pypi.org/project/nse-orchestrator/">nse-orchestrator</a></td><td>Cross-pillar coordination</td></tr>
+            </table>
+
+            <p>The orchestrator uses social-alignment for cross-pillar checks &mdash; every significant action across identity, finance, time, and relationships passes through the yellow line first.</p>
+        </section>
+
+    </div>
+
+    <footer>
+        <p><a href="/">nse.dev</a> &middot; <a href="https://humanjava.com">Humanjava Enterprises</a> &middot; MIT License &middot; <a href="/support.html">Support</a></p>
+    </footer>
+
+    <script>
+    function copyCode(id){
+        const el=document.getElementById(id);
+        if(!el)return;
+        const text=el.innerText;
+        navigator.clipboard.writeText(text).then(()=>{
+            const btn=el.closest('.code-block').querySelector('.copy-btn');
+            if(btn){btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1500);}
+        });
+    }
+    </script>
+</body>
+</html>

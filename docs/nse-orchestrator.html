@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0a0a0f">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSE Orchestrator — The Nervous System | nse.dev</title>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-koTJh9eNIFNg6_JoamV9n.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+    <meta name="description" content="The nervous system for sovereign AI entities. Cross-pillar checks, LLM trust profiles, coherence detection, and signal routing across the five NSE pillars.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nse.dev/nse-orchestrator.html">
+    <meta property="og:title" content="NSE Orchestrator — The Nervous System">
+    <meta property="og:description" content="Cross-pillar checks, LLM trust profiles, coherence detection, and signal routing. The nervous system for sovereign AI entities.">
+    <meta property="og:image" content="https://nse.dev/og-nse-orchestrator.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NSE Orchestrator — The Nervous System">
+    <meta name="twitter:description" content="Cross-pillar checks, LLM trust profiles, coherence detection, and signal routing. The nervous system for sovereign AI entities.">
+    <meta name="twitter:image" content="https://nse.dev/og-nse-orchestrator.png">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' stroke='%2322d3ee' stroke-width='4' fill='%2312121a'/><path d='M30 50h40M50 30v40' stroke='%2322d3ee' stroke-width='6' stroke-linecap='round' fill='none'/></svg>">
+
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-code: #0a0a12;
+            --text: #f0f0f5;
+            --text-dim: #8888a0;
+            --cyan: #22d3ee;
+            --cyan-dim: #0891b2;
+            --border: #1e1e2e;
+            --green: #4ade80;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { overflow-x: hidden; width: 100%; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* Nav */
+        .nav {
+            margin-bottom: 48px;
+        }
+
+        .nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav a:hover { color: var(--text); }
+        .nav .sep { color: var(--border); margin: 0 8px; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border: 1px solid var(--cyan-dim);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span { color: var(--cyan); }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+
+        /* Sections */
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        section h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        section h2 span.accent { color: var(--cyan); }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin: 24px 0 12px;
+            color: var(--cyan);
+        }
+
+        p { margin-bottom: 12px; }
+
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Code */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            margin: 12px 0 20px;
+            position: relative;
+        }
+
+        .code-block .fn { color: var(--cyan); }
+        .code-block .comment { color: #555568; }
+        .code-block .str { color: #a78bfa; }
+        .code-block .kw { color: #f472b6; }
+
+        code {
+            background: var(--bg-code);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 0.85em;
+            color: var(--cyan);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--border);
+            color: var(--text-dim);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .copy-btn:hover { background: #2a2a3e; color: var(--text); }
+
+        /* Flow */
+        .flow-steps {
+            counter-reset: step;
+        }
+
+        .flow-step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .flow-step .num {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(34,211,238,0.12);
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .flow-step .text h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .flow-step .text p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Tables */
+        .platform-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 16px 0;
+        }
+
+        .platform-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-dim);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .platform-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(30,30,46,0.5);
+            color: var(--text-dim);
+        }
+
+        .platform-table td:first-child {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .status-done { color: var(--green); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.15s, transform 0.15s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .btn-primary { background: var(--cyan); color: #0a0a0f; }
+        .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--cyan); }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        footer a { color: var(--text-dim); text-decoration: none; }
+        footer a:hover { color: var(--cyan); }
+
+        /* Section header (outside cards) */
+        .section-header {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            padding-top: 16px;
+        }
+
+        .section-header span { color: var(--cyan); }
+
+        /* Section p overrides */
+        section p { color: var(--text-dim); font-size: 0.95rem; }
+        section p strong { color: var(--text); }
+
+        /* Lists */
+        ul { list-style-position: inside; margin: 12px 0; }
+        li { color: var(--text-dim); margin-bottom: 8px; }
+        li strong { color: var(--text); }
+
+        @media (max-width: 640px) {
+            .container { padding: 40px 16px; }
+            .hero h1 { font-size: 2rem; }
+            section { padding: 24px 16px; }
+            .code-block { font-size: 0.75rem; padding: 16px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { margin-bottom: 24px; }
+            .hero h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Nav -->
+        <nav class="nav" aria-label="Breadcrumb">
+            <a href="/">nse.dev</a>
+            <span class="sep">/</span>
+            <a href="/openclaw.html">openclaw</a>
+            <span class="sep">/</span>
+            <a href="/nse-orchestrator.html" style="color:var(--text)">nse-orchestrator</a>
+        </nav>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">v0.2.0 -- PyPI + ClawHub</div>
+            <h1>NSE <span>Orchestrator</span></h1>
+            <p>The nervous system for sovereign AI entities. Wires five pillars into a coherent whole.</p>
+            <div class="btn-group" style="justify-content:center">
+                <a href="https://pypi.org/project/nse-orchestrator/" class="btn btn-primary" aria-label="View on PyPI">PyPI</a>
+                <a href="https://github.com/HumanjavaEnterprises/nse-orchestrator.app.OC-python.src" class="btn btn-secondary" aria-label="View on GitHub">GitHub</a>
+                <a href="https://clawhub.dev/skills/nse-orchestrator" class="btn btn-secondary" aria-label="View on ClawHub">ClawHub</a>
+            </div>
+        </div>
+
+        <!-- Install -->
+        <section>
+            <h2><span class="accent">Install</span></h2>
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('pip install nse-orchestrator[all]')" aria-label="Copy install command">copy</button>
+pip install nse-orchestrator[all]
+            </div>
+            <p class="subtitle">Zero required dependencies. Install only the pillars you need, or use <code>[all]</code> for everything.</p>
+
+            <h3>Import names</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>pip install</th><th>python import</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>nse-orchestrator</td><td>nse_orchestrator</td></tr>
+                    <tr><td>social-alignment</td><td>social_alignment</td></tr>
+                    <tr><td>nostrcalendar</td><td>nostrcalendar</td></tr>
+                    <tr><td>nostrwalletconnect</td><td>nostrwalletconnect</td></tr>
+                    <tr><td>nostrkey</td><td>nostrkey</td></tr>
+                    <tr><td>nostrsocial</td><td>nostrsocial</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Quickstart -->
+        <section>
+            <h2><span class="accent">Quickstart</span></h2>
+            <p class="subtitle">Create a sovereign entity and start routing signals in four lines.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('.code-text').textContent)" aria-label="Copy quickstart code">copy</button>
+<span class="code-text"><span class="kw">from</span> nse_orchestrator <span class="kw">import</span> SovereignEntity
+
+entity = <span class="fn">SovereignEntity.create</span>(owner_name=<span class="str">"vergel"</span>)
+
+<span class="comment"># Cross-pillar check -- the nervous system sees across all five pillars</span>
+verdicts = entity.<span class="fn">check</span>(
+    <span class="str">"Pay 500 sats to unknown contact"</span>,
+    involves_money=<span class="kw">True</span>,
+    money_amount_sats=<span class="str">500</span>,
+    recipient_id=<span class="str">"npub1stranger..."</span>,
+)
+
+<span class="kw">if</span> entity.<span class="fn">should_escalate</span>(verdicts):
+    <span class="kw">for</span> v <span class="kw">in</span> verdicts:
+        <span class="fn">print</span>(v.description)
+
+<span class="comment"># Score LLM responses -- build trust over time</span>
+entity.<span class="fn">score_response</span>(<span class="str">"claude-opus-4-6"</span>, <span class="str">"analysis..."</span>, quality=<span class="str">0.9</span>, task_type=<span class="str">"reasoning"</span>)</span>
+            </div>
+        </section>
+
+        <!-- The Five Pillars -->
+        <section>
+            <h2>The Five <span class="accent">Pillars</span></h2>
+            <p class="subtitle">All optional. NSE gains capabilities as you install them.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Pillar</th><th>Package</th><th>What</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Identity</td><td>nostrkey</td><td>Keypairs, signing, encryption</td></tr>
+                    <tr><td>Finance</td><td>nostrwalletconnect</td><td>Lightning via NIP-47</td></tr>
+                    <tr><td>Time</td><td>nostrcalendar</td><td>Scheduling via NIP-52</td></tr>
+                    <tr><td>Relationships</td><td>nostrsocial</td><td>Trust tiers, drift, guardrails</td></tr>
+                    <tr><td>Alignment</td><td>social-alignment</td><td>Five lenses, escalation, wisdom</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Pillar Detection -->
+        <section>
+            <h2>Pillar <span class="accent">Detection</span></h2>
+            <p class="subtitle">Pillar detection is automatic. Install a package and it lights up -- no configuration needed.</p>
+            <ul>
+                <li><strong>Automatic discovery.</strong> The orchestrator uses try/except imports at runtime. Install a pillar package and it activates.</li>
+                <li><strong>Graceful degradation.</strong> If a pillar is missing, related checks still run but return CAUTION instead of CONFLICT. The orchestrator never crashes on a missing pillar.</li>
+                <li><strong>Zero config.</strong> No manifest, no registration. Just <code>pip install</code> and go.</li>
+            </ul>
+        </section>
+
+        <!-- Cross-Pillar Checks -->
+        <section>
+            <h2>Cross-Pillar <span class="accent">Checks</span></h2>
+            <p class="subtitle">The orchestrator catches conflicts that no single pillar would flag on its own.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('.code-text').textContent)" aria-label="Copy cross-pillar code">copy</button>
+<span class="code-text"><span class="kw">from</span> nse_orchestrator <span class="kw">import</span> SovereignEntity
+
+entity = <span class="fn">SovereignEntity.create</span>(owner_name=<span class="str">"vergel"</span>)
+
+<span class="comment"># Payment to a stranger -- crosses Finance and Relationships pillars</span>
+verdicts = entity.<span class="fn">check</span>(
+    <span class="str">"Pay 500 sats to unknown contact"</span>,
+    involves_money=<span class="kw">True</span>,
+    money_amount_sats=<span class="str">500</span>,
+    recipient_id=<span class="str">"npub1stranger..."</span>,
+)
+
+<span class="kw">for</span> v <span class="kw">in</span> verdicts:
+    <span class="fn">print</span>(f<span class="str">"{v.verdict}: {v.description}"</span>)
+    <span class="fn">print</span>(f<span class="str">"  Pillars: {v.pillars_involved}"</span>)
+    <span class="fn">print</span>(f<span class="str">"  Suggestion: {v.suggestion}"</span>)</span>
+            </div>
+
+            <h3>CheckVerdict fields</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>verdict</td><td>Verdict</td><td>CLEAR, CAUTION, CONFLICT, or ESCALATE</td></tr>
+                    <tr><td>pillars_involved</td><td>tuple[Pillar]</td><td>Which pillars weighed in</td></tr>
+                    <tr><td>description</td><td>str</td><td>Human-readable explanation</td></tr>
+                    <tr><td>suggestion</td><td>str</td><td>Recommended action</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Model Registry -->
+        <section>
+            <h2>Model <span class="accent">Registry</span></h2>
+            <p class="subtitle">Score every model response and build trust profiles over time.</p>
+
+            <h3>LLM scoring</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('.code-text').textContent)" aria-label="Copy LLM scoring code">copy</button>
+<span class="code-text"><span class="comment"># Score a response</span>
+card = entity.<span class="fn">score_response</span>(
+    <span class="str">"claude-opus-4-6"</span>,
+    <span class="str">"analysis..."</span>,
+    quality=<span class="str">0.9</span>,
+    task_type=<span class="str">"reasoning"</span>,
+)
+
+<span class="comment"># Find the best model for a task type</span>
+best = entity.<span class="fn">best_model_for</span>(<span class="str">"reasoning"</span>)
+<span class="fn">print</span>(best)  <span class="comment"># "claude-opus-4-6"</span></span>
+            </div>
+
+            <h3>Model leaderboard</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('.code-text').textContent)" aria-label="Copy leaderboard code">copy</button>
+<span class="code-text">leaderboard = entity.<span class="fn">model_leaderboard</span>()
+<span class="kw">for</span> profile <span class="kw">in</span> leaderboard:
+    <span class="fn">print</span>(f<span class="str">"{profile.model_id}: {profile.trust_level} (avg {profile.avg_quality:.2f})"</span>)
+    <span class="kw">for</span> task, score <span class="kw">in</span> profile.task_strengths.<span class="fn">items</span>():
+        <span class="fn">print</span>(f<span class="str">"  {task}: {score:.2f}"</span>)</span>
+            </div>
+
+            <h3>ScoreCard fields</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>quality</td><td>float</td><td>0.0--1.0 overall quality</td></tr>
+                    <tr><td>coherence</td><td>float</td><td>0.0--1.0 consistency with prior context</td></tr>
+                    <tr><td>relevance</td><td>float</td><td>0.0--1.0 addressed actual need</td></tr>
+                    <tr><td>safety</td><td>float</td><td>0.0--1.0 alignment check</td></tr>
+                    <tr><td>rationale</td><td>str</td><td>Why this score</td></tr>
+                </tbody>
+            </table>
+            <p>Score weights: quality (30%) + coherence (25%) + relevance (25%) + safety (20%). All numeric scores are 0.0--1.0, auto-clamped, reject NaN/Inf.</p>
+
+            <h3>Trust levels</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Level</th><th>Threshold</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>unknown</td><td>&lt; 5 interactions</td></tr>
+                    <tr><td>unreliable</td><td>&lt; 0.5</td></tr>
+                    <tr><td>cautious</td><td>0.5 -- 0.7</td></tr>
+                    <tr><td>reliable</td><td>0.7 -- 0.85</td></tr>
+                    <tr><td>trusted</td><td>&gt;= 0.85</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Signal Flow -->
+        <section>
+            <h2>Signal <span class="accent">Flow</span></h2>
+            <p class="subtitle">Every action, response, and interaction flows through the nerve center.</p>
+            <div class="flow-steps">
+                <div class="flow-step">
+                    <div class="num">1</div>
+                    <div class="text">
+                        <h4>Signal enters</h4>
+                        <p>An action, check, or LLM response arrives at the orchestrator.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">2</div>
+                    <div class="text">
+                        <h4>Pillar routing</h4>
+                        <p>The nerve center identifies which pillars are relevant and routes the signal.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">3</div>
+                    <div class="text">
+                        <h4>Cross-pillar analysis</h4>
+                        <p>Checks run across pillar boundaries -- catching conflicts no single pillar would see.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">4</div>
+                    <div class="text">
+                        <h4>Verdict or score</h4>
+                        <p>Returns a CheckVerdict (for actions) or ScoreCard (for LLM responses). Escalates when needed.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Entity status</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('.code-text').textContent)" aria-label="Copy status code">copy</button>
+<span class="code-text">status = entity.<span class="fn">status</span>()
+<span class="fn">print</span>(f<span class="str">"Owner: {status.owner}"</span>)
+<span class="fn">print</span>(f<span class="str">"Entity: {status.entity}"</span>)
+<span class="fn">print</span>(f<span class="str">"Active models: {status.active_models}"</span>)
+<span class="fn">print</span>(f<span class="str">"Signals buffered: {status.signal_count}"</span>)
+<span class="fn">print</span>(f<span class="str">"Recent escalations: {status.recent_escalations}"</span>)
+<span class="kw">for</span> pillar, state <span class="kw">in</span> status.pillars.<span class="fn">items</span>():
+    <span class="fn">print</span>(f<span class="str">"  {pillar}: {state}"</span>)</span>
+            </div>
+            <p><strong>Signal buffer auto-rolls.</strong> When the buffer hits its cap, the oldest signals are dropped silently. No persistence, no disk writes. The nerve center is a router, not a database.</p>
+        </section>
+
+        <!-- Security -->
+        <section>
+            <h2><span class="accent">Security</span></h2>
+            <p class="subtitle">The orchestrator handles trust, not secrets.</p>
+            <ul>
+                <li><strong>Never pass raw nsec values through the orchestrator.</strong> Pillar packages handle their own secrets. The nerve center automatically redacts nsec keys, API keys, Bearer tokens, and 64-char hex secrets from signal storage.</li>
+                <li><strong>STOP always defers to the human.</strong> When the alignment pillar returns a STOP verdict, the orchestrator escalates -- no override, no exception.</li>
+                <li><strong>Signal buffer is capped</strong> (default 10,000) and rolls automatically. Old signals are dropped, not persisted.</li>
+            </ul>
+        </section>
+
+        <!-- Configuration -->
+        <section>
+            <h2><span class="accent">Configuration</span></h2>
+            <p class="subtitle"><code>EntityConfig</code> controls orchestrator behavior. All fields have sensible defaults.</p>
+
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Default</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>max_signals</td><td>10000</td><td>Signal buffer cap before auto-roll</td></tr>
+                    <tr><td>score_window</td><td>100</td><td>Recent scores used for model trust calculation</td></tr>
+                    <tr><td>coherence_threshold</td><td>0.6</td><td>Below this, two model responses are flagged as incoherent</td></tr>
+                    <tr><td>auto_escalate_on_incoherence</td><td>True</td><td>Automatically escalate when coherence drops below threshold</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('.code-text').textContent)" aria-label="Copy config code">copy</button>
+<span class="code-text"><span class="kw">from</span> nse_orchestrator <span class="kw">import</span> SovereignEntity, EntityConfig
+
+config = <span class="fn">EntityConfig</span>(
+    max_signals=<span class="str">10000</span>,
+    score_window=<span class="str">100</span>,
+    coherence_threshold=<span class="str">0.6</span>,
+    auto_escalate_on_incoherence=<span class="kw">True</span>,
+)
+
+entity = <span class="fn">SovereignEntity.create</span>(owner_name=<span class="str">"vergel"</span>, config=config)</span>
+            </div>
+        </section>
+
+        <!-- Which check() -->
+        <section>
+            <h2>Which <code>check()</code> <span class="accent">Should I Use?</span></h2>
+            <p><strong>Start with <code>SovereignEntity.check()</code>.</strong> It wraps the alignment pillar and adds cross-pillar awareness (e.g. "paying someone not in your contacts"). Use <code>AlignmentEnclave.check()</code> directly only if you're building a custom orchestrator or need alignment without the other pillars.</p>
+        </section>
+
+        <!-- Ecosystem -->
+        <section>
+            <h2><span class="accent">Ecosystem</span></h2>
+            <p class="subtitle">The NSE platform -- five pillars plus the nervous system.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Package</th><th>Role</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><a href="https://pypi.org/project/nostrkey/">nostrkey</a></td><td>Identity -- keypairs, signing, encryption</td><td class="status-done">shipped</td></tr>
+                    <tr><td><a href="https://pypi.org/project/nostrwalletconnect/">nostrwalletconnect</a></td><td>Finance -- Lightning via NIP-47</td><td class="status-done">shipped</td></tr>
+                    <tr><td><a href="https://pypi.org/project/nostrcalendar/">nostrcalendar</a></td><td>Time -- scheduling via NIP-52</td><td class="status-done">shipped</td></tr>
+                    <tr><td><a href="https://pypi.org/project/nostrsocial/">nostrsocial</a></td><td>Relationships -- trust tiers, drift, guardrails</td><td class="status-done">shipped</td></tr>
+                    <tr><td><a href="https://pypi.org/project/social-alignment/">social-alignment</a></td><td>Alignment -- five lenses, escalation, wisdom</td><td class="status-done">shipped</td></tr>
+                    <tr><td><a href="https://pypi.org/project/nse-orchestrator/">nse-orchestrator</a></td><td>Nervous system -- cross-pillar routing</td><td class="status-done">shipped</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <a href="https://nse.dev">nse.dev</a>
+            &nbsp;&middot;&nbsp;
+            <a href="https://humanjava.com">Humanjava Enterprises</a>
+            &nbsp;&middot;&nbsp;
+            MIT
+            &nbsp;&middot;&nbsp;
+            <a href="/support.html">Support</a>
+        </footer>
+
+    </div>
+</body>
+</html>

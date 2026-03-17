@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0a0a0f">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NostrCalendar — Scheduling SDK | nse.dev</title>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-koTJh9eNIFNg6_JoamV9n.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+    <meta name="description" content="Nostr-native scheduling SDK for AI agents. Publish availability, book meetings, and negotiate times over relays with full cryptographic accountability.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nse.dev/nostrcalendar.html">
+    <meta property="og:title" content="NostrCalendar — Scheduling SDK | nse.dev">
+    <meta property="og:description" content="Nostr-native scheduling SDK for AI agents. Publish availability, book meetings, and negotiate times over relays. pip install nostrcalendar">
+    <meta property="og:image" content="https://nse.dev/og-nostrcalendar.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NostrCalendar — Scheduling SDK | nse.dev">
+    <meta name="twitter:description" content="Nostr-native scheduling SDK for AI agents. Publish availability, book meetings, and negotiate times over relays.">
+    <meta name="twitter:image" content="https://nse.dev/og-nostrcalendar.png">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' stroke='%2322d3ee' stroke-width='4' fill='%2312121a'/><path d='M30 50h40M50 30v40' stroke='%2322d3ee' stroke-width='6' stroke-linecap='round' fill='none'/></svg>">
+
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-code: #0a0a12;
+            --text: #f0f0f5;
+            --text-dim: #8888a0;
+            --cyan: #22d3ee;
+            --cyan-dim: #0891b2;
+            --border: #1e1e2e;
+            --green: #4ade80;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { overflow-x: hidden; width: 100%; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* Nav */
+        .nav {
+            margin-bottom: 48px;
+        }
+
+        .nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav a:hover { color: var(--text); }
+        .nav .sep { color: var(--border); margin: 0 8px; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border: 1px solid var(--cyan-dim);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span { color: var(--cyan); }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+
+        /* Sections */
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        section h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        section h2 span.accent { color: var(--cyan); }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin: 24px 0 12px;
+            color: var(--cyan);
+        }
+
+        p { margin-bottom: 12px; }
+
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Code */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            margin: 12px 0 20px;
+            position: relative;
+        }
+
+        .code-block .fn { color: var(--cyan); }
+        .code-block .comment { color: #555568; }
+        .code-block .str { color: #a78bfa; }
+        .code-block .kw { color: #f472b6; }
+
+        code {
+            background: var(--bg-code);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 0.85em;
+            color: var(--cyan);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--border);
+            color: var(--text-dim);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .copy-btn:hover { background: #2a2a3e; color: var(--text); }
+
+        /* Tables */
+        .platform-table, .nip-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 16px 0;
+        }
+
+        .platform-table th, .nip-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-dim);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .platform-table td, .nip-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(30,30,46,0.5);
+            color: var(--text-dim);
+        }
+
+        .platform-table td:first-child, .nip-table td:first-child {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .status-done { color: var(--green); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.15s, transform 0.15s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .btn-primary { background: var(--cyan); color: #0a0a0f; }
+        .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--cyan); }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        footer a { color: var(--text-dim); text-decoration: none; }
+        footer a:hover { color: var(--cyan); }
+
+        /* Section header (outside cards) */
+        .section-header {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            padding-top: 16px;
+        }
+
+        .section-header span { color: var(--cyan); }
+
+        /* Section p overrides */
+        section p { color: var(--text-dim); font-size: 0.95rem; }
+        section p strong { color: var(--text); }
+
+        /* Lists */
+        ul { list-style-position: inside; margin: 12px 0; }
+        li { color: var(--text-dim); margin-bottom: 8px; }
+        li strong { color: var(--text); }
+
+        @media (max-width: 640px) {
+            .container { padding: 40px 16px; }
+            .hero h1 { font-size: 2rem; }
+            section { padding: 24px 16px; }
+            .code-block { font-size: 0.75rem; padding: 16px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { margin-bottom: 24px; }
+            .hero h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <nav class="nav" aria-label="Breadcrumb">
+            <a href="/">nse.dev</a>
+            <span class="sep">/</span>
+            <a href="/openclaw.html">openclaw</a>
+            <span class="sep">/</span>
+            <span style="color:var(--cyan);">nostrcalendar</span>
+        </nav>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">The Time Pillar &mdash; NSE Platform</div>
+            <h1>Nostr<span>Calendar</span></h1>
+            <p>Sovereign scheduling for AI agents. Publish availability, book meetings, and negotiate times over Nostr relays &mdash; no centralized server. Every operation is a signed event with full cryptographic accountability.</p>
+
+            <div class="btn-group" style="justify-content:center;">
+                <a href="https://pypi.org/project/nostrcalendar/" class="btn btn-primary" aria-label="View NostrCalendar on PyPI">PyPI</a>
+                <a href="https://github.com/HumanjavaEnterprises/nostrcalendar.app.OC-python.src" class="btn btn-secondary" aria-label="View NostrCalendar source on GitHub">GitHub</a>
+                <a href="https://clawhub.com/skills/nostrcalendar" class="btn btn-secondary" aria-label="View NostrCalendar on ClawHub">ClawHub</a>
+            </div>
+        </div>
+
+        <!-- Install -->
+        <section>
+            <h2><span class="accent">Install</span></h2>
+            <p class="subtitle">One command. Depends on <code>nostrkey</code> for all cryptographic operations (installed automatically).</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('pip install nostrcalendar')" aria-label="Copy install command">Copy</button>
+                pip install nostrcalendar
+            </div>
+            <p>Version <strong>0.2.1</strong> &mdash; MIT License &mdash; Python 3.10+</p>
+        </section>
+
+        <!-- Quickstart -->
+        <section>
+            <h2><span class="accent">Quickstart</span></h2>
+            <p class="subtitle">Publish your availability, then check free slots.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('.code-text').textContent)" aria-label="Copy quickstart code">Copy</button>
+<span class="code-text"><span class="kw">import</span> asyncio, os
+<span class="kw">from</span> nostrkey <span class="kw">import</span> Identity
+<span class="kw">from</span> nostrcalendar <span class="kw">import</span> (
+    AvailabilityRule, DayOfWeek, TimeSlot,
+    publish_availability, get_free_slots,
+)
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+identity = Identity.<span class="fn">from_nsec</span>(os.environ[<span class="str">"NOSTR_NSEC"</span>])
+relay = os.environ.<span class="fn">get</span>(<span class="str">"NOSTR_RELAY"</span>, <span class="str">"wss://relay.nostrkeep.com"</span>)
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    <span class="comment"># 1. Publish availability</span>
+    rule = <span class="fn">AvailabilityRule</span>(
+        slots={DayOfWeek.MONDAY: [<span class="fn">TimeSlot</span>(<span class="str">"09:00"</span>, <span class="str">"12:00"</span>)]},
+        timezone=<span class="str">"America/Vancouver"</span>,
+    )
+    event_id = <span class="kw">await</span> <span class="fn">publish_availability</span>(identity, rule, relay)
+    <span class="fn">print</span>(f<span class="str">"Published: {event_id}"</span>)
+
+    <span class="comment"># 2. Check free slots</span>
+    slots = <span class="kw">await</span> <span class="fn">get_free_slots</span>(
+        pubkey_hex=identity.public_key_hex,
+        relay_url=relay,
+        date=<span class="fn">datetime</span>(<span class="str">2026</span>, <span class="str">3</span>, <span class="str">17</span>),
+    )
+    <span class="kw">for</span> slot <span class="kw">in</span> slots:
+        <span class="fn">print</span>(f<span class="str">"{slot.start} - {slot.end}"</span>)
+
+asyncio.<span class="fn">run</span>(<span class="fn">main</span>())</span>
+            </div>
+        </section>
+
+        <!-- Core Capabilities -->
+        <section>
+            <h2><span class="accent">Core Capabilities</span></h2>
+            <p class="subtitle">Six modules covering the full scheduling lifecycle.</p>
+
+            <h3>1. Publish Availability</h3>
+            <p>Set your human's available hours. Stored as a replaceable Nostr event on their relay.</p>
+            <div class="code-block">
+<span class="kw">from</span> nostrcalendar <span class="kw">import</span> AvailabilityRule, DayOfWeek, TimeSlot, publish_availability
+<span class="kw">from</span> nostrkey <span class="kw">import</span> Identity
+<span class="kw">import</span> os
+
+identity = Identity.<span class="fn">from_nsec</span>(os.environ[<span class="str">"NOSTR_NSEC"</span>])
+rule = <span class="fn">AvailabilityRule</span>(
+    slots={
+        DayOfWeek.MONDAY: [<span class="fn">TimeSlot</span>(<span class="str">"09:00"</span>, <span class="str">"12:00"</span>), <span class="fn">TimeSlot</span>(<span class="str">"14:00"</span>, <span class="str">"17:00"</span>)],
+        DayOfWeek.WEDNESDAY: [<span class="fn">TimeSlot</span>(<span class="str">"10:00"</span>, <span class="str">"16:00"</span>)],
+        DayOfWeek.FRIDAY: [<span class="fn">TimeSlot</span>(<span class="str">"09:00"</span>, <span class="str">"12:00"</span>)],
+    },
+    slot_duration_minutes=<span class="str">30</span>,
+    buffer_minutes=<span class="str">15</span>,
+    max_per_day=<span class="str">6</span>,
+    timezone=<span class="str">"America/Vancouver"</span>,
+    title=<span class="str">"Book a call with Vergel"</span>,
+)
+
+event_id = <span class="kw">await</span> <span class="fn">publish_availability</span>(identity, rule, <span class="str">"wss://relay.nostrkeep.com"</span>)
+            </div>
+
+            <h3>2. Check Free Slots</h3>
+            <p>Query available time slots for any user on any date.</p>
+            <div class="code-block">
+<span class="kw">from</span> nostrcalendar <span class="kw">import</span> get_free_slots
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+slots = <span class="kw">await</span> <span class="fn">get_free_slots</span>(
+    pubkey_hex=<span class="str">"abc123..."</span>,
+    relay_url=<span class="str">"wss://relay.nostrkeep.com"</span>,
+    date=<span class="fn">datetime</span>(<span class="str">2026</span>, <span class="str">3</span>, <span class="str">15</span>),
+)
+<span class="kw">for</span> slot <span class="kw">in</span> slots:
+    <span class="fn">print</span>(f<span class="str">"{slot.start} - {slot.end}"</span>)
+            </div>
+
+            <h3>3. Create a Booking</h3>
+            <p>Send a booking request as an encrypted DM to the calendar owner.</p>
+            <div class="code-block">
+<span class="kw">from</span> nostrcalendar <span class="kw">import</span> create_booking
+
+event_id = <span class="kw">await</span> <span class="fn">create_booking</span>(
+    identity=agent_identity,
+    calendar_owner_pubkey=<span class="str">"abc123..."</span>,
+    start=<span class="str">1742054400</span>,
+    end=<span class="str">1742056200</span>,
+    title=<span class="str">"Product sync"</span>,
+    message=<span class="str">"Let's review the Q1 roadmap"</span>,
+    relay_url=<span class="str">"wss://relay.nostrkeep.com"</span>,
+)
+            </div>
+
+            <h3>4. Accept or Decline Bookings</h3>
+            <p>Respond to incoming booking requests with a confirmation or decline.</p>
+            <div class="code-block">
+<span class="kw">from</span> nostrcalendar <span class="kw">import</span> accept_booking, decline_booking
+
+<span class="comment"># Accept -- publishes a calendar event + sends confirmation DM</span>
+cal_id, dm_id = <span class="kw">await</span> <span class="fn">accept_booking</span>(identity, request, relay_url)
+
+<span class="comment"># Decline -- sends a decline DM with reason</span>
+dm_id = <span class="kw">await</span> <span class="fn">decline_booking</span>(identity, request, <span class="str">"Conflict with another meeting"</span>, relay_url)
+            </div>
+
+            <h3>5. Agent-to-Agent Negotiation</h3>
+            <p>Two AI agents find mutual availability and agree on a time &mdash; no humans needed.</p>
+            <div class="code-block">
+<span class="kw">from</span> nostrcalendar <span class="kw">import</span> find_mutual_availability, propose_times
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime, timedelta
+
+<span class="comment"># Find overlapping free slots</span>
+dates = [<span class="fn">datetime</span>(<span class="str">2026</span>, <span class="str">3</span>, d) <span class="kw">for</span> d <span class="kw">in</span> <span class="fn">range</span>(<span class="str">15</span>, <span class="str">20</span>)]
+mutual = <span class="kw">await</span> <span class="fn">find_mutual_availability</span>(my_agent, other_pubkey, relay_url, dates)
+
+<span class="comment"># Or send a proposal with available times</span>
+<span class="kw">await</span> <span class="fn">propose_times</span>(my_agent, other_pubkey, relay_url, dates, title=<span class="str">"Collab sync"</span>)
+            </div>
+        </section>
+
+        <!-- When to Use Each Module -->
+        <section>
+            <h2><span class="accent">When to Use</span> Each Module</h2>
+            <p class="subtitle">Quick reference for choosing the right function.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Module</th>
+                        <th>Function</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Set available hours</td>
+                        <td><code>availability</code></td>
+                        <td><code>publish_availability</code></td>
+                    </tr>
+                    <tr>
+                        <td>Check someone's openings</td>
+                        <td><code>availability</code></td>
+                        <td><code>get_free_slots</code></td>
+                    </tr>
+                    <tr>
+                        <td>Request a meeting</td>
+                        <td><code>booking</code></td>
+                        <td><code>create_booking</code></td>
+                    </tr>
+                    <tr>
+                        <td>Confirm a meeting</td>
+                        <td><code>booking</code></td>
+                        <td><code>accept_booking</code></td>
+                    </tr>
+                    <tr>
+                        <td>Decline a meeting</td>
+                        <td><code>booking</code></td>
+                        <td><code>decline_booking</code></td>
+                    </tr>
+                    <tr>
+                        <td>Cancel a meeting</td>
+                        <td><code>booking</code></td>
+                        <td><code>cancel_event</code></td>
+                    </tr>
+                    <tr>
+                        <td>RSVP to an event</td>
+                        <td><code>booking</code></td>
+                        <td><code>send_rsvp</code></td>
+                    </tr>
+                    <tr>
+                        <td>Find mutual free time</td>
+                        <td><code>negotiate</code></td>
+                        <td><code>find_mutual_availability</code></td>
+                    </tr>
+                    <tr>
+                        <td>Propose times to another agent</td>
+                        <td><code>negotiate</code></td>
+                        <td><code>propose_times</code></td>
+                    </tr>
+                    <tr>
+                        <td>Respond to a proposal</td>
+                        <td><code>negotiate</code></td>
+                        <td><code>respond_to_proposal</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Response Formats -->
+        <section>
+            <h2><span class="accent">Response</span> Formats</h2>
+            <p class="subtitle">Data structures returned by the SDK.</p>
+
+            <h3>TimeSlot</h3>
+            <p>Returned by <code>get_free_slots()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>start</code></td><td><code>str</code></td><td>Start time in HH:MM format</td></tr>
+                    <tr><td><code>end</code></td><td><code>str</code></td><td>End time in HH:MM format</td></tr>
+                </tbody>
+            </table>
+
+            <h3>BookingRequest</h3>
+            <p>Parsed from incoming encrypted DMs.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>requester_pubkey</code></td><td><code>str</code></td><td>Hex pubkey of the requester</td></tr>
+                    <tr><td><code>requested_start</code></td><td><code>int</code></td><td>Unix timestamp</td></tr>
+                    <tr><td><code>requested_end</code></td><td><code>int</code></td><td>Unix timestamp</td></tr>
+                    <tr><td><code>title</code></td><td><code>str</code></td><td>Meeting title</td></tr>
+                    <tr><td><code>message</code></td><td><code>str</code></td><td>Optional message from requester</td></tr>
+                    <tr><td><code>status</code></td><td><code>BookingStatus</code></td><td>PENDING, ACCEPTED, DECLINED, or CANCELLED</td></tr>
+                </tbody>
+            </table>
+
+            <h3>CalendarEvent</h3>
+            <p>Created by <code>accept_booking()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>d_tag</code></td><td><code>str</code></td><td>Unique replaceable event identifier</td></tr>
+                    <tr><td><code>title</code></td><td><code>str</code></td><td>Event title (encrypted in content)</td></tr>
+                    <tr><td><code>start</code></td><td><code>int</code></td><td>Unix timestamp</td></tr>
+                    <tr><td><code>end</code></td><td><code>int</code></td><td>Unix timestamp</td></tr>
+                    <tr><td><code>location</code></td><td><code>str</code></td><td>Optional (encrypted)</td></tr>
+                    <tr><td><code>description</code></td><td><code>str</code></td><td>Optional (encrypted)</td></tr>
+                    <tr><td><code>participants</code></td><td><code>list[str]</code></td><td>Hex pubkeys of invited participants</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Return Types by Function</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Function</th><th>Returns</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>publish_availability()</code></td><td><code>str</code></td><td>Event ID</td></tr>
+                    <tr><td><code>get_free_slots()</code></td><td><code>list[TimeSlot]</code></td><td>Available slots (empty if none)</td></tr>
+                    <tr><td><code>get_availability()</code></td><td><code>AvailabilityRule | None</code></td><td>Published rules, or None</td></tr>
+                    <tr><td><code>create_booking()</code></td><td><code>str</code></td><td>Event ID of booking request DM</td></tr>
+                    <tr><td><code>accept_booking()</code></td><td><code>tuple[str, str]</code></td><td>(calendar_event_id, confirmation_dm_id)</td></tr>
+                    <tr><td><code>decline_booking()</code></td><td><code>str</code></td><td>Event ID of decline DM</td></tr>
+                    <tr><td><code>cancel_event()</code></td><td><code>str</code></td><td>Event ID of deletion (NIP-09)</td></tr>
+                    <tr><td><code>find_mutual_availability()</code></td><td><code>dict[str, list[TimeSlot]]</code></td><td>Date string to free slots</td></tr>
+                    <tr><td><code>propose_times()</code></td><td><code>str</code></td><td>Event ID of proposal DM</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Common Patterns -->
+        <section>
+            <h2><span class="accent">Common</span> Patterns</h2>
+
+            <h3>Async Usage</h3>
+            <p>All network functions are async. Wrap in <code>asyncio.run()</code> for scripts, or <code>await</code> directly inside an async context.</p>
+            <div class="code-block">
+<span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">schedule</span>():
+    slots = <span class="kw">await</span> <span class="fn">get_free_slots</span>(pubkey, relay, date)
+    <span class="kw">if</span> slots:
+        <span class="kw">await</span> <span class="fn">create_booking</span>(identity, pubkey, slots[<span class="str">0</span>].start, slots[<span class="str">0</span>].end,
+                             title=<span class="str">"Sync"</span>, relay_url=relay)
+
+asyncio.<span class="fn">run</span>(<span class="fn">schedule</span>())
+            </div>
+
+            <h3>Error Handling</h3>
+            <div class="code-block">
+<span class="kw">try</span>:
+    event_id = <span class="kw">await</span> <span class="fn">create_booking</span>(identity, pubkey, start, end,
+                                    title=<span class="str">"Sync"</span>, relay_url=relay)
+<span class="kw">except</span> <span class="fn">ValueError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(f<span class="str">"Validation failed: {e}"</span>)  <span class="comment"># bad pubkey, timestamps, etc.</span>
+<span class="kw">except</span> <span class="fn">ConnectionError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(f<span class="str">"Relay unreachable: {e}"</span>)
+            </div>
+
+            <h3>Timezone Handling</h3>
+            <p>Slot times are interpreted in the AvailabilityRule's timezone (defaults to UTC). Use IANA timezone strings.</p>
+            <div class="code-block">
+rule = <span class="fn">AvailabilityRule</span>(
+    slots={DayOfWeek.MONDAY: [<span class="fn">TimeSlot</span>(<span class="str">"09:00"</span>, <span class="str">"17:00"</span>)]},
+    timezone=<span class="str">"America/Vancouver"</span>,  <span class="comment"># IANA timezone</span>
+)
+            </div>
+            <p><code>compute_free_slots</code> respects the rule's timezone &mdash; it is not hardcoded to UTC.</p>
+        </section>
+
+        <!-- Security -->
+        <section>
+            <h2><span class="accent">Security</span></h2>
+            <p class="subtitle">Built with defense in depth.</p>
+            <ul>
+                <li><strong>Never hardcode an nsec.</strong> Load from an environment variable or encrypted file using <code>Identity.load()</code>.</li>
+                <li><strong>Booking requests are encrypted.</strong> Sent as NIP-04 encrypted DMs (kind=4) &mdash; only the calendar owner can read them.</li>
+                <li><strong>Calendar event privacy model:</strong> Public envelope (times and participant pubkeys in tags) is visible for relay filtering. Content (title, description, location) is NIP-44 encrypted &mdash; only participants can decrypt.</li>
+                <li><strong>All pubkeys validated</strong> as 64-character lowercase hex at every entry point.</li>
+                <li><strong>All timestamps validated</strong> to the 2020&ndash;2100 range; booleans are rejected.</li>
+                <li><strong>Relay queries capped</strong> at 1000 events to prevent memory exhaustion.</li>
+            </ul>
+        </section>
+
+        <!-- Configuration -->
+        <section>
+            <h2><span class="accent">Configuration</span></h2>
+
+            <h3>Environment Variables</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Variable</th><th>Required</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>NOSTR_NSEC</code></td><td>Yes</td><td>Your nsec private key (bech32 or hex)</td></tr>
+                    <tr><td><code>NOSTR_RELAY</code></td><td>No</td><td>Relay URL (default: <code>wss://relay.nostrkeep.com</code>)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>AvailabilityRule Defaults</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Parameter</th><th>Default</th><th>Range</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>slot_duration_minutes</code></td><td>30</td><td>1&ndash;1440</td></tr>
+                    <tr><td><code>buffer_minutes</code></td><td>15</td><td>0&ndash;1440</td></tr>
+                    <tr><td><code>max_per_day</code></td><td>8</td><td>1&ndash;1000</td></tr>
+                    <tr><td><code>timezone</code></td><td><code>UTC</code></td><td>Any valid IANA timezone</td></tr>
+                </tbody>
+            </table>
+            <p>Maximum 48 time windows per day.</p>
+        </section>
+
+        <!-- NIPs Used -->
+        <section>
+            <h2><span class="accent">Nostr NIPs</span> Used</h2>
+            <p class="subtitle">Standards this SDK implements.</p>
+            <table class="nip-table">
+                <thead>
+                    <tr><th>NIP</th><th>Purpose</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>NIP-01</td><td>Basic event structure and relay protocol</td></tr>
+                    <tr><td>NIP-04</td><td>Encrypted direct messages (booking requests)</td></tr>
+                    <tr><td>NIP-09</td><td>Event deletion (cancellations)</td></tr>
+                    <tr><td>NIP-52</td><td>Calendar events (kind 31923) and RSVPs (kind 31925)</td></tr>
+                    <tr><td>NIP-78</td><td>App-specific data (kind 30078 for availability rules)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Ecosystem -->
+        <section>
+            <h2><span class="accent">NSE</span> Ecosystem</h2>
+            <p class="subtitle">NostrCalendar is the Time pillar. It works alongside the other OpenClaw SDKs.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Pillar</th><th>Package</th><th>Role</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Identity</td>
+                        <td><a href="https://pypi.org/project/nostrkey/">nostrkey</a></td>
+                        <td>Cryptographic identity and key management</td>
+                    </tr>
+                    <tr>
+                        <td>Finance</td>
+                        <td><a href="https://pypi.org/project/nostrwalletconnect/">nostrwalletconnect</a></td>
+                        <td>Lightning wallet access via NWC</td>
+                    </tr>
+                    <tr>
+                        <td style="color:var(--cyan);font-weight:700;">Time</td>
+                        <td><strong>nostrcalendar</strong></td>
+                        <td>Sovereign scheduling (this package)</td>
+                    </tr>
+                    <tr>
+                        <td>Relationships</td>
+                        <td><a href="https://pypi.org/project/nostrsocial/">nostrsocial</a></td>
+                        <td>Social graph and relationship memory</td>
+                    </tr>
+                    <tr>
+                        <td>Compass</td>
+                        <td><a href="https://pypi.org/project/social-alignment/">social-alignment</a></td>
+                        <td>Value alignment across five lenses</td>
+                    </tr>
+                    <tr>
+                        <td>Orchestrator</td>
+                        <td><a href="https://pypi.org/project/nse-orchestrator/">nse-orchestrator</a></td>
+                        <td>Nervous system connecting all pillars</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            <p>
+                <a href="/">nse.dev</a> &middot;
+                <a href="https://humanjava.com">Humanjava Enterprises</a> &middot;
+                MIT &middot;
+                <a href="/support.html">Support</a>
+            </p>
+            <p style="margin-top:8px;">&copy; 2026 <a href="https://humanjava.com">Humanjava Enterprises Inc.</a></p>
+        </footer>
+
+    </div>
+</body>
+</html>

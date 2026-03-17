@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#0a0a0f">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NostrSocial — Relationships SDK | nse.dev</title>
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-koTJh9eNIFNg6_JoamV9n.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+    <meta name="description" content="Social graph manager for AI agents. Contacts, trust tiers, conversation evaluation, guardrails, cross-channel recognition, and identity verification — all anchored to Nostr npub identity.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nse.dev/nostrsocial.html">
+    <meta property="og:title" content="NostrSocial — Relationships SDK | nse.dev">
+    <meta property="og:description" content="Social graph manager for AI agents — trust tiers, conversation evaluation, guardrails, and cross-channel recognition on Nostr. pip install nostrsocial">
+    <meta property="og:image" content="https://nse.dev/og-nostrsocial.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NostrSocial — Relationships SDK | nse.dev">
+    <meta name="twitter:description" content="Social graph manager for AI agents — trust tiers, conversation evaluation, guardrails, and cross-channel recognition on Nostr.">
+    <meta name="twitter:image" content="https://nse.dev/og-nostrsocial.png">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' stroke='%2322d3ee' stroke-width='4' fill='%2312121a'/><path d='M30 50h40M50 30v40' stroke='%2322d3ee' stroke-width='6' stroke-linecap='round' fill='none'/></svg>">
+
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-code: #0a0a12;
+            --text: #f0f0f5;
+            --text-dim: #8888a0;
+            --cyan: #22d3ee;
+            --cyan-dim: #0891b2;
+            --border: #1e1e2e;
+            --green: #4ade80;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { overflow-x: hidden; width: 100%; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* Nav */
+        .nav {
+            margin-bottom: 48px;
+        }
+
+        .nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav a:hover { color: var(--text); }
+        .nav .sep { color: var(--border); margin: 0 8px; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border: 1px solid var(--cyan-dim);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span { color: var(--cyan); }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+
+        /* Sections */
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        section h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        section h2 span.accent { color: var(--cyan); }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin: 24px 0 12px;
+            color: var(--cyan);
+        }
+
+        p { margin-bottom: 12px; }
+
+        a { color: var(--cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Code */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            margin: 12px 0 20px;
+            position: relative;
+        }
+
+        .code-block .fn { color: var(--cyan); }
+        .code-block .comment { color: #555568; }
+        .code-block .str { color: #a78bfa; }
+        .code-block .kw { color: #f472b6; }
+
+        code {
+            background: var(--bg-code);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 0.85em;
+            color: var(--cyan);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--border);
+            color: var(--text-dim);
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .copy-btn:hover { background: #2a2a3e; color: var(--text); }
+
+        /* Tables */
+        .platform-table, .nip-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 16px 0;
+        }
+
+        .platform-table th, .nip-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-dim);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .platform-table td, .nip-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(30,30,46,0.5);
+            color: var(--text-dim);
+        }
+
+        .platform-table td:first-child, .nip-table td:first-child {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .status-done { color: var(--green); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.15s, transform 0.15s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .btn-primary { background: var(--cyan); color: #0a0a0f; }
+        .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--cyan); }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        footer a { color: var(--text-dim); text-decoration: none; }
+        footer a:hover { color: var(--cyan); }
+
+        /* Section header (outside cards) */
+        .section-header {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            padding-top: 16px;
+        }
+
+        .section-header span { color: var(--cyan); }
+
+        /* Section p overrides */
+        section p { color: var(--text-dim); font-size: 0.95rem; }
+        section p strong { color: var(--text); }
+
+        /* Lists */
+        ul { list-style-position: inside; margin: 12px 0; }
+        li { color: var(--text-dim); margin-bottom: 8px; }
+        li strong { color: var(--text); }
+
+        @media (max-width: 640px) {
+            .container { padding: 40px 16px; }
+            .hero h1 { font-size: 2rem; }
+            section { padding: 24px 16px; }
+            .code-block { font-size: 0.75rem; padding: 16px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { margin-bottom: 24px; }
+            .hero h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <nav class="nav" aria-label="Breadcrumb">
+            <a href="/">nse.dev</a>
+            <span class="sep">/</span>
+            <a href="/openclaw.html">openclaw</a>
+            <span class="sep">/</span>
+            <span style="color:var(--cyan);">nostrsocial</span>
+        </nav>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">Pillar 4 &mdash; Relationships</div>
+            <h1>Nostr<span>Social</span></h1>
+            <p>Social graph manager for AI agents &mdash; contacts, trust tiers, conversation evaluation, guardrails, cross-channel recognition, and identity verification. All anchored to Nostr npub identity.</p>
+        </div>
+
+        <!-- Install -->
+        <section>
+            <h2><span class="accent">Install</span></h2>
+            <p class="subtitle">Minimal dependencies: <code>bech32</code> only. No heavyweight crypto libraries required.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('install-cmd')">Copy</button>
+                <span id="install-cmd">pip install nostrsocial</span>
+            </div>
+        </section>
+
+        <!-- Links -->
+        <section>
+            <h2><span class="accent">Links</span></h2>
+            <div class="btn-group" style="margin-top:0">
+                <a href="https://pypi.org/project/nostrsocial/" class="btn btn-primary">PyPI</a>
+                <a href="https://github.com/HumanjavaEnterprises/nostrsocial.app.OC-python.src" class="btn btn-secondary">GitHub</a>
+                <a href="https://clawhub.ai/skills/nostrsocial" class="btn btn-secondary">ClawHub</a>
+            </div>
+        </section>
+
+        <!-- Quickstart -->
+        <section>
+            <h2><span class="accent">Quickstart</span></h2>
+            <p class="subtitle">Create an enclave, add a contact, get tier-based behavior rules.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('quickstart-code')">Copy</button>
+<pre id="quickstart-code"><span class="kw">from</span> nostrsocial <span class="kw">import</span> <span class="fn">SocialEnclave</span>, <span class="fn">Tier</span>
+
+<span class="comment"># Create an enclave and back up the device secret immediately</span>
+enclave = <span class="fn">SocialEnclave</span>.<span class="fn">create</span>()
+secret = enclave.<span class="fn">export_secret</span>()  <span class="comment"># Store this securely</span>
+
+<span class="comment"># Add a contact and get tier-based behavior</span>
+enclave.<span class="fn">add</span>(<span class="str">"alice@example.com"</span>, <span class="str">"email"</span>, Tier.<span class="fn">CLOSE</span>, display_name=<span class="str">"Alice"</span>)
+rules = enclave.<span class="fn">get_behavior</span>(<span class="str">"alice@example.com"</span>, <span class="str">"email"</span>)
+<span class="comment"># rules.warmth=0.8, rules.token_budget=1500, rules.can_interrupt=True</span></pre>
+            </div>
+        </section>
+
+        <!-- Capabilities -->
+        <section>
+            <h2>Core <span class="accent">Capabilities</span></h2>
+
+            <h3>1. Manage Contacts</h3>
+            <p>Add contacts to friends, block, or gray lists with capacity enforcement.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-contacts')">Copy</button>
+<pre id="cap-contacts"><span class="kw">from</span> nostrsocial <span class="kw">import</span> <span class="fn">SocialEnclave</span>, <span class="fn">Tier</span>
+
+enclave = <span class="fn">SocialEnclave</span>.<span class="fn">create</span>()
+enclave.<span class="fn">add</span>(<span class="str">"alice@example.com"</span>, <span class="str">"email"</span>, Tier.<span class="fn">CLOSE</span>, display_name=<span class="str">"Alice"</span>)
+enclave.<span class="fn">block</span>(<span class="str">"spam@bad.com"</span>, <span class="str">"email"</span>)
+enclave.<span class="fn">gray</span>(<span class="str">"meh@example.com"</span>, <span class="str">"email"</span>)</pre>
+            </div>
+
+            <h3>2. Query Behavioral Rules</h3>
+            <p>Get tier-based behavioral parameters for any contact. Unknown contacts get neutral behavior.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-behavior')">Copy</button>
+<pre id="cap-behavior">rules = enclave.<span class="fn">get_behavior</span>(<span class="str">"alice@example.com"</span>, <span class="str">"email"</span>)
+<span class="comment"># rules.token_budget, rules.warmth, rules.can_interrupt, etc.</span>
+
+<span class="comment"># Unknown contacts get neutral behavior</span>
+rules = enclave.<span class="fn">get_behavior</span>(<span class="str">"stranger@example.com"</span>, <span class="str">"email"</span>)
+<span class="comment"># warmth=0.5, token_budget=500</span></pre>
+            </div>
+
+            <h3>3. Evaluate Conversations</h3>
+            <p>Combine WHO someone is with WHAT is happening to determine HOW to respond. Pass <code>ConversationSignals</code> and get back an <code>Evaluation</code> with adjusted warmth, token budget, approach guidance, and a recommended action.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-evaluate')">Copy</button>
+<pre id="cap-evaluate"><span class="kw">from</span> nostrsocial <span class="kw">import</span> <span class="fn">ConversationSignals</span>
+
+signals = <span class="fn">ConversationSignals</span>(
+    sentiment=<span class="str">"vulnerable"</span>,
+    vulnerability=<span class="str">0.7</span>,
+    reciprocity=<span class="str">0.8</span>,
+    engagement=<span class="str">0.9</span>,
+    topic_depth=<span class="str">0.6</span>,
+)
+result = enclave.<span class="fn">evaluate</span>(<span class="str">"alice@example.com"</span>, <span class="str">"email"</span>, signals)
+<span class="comment"># result.action = Action.HOLD</span>
+<span class="comment"># result.approach = "full presence"</span>
+<span class="comment"># result.adjusted_warmth = 0.96</span>
+<span class="comment"># result.adjusted_token_budget = 1950</span></pre>
+            </div>
+
+            <h3>4. Screen Content (Guardrails)</h3>
+            <p>Screen conversation text for banned words, topics, and patterns. Returns a <code>ScreenResult</code> with severity, category, and recommended action.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-screen')">Copy</button>
+<pre id="cap-screen">result = enclave.<span class="fn">screen</span>(<span class="str">"some incoming message text"</span>)
+<span class="kw">if</span> result.flagged:
+    <span class="fn">print</span>(result.action)     <span class="comment"># "block", "exit", "warn", or "demote"</span>
+    <span class="fn">print</span>(result.severity)   <span class="comment"># 0.0-1.0</span>
+    <span class="fn">print</span>(result.category)   <span class="comment"># "slurs", "manipulation", etc.</span>
+    <span class="fn">print</span>(result.matched)    <span class="comment"># "[slurs]" (never raw input)</span>
+
+<span class="comment"># Screen display names for known bad-actor patterns</span>
+result = enclave.<span class="fn">screen_entity</span>(<span class="str">"crypto_support_official"</span>)</pre>
+            </div>
+
+            <h3>5. Network Shape</h3>
+            <p>Analyze the social graph and get a human-readable profile.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-shape')">Copy</button>
+<pre id="cap-shape">shape = enclave.<span class="fn">network_shape</span>()
+<span class="comment"># shape.profile_type = "balanced", "fortress", "deep-connector", etc.</span>
+<span class="comment"># shape.narrative = "12 friends (2 intimate, 4 close, ...)</span>
+<span class="comment"># shape.tier_counts, shape.verified_count, shape.avg_interaction_days</span></pre>
+            </div>
+
+            <h3>6. Auto-Maintenance</h3>
+            <p>Run drift detection, gray decay, and at-risk reporting in a single call. Use <code>dry_run=True</code> to preview changes without committing them.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-maintain')">Copy</button>
+<pre id="cap-maintain"><span class="comment"># Preview what would happen</span>
+preview = enclave.<span class="fn">maintain</span>(dry_run=<span class="kw">True</span>)
+<span class="fn">print</span>(preview[<span class="str">"summary"</span>])
+
+<span class="comment"># Execute maintenance for real</span>
+result = enclave.<span class="fn">maintain</span>()
+<span class="comment"># result["drifted"], result["decayed"], result["at_risk"], result["summary"]</span></pre>
+            </div>
+
+            <h3>7. Cross-Channel Recognition</h3>
+            <p>Recognize the same person across different channels. This is resonance, not surveillance &mdash; it only checks contacts you already have a relationship with.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-resonance')">Copy</button>
+<pre id="cap-resonance"><span class="comment"># Check if a new contact might be someone you already know</span>
+matches = enclave.<span class="fn">recognize</span>(
+    <span class="str">"alicedev"</span>, <span class="str">"twitter"</span>,
+    display_name=<span class="str">"Alice"</span>,
+)
+<span class="kw">for</span> match <span class="kw">in</span> matches:
+    <span class="fn">print</span>(<span class="kw">f</span><span class="str">"{match.confidence}: {match.reason}"</span>)
+
+<span class="comment"># Explicitly link two identities (never auto-linked)</span>
+result = enclave.<span class="fn">link</span>(
+    <span class="str">"alice@example.com"</span>, <span class="str">"email"</span>,
+    <span class="str">"alicedev"</span>, <span class="str">"twitter"</span>,
+)</pre>
+            </div>
+
+            <h3>8. Identity Verification</h3>
+            <p>Track identity state from proxy to claimed to verified.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-verify')">Copy</button>
+<pre id="cap-verify"><span class="comment"># See who needs verification</span>
+<span class="kw">for</span> contact <span class="kw">in</span> enclave.<span class="fn">get_upgradeable</span>():
+    <span class="fn">print</span>(<span class="kw">f</span><span class="str">"{contact.display_name}: {contact.upgrade_hint}"</span>)
+
+<span class="comment"># Create a challenge for a claimed npub</span>
+challenge = enclave.<span class="fn">create_challenge</span>(<span class="str">"npub1alice..."</span>)</pre>
+            </div>
+
+            <h3>9. Persistence</h3>
+            <p>Save and load the social graph.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode('cap-persist')">Copy</button>
+<pre id="cap-persist"><span class="kw">from</span> nostrsocial <span class="kw">import</span> <span class="fn">FileStorage</span>
+
+storage = <span class="fn">FileStorage</span>(<span class="str">"~/.agent/social.json"</span>)
+enclave = <span class="fn">SocialEnclave</span>.<span class="fn">create</span>(storage)
+enclave.<span class="fn">add</span>(<span class="str">"alice@example.com"</span>, <span class="str">"email"</span>, Tier.<span class="fn">CLOSE</span>)
+enclave.<span class="fn">save</span>()
+
+<span class="comment"># Later</span>
+enclave = <span class="fn">SocialEnclave</span>.<span class="fn">load</span>(storage)</pre>
+            </div>
+        </section>
+
+        <!-- Trust Tiers Table -->
+        <section>
+            <h2>Trust <span class="accent">Tiers</span></h2>
+            <p class="subtitle">Friends list total: 150 (Dunbar's number). Unknown contacts get neutral behavior (warmth 0.5, budget 500).</p>
+            <table class="platform-table">
+                <thead>
+                    <tr>
+                        <th>Tier</th>
+                        <th>Slots</th>
+                        <th>Warmth</th>
+                        <th>Token Budget</th>
+                        <th>Can Interrupt</th>
+                        <th>Share Context</th>
+                        <th>Proactive</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>INTIMATE</td><td>5</td><td>0.95</td><td>2000</td><td class="status-done">Yes</td><td class="status-done">Yes</td><td class="status-done">Yes</td></tr>
+                    <tr><td>CLOSE</td><td>15</td><td>0.8</td><td>1500</td><td class="status-done">Yes</td><td class="status-done">Yes</td><td>No</td></tr>
+                    <tr><td>FAMILIAR</td><td>50</td><td>0.6</td><td>1000</td><td>No</td><td>No</td><td>No</td></tr>
+                    <tr><td>KNOWN</td><td>80</td><td>0.5</td><td>750</td><td>No</td><td>No</td><td>No</td></tr>
+                    <tr><td>BLOCK</td><td>50</td><td>0.0</td><td>0</td><td>No</td><td>No</td><td>No</td></tr>
+                    <tr><td>GRAY</td><td>100</td><td>0.2</td><td>200</td><td>No</td><td>No</td><td>No</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Response Format Tables -->
+        <section>
+            <h2>Response <span class="accent">Format</span></h2>
+
+            <h3>Contact</h3>
+            <p>Returned by <code>add()</code>, <code>promote()</code>, <code>demote()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>identifier</td><td>str</td><td>Email, phone, npub, etc.</td></tr>
+                    <tr><td>channel</td><td>str</td><td>"email", "phone", "npub", "twitter"</td></tr>
+                    <tr><td>list_type</td><td>ListType</td><td>FRIENDS, BLOCK, or GRAY</td></tr>
+                    <tr><td>tier</td><td>Tier | None</td><td>INTIMATE, CLOSE, FAMILIAR, or KNOWN</td></tr>
+                    <tr><td>identity_state</td><td>IdentityState</td><td>PROXY, CLAIMED, or VERIFIED</td></tr>
+                    <tr><td>proxy_npub</td><td>str</td><td>HMAC-derived npub for non-npub contacts</td></tr>
+                    <tr><td>display_name</td><td>str | None</td><td>Human-readable name</td></tr>
+                    <tr><td>interaction_count</td><td>int</td><td>Total interactions recorded</td></tr>
+                    <tr><td>upgrade_hint</td><td>str</td><td>Hint for identity verification</td></tr>
+                </tbody>
+            </table>
+
+            <h3>BehaviorRules</h3>
+            <p>Returned by <code>get_behavior()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>token_budget</td><td>int</td><td>Token allowance (intimate=2000, known=750, block=0)</td></tr>
+                    <tr><td>memory_depth</td><td>int</td><td>Past interactions to consider</td></tr>
+                    <tr><td>can_interrupt</td><td>bool</td><td>Can interrupt ongoing tasks</td></tr>
+                    <tr><td>warmth</td><td>float</td><td>0.0&ndash;1.0 (intimate=0.95, known=0.5, block=0.0)</td></tr>
+                    <tr><td>response_priority</td><td>int</td><td>1=highest (intimate), 10=block</td></tr>
+                    <tr><td>share_context</td><td>bool</td><td>Share agent context with this contact</td></tr>
+                    <tr><td>proactive_contact</td><td>bool</td><td>Agent initiates contact</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Evaluation</h3>
+            <p>Returned by <code>evaluate()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>action</td><td>Action</td><td>HOLD, PROMOTE, DEMOTE, WATCH, BLOCK, or REACH_OUT</td></tr>
+                    <tr><td>confidence</td><td>float</td><td>0.0&ndash;1.0</td></tr>
+                    <tr><td>adjusted_warmth</td><td>float</td><td>Warmth for this specific moment</td></tr>
+                    <tr><td>adjusted_token_budget</td><td>int</td><td>Token budget for this response</td></tr>
+                    <tr><td>approach</td><td>str</td><td>"lean in", "de-escalate", "match energy", etc.</td></tr>
+                    <tr><td>rationale</td><td>str</td><td>Why this recommendation</td></tr>
+                    <tr><td>tier_suggestion</td><td>Tier | None</td><td>Suggested tier if promote/demote</td></tr>
+                </tbody>
+            </table>
+
+            <h3>ScreenResult</h3>
+            <p>Returned by <code>screen()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>flagged</td><td>bool</td><td>Whether content was flagged</td></tr>
+                    <tr><td>severity</td><td>float</td><td>0.0&ndash;1.0</td></tr>
+                    <tr><td>category</td><td>str</td><td>"slurs", "hate_symbols", "manipulation", etc.</td></tr>
+                    <tr><td>matched</td><td>str</td><td>Category tag like [slurs] (never raw input &mdash; PII safe)</td></tr>
+                    <tr><td>action</td><td>str</td><td>"block", "exit", "warn", or "demote"</td></tr>
+                    <tr><td>rationale</td><td>str</td><td>Human-readable explanation</td></tr>
+                </tbody>
+            </table>
+
+            <h3>NetworkShape</h3>
+            <p>Returned by <code>network_shape()</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>total_contacts</td><td>int</td><td>Total across all lists</td></tr>
+                    <tr><td>tier_counts</td><td>dict</td><td>Per-tier counts</td></tr>
+                    <tr><td>verified_count</td><td>int</td><td>Verified identities</td></tr>
+                    <tr><td>profile_type</td><td>str</td><td>"balanced", "fortress", "deep-connector", etc.</td></tr>
+                    <tr><td>narrative</td><td>str</td><td>Human-readable network description</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- When to Use Each Module -->
+        <section>
+            <h2>When to Use <span class="accent">Each Module</span></h2>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Task</th><th>Module</th><th>Function</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Add/remove contacts</td><td>enclave</td><td><code>add</code>, <code>block</code>, <code>gray</code>, <code>remove</code></td></tr>
+                    <tr><td>Change trust tier</td><td>enclave</td><td><code>promote</code>, <code>demote</code></td></tr>
+                    <tr><td>Get behavioral rules</td><td>enclave / behavior</td><td><code>get_behavior</code></td></tr>
+                    <tr><td>Evaluate a conversation</td><td>enclave / evaluate</td><td><code>evaluate</code> with <code>ConversationSignals</code></td></tr>
+                    <tr><td>Screen content</td><td>enclave / guardrails</td><td><code>screen</code>, <code>screen_entity</code></td></tr>
+                    <tr><td>Check remaining slots</td><td>enclave</td><td><code>slots_remaining</code></td></tr>
+                    <tr><td>Find unverified contacts</td><td>enclave</td><td><code>get_unverified_contacts</code>, <code>get_upgradeable</code></td></tr>
+                    <tr><td>Create verification challenge</td><td>enclave / verify</td><td><code>create_challenge</code></td></tr>
+                    <tr><td>Derive proxy npub</td><td>proxy</td><td><code>derive_proxy_npub</code></td></tr>
+                    <tr><td>Run maintenance</td><td>enclave</td><td><code>maintain</code>, <code>maintain(dry_run=True)</code></td></tr>
+                    <tr><td>Recognize cross-channel</td><td>enclave / resonance</td><td><code>recognize</code></td></tr>
+                    <tr><td>Link two identities</td><td>enclave / resonance</td><td><code>link</code></td></tr>
+                    <tr><td>Analyze network profile</td><td>enclave</td><td><code>network_shape</code></td></tr>
+                    <tr><td>Displace weakest in tier</td><td>enclave</td><td><code>displace</code></td></tr>
+                    <tr><td>Persist social graph</td><td>enclave</td><td><code>save</code> / <code>load</code></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Security -->
+        <section>
+            <h2><span class="accent">Security</span></h2>
+            <ul>
+                <li><strong>The device secret is the root of all proxy npub derivation.</strong> Call <code>export_secret()</code> after <code>create()</code> and store it securely. If you lose it, all proxy npubs become unrecoverable.</li>
+                <li><strong>Never hardcode an nsec in your code.</strong> If your agent has a Nostr identity, load it from an environment variable or encrypted file. The <code>nostrkey</code> package provides <code>Identity.load()</code> for this.</li>
+                <li><strong>ScreenResult.matched never exposes raw input.</strong> It returns category tags like <code>[slurs]</code> to prevent PII leakage in logs or downstream systems.</li>
+                <li><strong>Guardrails use bundled defaults</strong> from <code>data/*.json</code> (banned words, topics, entities). Operators can override or extend via <code>extra_words</code>, <code>extra_topics</code>, and <code>extra_entities</code> parameters.</li>
+                <li>Proxy npubs are deterministic (HMAC-SHA256) &mdash; same identifier always maps to same npub.</li>
+                <li>Challenge verification requires relay interaction &mdash; stub only in 0.1.0.</li>
+            </ul>
+        </section>
+
+        <!-- Configuration -->
+        <section>
+            <h2><span class="accent">Configuration</span></h2>
+
+            <h3>Capacity Constants</h3>
+            <p>All capacity constants are defined in <code>types.py</code> and can be overridden via <code>SocialEnclave.create(tier_capacity=..., list_capacity=...)</code>.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>List</th><th>Capacity</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>INTIMATE</td><td>5</td></tr>
+                    <tr><td>CLOSE</td><td>15</td></tr>
+                    <tr><td>FAMILIAR</td><td>50</td></tr>
+                    <tr><td>KNOWN</td><td>80</td></tr>
+                    <tr><td>BLOCK</td><td>50</td></tr>
+                    <tr><td>GRAY</td><td>100 (auto-decay after 30 days)</td></tr>
+                    <tr><td>Friends total</td><td>150 (Dunbar's number)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Identity States</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>State</th><th>Meaning</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>PROXY</td><td>HMAC-derived from email/phone/handle. Default for new contacts.</td></tr>
+                    <tr><td>CLAIMED</td><td>User provided an npub but it has not been verified.</td></tr>
+                    <tr><td>VERIFIED</td><td>Signed challenge confirms npub ownership. Verified contacts get warmer behavior.</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Drift Thresholds</h3>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Tier</th><th>Silent Days Before Demotion</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>INTIMATE</td><td>30 days</td></tr>
+                    <tr><td>CLOSE</td><td>60 days</td></tr>
+                    <tr><td>FAMILIAR</td><td>90 days</td></tr>
+                    <tr><td>KNOWN</td><td>180 days (then moves to gray)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- NIPs -->
+        <section>
+            <h2>NIP <span class="accent">Integration</span></h2>
+            <p class="subtitle">NostrSocial works with Nostr identity but does not require relay connectivity for core operations. Proxy npubs are derived locally via HMAC-SHA256.</p>
+            <table class="nip-table">
+                <thead>
+                    <tr><th>NIP</th><th>Usage</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>NIP-01</td><td>Event signing for verification challenges</td><td>Stub (0.1.0)</td></tr>
+                    <tr><td>NIP-02</td><td>Contact list structure (Dunbar-inspired tiers)</td><td class="status-done">Implemented</td></tr>
+                    <tr><td>NIP-19</td><td>bech32 npub encoding for proxy identities</td><td class="status-done">Implemented</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Ecosystem -->
+        <section>
+            <h2><span class="accent">Ecosystem</span></h2>
+            <p class="subtitle">NostrSocial is Pillar 4 of the NSE platform &mdash; the relationships layer. It works standalone or alongside the other OpenClaw skills.</p>
+            <table class="platform-table">
+                <thead>
+                    <tr><th>Pillar</th><th>Package</th><th>Domain</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1. Identity</td><td><a href="https://pypi.org/project/nostrkey/">nostrkey</a></td><td>Cryptographic keypairs, signing, encryption</td></tr>
+                    <tr><td>2. Finance</td><td><a href="https://pypi.org/project/nostrwalletconnect/">nostrwalletconnect</a></td><td>Lightning wallet access via NWC</td></tr>
+                    <tr><td>3. Time</td><td><a href="https://pypi.org/project/nostrcalendar/">nostrcalendar</a></td><td>Sovereign scheduling and availability</td></tr>
+                    <tr><td>4. Relationships</td><td><strong>nostrsocial</strong></td><td>Social graph, trust tiers, guardrails</td></tr>
+                    <tr><td>5. Compass</td><td><a href="https://pypi.org/project/social-alignment/">social-alignment</a></td><td>Value alignment across five lenses</td></tr>
+                    <tr><td>Orchestrator</td><td><a href="https://pypi.org/project/nse-orchestrator/">nse-orchestrator</a></td><td>Nervous system connecting all pillars</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <a href="/">nse.dev</a> &middot;
+            <a href="https://humanjava.com">Humanjava Enterprises</a> &middot;
+            MIT &middot;
+            <a href="/support.html">Support</a>
+        </footer>
+
+    </div>
+
+    <script>
+    function copyCode(id) {
+        const el = document.getElementById(id);
+        const text = el.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = el.closest('.code-block').querySelector('.copy-btn');
+            btn.textContent = 'Copied';
+            setTimeout(() => btn.textContent = 'Copy', 1500);
+        });
+    }
+    </script>
+</body>
+</html>
