@@ -72,3 +72,8 @@ NSE is an open-source library for hardware-backed Nostr key management. It bridg
 - **License:** MIT
 - **Org:** [HumanjavaEnterprises](https://github.com/HumanjavaEnterprises)
 - **Website:** [nse.dev](https://nse.dev)
+
+## TODO (from Tavin integration, 2026-03-17)
+- [ ] Add TPM bridge documentation to nse.dev/openclaw.html — NSE has no native TPM support, custom bridge was needed
+- [ ] Document `/dev/tpmrm0` unprivileged access pattern for server deployments
+- [ ] Add session file cleanup guidance for agents running NSE tools
