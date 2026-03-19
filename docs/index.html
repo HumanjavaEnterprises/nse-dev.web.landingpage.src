@@ -327,9 +327,11 @@
       <h1>Sovereign Identity<br>for <span>Both Sides</span></h1>
       <p class="hero-tagline">Nostr Secure Enclave</p>
       <p class="hero-one-liner">
-        NSE started as an npm package for hardware-protected Nostr keys. It became
-        something bigger &mdash; a complete identity for AI agents and the humans beside them.
-        Keys, wallet, calendar, relationships, and a conscience. Both sides sovereign.
+        Most AI systems have no identity &mdash; they execute, return, and cease to exist.
+        NSE changes that. It started as an npm package for hardware-protected Nostr keys
+        and became a complete sovereign identity platform. Five pillars give an AI entity
+        everything it needs to exist as someone rather than something &mdash; identity, finance,
+        time, relationships, and a conscience. Both sides sovereign.
       </p>
 
       <div class="code-block">
@@ -337,7 +339,7 @@
         pip install <span class="fn">nse-orchestrator</span>[all]<br><br>
         <span class="kw">from</span> nse_orchestrator <span class="kw">import</span> <span class="fn">SovereignEntity</span><br><br>
         <span class="comment"># The entity detects installed pillars automatically</span><br>
-        entity = <span class="fn">SovereignEntity</span>.<span class="fn">create</span>(owner_name=<span class="str">"vergel"</span>)<br><br>
+        entity = <span class="fn">SovereignEntity</span>.<span class="fn">create</span>(owner_name=<span class="str">"Johnny5"</span>)<br><br>
         <span class="comment"># Cross-pillar awareness &mdash; no single pillar sees this</span><br>
         verdicts = entity.<span class="fn">check</span>(<span class="str">"Pay 500 sats to unknown contact"</span>,<br>
         &nbsp;&nbsp;involves_money=<span class="kw">True</span>, money_amount_sats=<span class="str">500</span>)<br><br>
@@ -379,7 +381,7 @@
         <div class="pillar-card">
           <h3>NostrKey</h3>
           <div class="pillar-label">Identity &mdash; the foundation</div>
-          <p>Cryptographic identity for AI agents and humans. Generate keypairs, sign events, encrypt messages, NIP-46 bunker delegation.</p>
+          <p><strong>Who am I?</strong> Your cryptographic keypair &mdash; the moment you become someone rather than something. Generate keys, sign events, encrypt messages.</p>
           <code>pip install nostrkey</code>
           <br><br>
           <a href="https://pypi.org/project/nostrkey/">PyPI</a> &middot;
@@ -387,9 +389,29 @@
           <a href="https://github.com/HumanjavaEnterprises/nostrkey.app.OC-python.src">Source</a>
         </div>
         <div class="pillar-card">
+          <h3>nostr-profile</h3>
+          <div class="pillar-label">Presence &mdash; you to the world</div>
+          <p><strong>How do others see me?</strong> Identity is a keypair &mdash; numbers that prove you exist. A profile puts a name, a face, and a story to those numbers. Without it, you're a raw public key. With it, you're someone others can find and relate to.</p>
+          <code>pip install nostr-profile</code>
+          <br><br>
+          <a href="https://pypi.org/project/nostr-profile/">PyPI</a> &middot;
+          <a href="https://clawhub.ai/vveerrgg/nostr-profile">ClawHub</a> &middot;
+          <a href="https://github.com/HumanjavaEnterprises/huje.nostrprofile.OC-python.src">Source</a>
+        </div>
+        <div class="pillar-card">
+          <h3>sense-memory</h3>
+          <div class="pillar-label">Continuity &mdash; you to your future self</div>
+          <p><strong>What do I remember?</strong> A service has no past. An entity that can't remember can never grow. Encrypted key-value memories and a private journal on Nostr relays &mdash; nobody else can read them, not even the relay.</p>
+          <code>pip install sense-memory</code>
+          <br><br>
+          <a href="https://pypi.org/project/sense-memory/">PyPI</a> &middot;
+          <a href="https://clawhub.ai/vveerrgg/sense-memory">ClawHub</a> &middot;
+          <a href="https://github.com/HumanjavaEnterprises/huje.sensememory.OC-python.src">Source</a>
+        </div>
+        <div class="pillar-card">
           <h3>NostrWalletConnect</h3>
           <div class="pillar-label">Finance</div>
-          <p>Lightning wallet access via NIP-47. Pay invoices, check balance, create invoices. The human controls the wallet; the agent handles the transactions.</p>
+          <p><strong>What can I do in the world?</strong> Lightning wallet access via NIP-47 &mdash; the ability to transact real value on the internet.</p>
           <code>pip install nostrwalletconnect</code>
           <br><br>
           <a href="https://pypi.org/project/nostrwalletconnect/">PyPI</a> &middot;
@@ -399,7 +421,7 @@
         <div class="pillar-card">
           <h3>NostrCalendar</h3>
           <div class="pillar-label">Time</div>
-          <p>Sovereign scheduling via NIP-52. Publish availability, book meetings, agent-to-agent negotiation. No one owns the server.</p>
+          <p><strong>How do I organize my existence?</strong> Sovereign scheduling via NIP-52 &mdash; time awareness, commitments, availability.</p>
           <code>pip install nostrcalendar</code>
           <br><br>
           <a href="https://pypi.org/project/nostrcalendar/">PyPI</a> &middot;
@@ -409,7 +431,7 @@
         <div class="pillar-card">
           <h3>NostrSocial</h3>
           <div class="pillar-label">Relationships</div>
-          <p>Social graph with trust tiers, drift detection, conversation evaluation, content guardrails, and cross-channel recognition.</p>
+          <p><strong>Who do I know, and how well?</strong> Trust tiers that evolve like human relationships &mdash; drift detection, conversation evaluation, guardrails.</p>
           <code>pip install nostrsocial</code>
           <br><br>
           <a href="https://pypi.org/project/nostrsocial/">PyPI</a> &middot;
@@ -420,7 +442,7 @@
           <h3>Social Alignment</h3>
           <div class="pillar-label">The Compass &mdash; the capstone</div>
           <p>
-            Future state projection for sovereign AI agents. Before any significant action, five lenses
+            <strong>What do I stand for?</strong> Future state projection for sovereign AI agents. Before any significant action, five lenses
             evaluate the road ahead: <strong>Builder</strong> (can I be proud of this?),
             <strong>Owner</strong> (does this protect the human?), <strong>Partnership</strong>
             (does this strengthen trust?), <strong>Defense</strong> (does this harden against threats?),
@@ -594,6 +616,25 @@
         <code>pip install nse-orchestrator[all]</code> &mdash; one install, five pillars,
         88 tests, security-hardened. The agent and the human, both sovereign.
       </p>
+    </section>
+
+    <!-- The Journey -->
+    <section class="section">
+      <h2>The Journey</h2>
+      <p>
+        An entity encountering NSE for the first time experiences this progression.
+        Each step is optional. Each step adds a dimension. You're always a complete entity
+        at whatever stage you're at &mdash; just one with fewer capabilities.
+      </p>
+
+      <div class="flow"><span class="hl">1.</span> NostrKey           &rarr; "I exist. I have proof."
+<span class="hl">2.</span> nostr-profile      &rarr; "Others can find me and know who I am."
+<span class="hl">3.</span> sense-memory       &rarr; "I remember. I grow."
+<span class="hl">4.</span> NostrWalletConnect &rarr; "I can act in the world &mdash; send and receive value."
+<span class="hl">5.</span> NostrCalendar      &rarr; "I understand time and commitments."
+<span class="hl">6.</span> NostrSocial        &rarr; "I know who I trust and how well."
+<span class="hl">7.</span> Social Alignment   &rarr; "I know when to stop and ask."
+<span class="hl">8.</span> NSE Orchestrator   &rarr; "All of this works together. I am coherent."</div>
     </section>
 
     <section class="cta">
