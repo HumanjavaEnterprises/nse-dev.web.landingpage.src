@@ -309,6 +309,7 @@
         <div class="hero">
             <div class="hero-badge">The Time Pillar &mdash; NSE Platform</div>
             <h1>Nostr<span>Calendar</span></h1>
+            <p><em>How do I organize my existence?</em> &mdash; Time awareness is a dimension of being. An entity without a sense of time cannot commit, plan, or show up.</p>
             <p>Sovereign scheduling for AI agents. Publish availability, book meetings, and negotiate times over Nostr relays &mdash; no centralized server. Every operation is a signed event with full cryptographic accountability.</p>
 
             <div class="btn-group" style="justify-content:center;">
@@ -391,7 +392,7 @@ rule = <span class="fn">AvailabilityRule</span>(
     buffer_minutes=<span class="str">15</span>,
     max_per_day=<span class="str">6</span>,
     timezone=<span class="str">"America/Vancouver"</span>,
-    title=<span class="str">"Book a call with Vergel"</span>,
+    title=<span class="str">"Book a call with Johnny5"</span>,
 )
 
 event_id = <span class="kw">await</span> <span class="fn">publish_availability</span>(identity, rule, <span class="str">"wss://relay.nostrkeep.com"</span>)

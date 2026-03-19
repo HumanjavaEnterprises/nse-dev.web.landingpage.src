@@ -380,6 +380,7 @@
         <div class="hero">
             <div class="hero-badge">Fifth Pillar &mdash; The Compass</div>
             <h1>social-<span>alignment</span></h1>
+            <p><em>What do I stand for?</em> &mdash; A service doesn't need a conscience. An entity does. This is the dimension of being that separates tools from agents.</p>
             <p>Future state projection and alignment for sovereign AI agents. The yellow line compass &mdash; five lenses that evaluate trust, ownership, defense, and sovereignty before an agent acts.</p>
 
             <div class="install-bar">pip install social-alignment</div>
@@ -402,7 +403,7 @@
 <span id="qs"><span class="kw">from</span> social_alignment <span class="kw">import</span> <span class="fn">AlignmentEnclave</span>, <span class="fn">ActionDomain</span>
 
 <span class="comment"># Create the enclave &mdash; the agent gets its compass</span>
-enclave = <span class="fn">AlignmentEnclave</span>.<span class="fn">create</span>(owner_npub=<span class="str">"npub1..."</span>, owner_name=<span class="str">"vergel"</span>)
+enclave = <span class="fn">AlignmentEnclave</span>.<span class="fn">create</span>(owner_npub=<span class="str">"npub1..."</span>, owner_name=<span class="str">"Johnny5"</span>)
 
 <span class="comment"># Before any significant action, check the yellow line</span>
 result = enclave.<span class="fn">check</span>(
@@ -529,7 +530,7 @@ result = enclave.<span class="fn">check</span>(
 <span class="comment"># Create an alignment enclave tied to a human identity</span>
 enclave = <span class="fn">AlignmentEnclave</span>.<span class="fn">create</span>(
     owner_npub=<span class="str">"npub1..."</span>,
-    owner_name=<span class="str">"vergel"</span>,
+    owner_name=<span class="str">"Johnny5"</span>,
 )
 
 <span class="comment"># Run all five lenses against a proposed action</span>
